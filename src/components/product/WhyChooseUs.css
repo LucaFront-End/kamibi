@@ -1,0 +1,94 @@
+.why-choose-us {
+  padding: var(--space-xl) 0;
+}
+
+.why-header {
+  margin-bottom: var(--space-3xl);
+}
+
+.why-title {
+  font-size: var(--text-4xl);
+  color: var(--color-charcoal);
+}
+
+/* Table Wrapper */
+.why-table-wrapper {
+  overflow-x: auto;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-sand);
+  background-color: var(--color-warm-white);
+  box-shadow: var(--shadow-sm);
+}
+
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+}
+
+.comparison-table th,
+.comparison-table td {
+  padding: var(--space-lg) var(--space-xl);
+  border-bottom: 1px solid var(--color-sand-light);
+}
+
+.comparison-table th {
+  background-color: var(--color-cream);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: var(--text-xs);
+  letter-spacing: 0.1em;
+  color: var(--color-stone);
+}
+
+.kamibi-column {
+  color: var(--color-deep-sage) !important;
+  font-weight: 700 !important;
+}
+
+.row-feature-label {
+  font-weight: 500;
+  color: var(--color-charcoal);
+  width: 25%;
+}
+
+.row-kamibi-val {
+  width: 40%;
+  color: var(--color-deep-sage);
+  background-color: rgba(139, 158, 139, 0.02);
+}
+
+.kamibi-val-content {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-weight: 500;
+}
+
+.check-icon {
+  flex-shrink: 0;
+  color: var(--color-deep-sage);
+}
+
+.row-traditional-val {
+  width: 35%;
+  color: var(--color-stone);
+}
+
+/* Hover effects */
+.comparison-table tbody tr:hover {
+  background-color: rgba(232, 222, 209, 0.1);
+}
+
+/* Mobile responsive tables */
+@media (max-width: 768px) {
+  .comparison-table th,
+  .comparison-table td {
+    padding: var(--space-md);
+  }
+  .row-feature-label {
+    width: 30%;
+  }
+}

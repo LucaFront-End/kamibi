@@ -1,0 +1,191 @@
+.footer {
+  background-color: var(--color-midnight);
+  color: var(--color-warm-white);
+  padding: var(--space-4xl) 0 var(--space-xl) 0;
+}
+
+.footer-top {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: var(--space-3xl);
+  align-items: flex-start;
+}
+
+.footer-logo {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  color: var(--color-warm-white);
+  display: flex;
+  align-items: baseline;
+  margin-bottom: var(--space-md);
+}
+
+.footer-quote {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-style: italic;
+  font-weight: 300;
+  color: var(--color-sand);
+  line-height: 1.6;
+  max-width: 500px;
+}
+
+.footer-title {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: 500;
+  color: var(--color-warm-white);
+  margin-bottom: var(--space-md);
+  letter-spacing: 0.05em;
+}
+
+/* Newsletter Form */
+.newsletter-form {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--color-stone);
+  padding-bottom: var(--space-sm);
+  margin-top: var(--space-md);
+  transition: border-color var(--duration-fast) ease;
+}
+
+.newsletter-form:focus-within {
+  border-color: var(--color-gold);
+}
+
+.newsletter-input {
+  flex: 1;
+  color: var(--color-warm-white);
+  font-size: var(--text-sm);
+}
+
+.newsletter-input::placeholder {
+  color: var(--color-stone);
+}
+
+.newsletter-submit {
+  color: var(--color-sand);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color var(--duration-fast) ease, transform var(--duration-fast) ease;
+}
+
+.newsletter-submit:hover {
+  color: var(--color-gold);
+  transform: translateX(4px);
+}
+
+.footer-divider {
+  width: 100%;
+  height: 1px;
+  background-color: var(--color-midnight-soft);
+  margin: var(--space-2xl) 0;
+}
+
+/* Footer Links Grid */
+.footer-links-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr) auto;
+  gap: var(--space-2xl);
+  margin-bottom: var(--space-3xl);
+}
+
+.footer-label {
+  display: block;
+  color: var(--color-gold);
+  margin-bottom: var(--space-md);
+}
+
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.footer-links a {
+  font-size: var(--text-sm);
+  color: var(--color-sand);
+  transition: color var(--duration-fast) ease, padding-left var(--duration-fast) ease;
+}
+
+.footer-links a:hover {
+  color: var(--color-warm-white);
+  padding-left: 4px;
+}
+
+/* Back to Top floating-like button */
+.back-to-top {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 1px solid var(--color-stone);
+  color: var(--color-sand);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color var(--duration-fast) ease, border-color var(--duration-fast) ease, background-color var(--duration-fast) ease;
+}
+
+.back-to-top:hover {
+  color: var(--color-midnight);
+  border-color: var(--color-gold);
+  background-color: var(--color-gold);
+}
+
+.footer-back-top-col {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+
+/* Bottom Section */
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--color-midnight-soft);
+  padding-top: var(--space-xl);
+  font-size: var(--text-xs);
+  color: var(--color-stone);
+}
+
+.compliance-badges {
+  display: flex;
+  gap: var(--space-md);
+}
+
+.compliance-badges .badge {
+  border: 1px solid var(--color-midnight-soft);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 10px;
+}
+
+/* Responsive Footer */
+@media (max-width: 768px) {
+  .footer-top {
+    grid-template-columns: 1fr;
+    gap: var(--space-xl);
+  }
+  .footer-links-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-xl);
+  }
+  .footer-back-top-col {
+    grid-column: span 2;
+    justify-content: center;
+    margin-top: var(--space-md);
+  }
+  .footer-bottom {
+    flex-direction: column;
+    gap: var(--space-md);
+    text-align: center;
+  }
+}

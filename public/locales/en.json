@@ -1,0 +1,194 @@
+{
+  "nav": {
+    "home": "Home",
+    "shop": "Collection",
+    "philosophy": "Philosophy",
+    "contact": "Contact",
+    "cart": "Cart"
+  },
+  "home": {
+    "hero": {
+      "title": "Return to Nature, Peacefully",
+      "subtitle": "Contemporary biodegradable memorial urns designed with reverence, minimalism, and care for our planet.",
+      "cta": "Explore Collection"
+    },
+    "philosophy": {
+      "tag": "PHILOSOPHY",
+      "title": "A Gentle Farewell",
+      "text1": "Kamibi Store reimagines the memorial process, turning traditional funerary items into beautiful, ecological, and deeply meaningful tributes. We believe that returning to nature is a final act of peace and profound love.",
+      "text2": "Crafted from 100% natural, organic and compostable materials, our urns are designed to return ashes harmoniously to water or earth, leaving only memories and new life behind.",
+      "values": {
+        "respect": "Eternal Respect",
+        "sustainability": "100% Biodegradable",
+        "serenity": "Emotional Serenity",
+        "design": "Minimalist Aesthetics"
+      }
+    },
+    "featured": {
+      "tag": "OUR MEMORIALS",
+      "title": "Honoring Life Naturally",
+      "view": "View Urn"
+    },
+    "ritual": {
+      "tag": "THE RITUALS",
+      "title": "Earth & Water Journeys",
+      "water": {
+        "title": "Water Ceremony",
+        "desc": "Specially aligned for ocean or sea scattering. Dissolves gracefully, returning the elements to the source of life."
+      },
+      "earth": {
+        "title": "Earth Burial",
+        "desc": "Perfect for forest, garden, or natural cemetery burials. Integrates with the soil to foster new natural growth."
+      }
+    },
+    "testimonials": {
+      "title": "Shared Peace",
+      "t1": {
+        "quote": "The Terra Urn ceremony in the forest gave us a sense of closure and connection we didn't think possible. Truly beautiful.",
+        "author": "Sarah M.",
+        "location": "Oregon, USA"
+      },
+      "t2": {
+        "quote": "Seeing the Aqua Urn dissolve gently into the sea was peaceful and serene. It felt exactly like what she would have wanted.",
+        "author": "David K.",
+        "location": "British Columbia, Canada"
+      }
+    },
+    "ceremonies": {
+      "tag": "HONORING LIFE",
+      "title": "Ceremonies of Release",
+      "subtitle": "Discover how Kamibi urns adapt beautifully to different rituals, offering a dignified return to nature.",
+      "waterTab": "Water Ceremony",
+      "earthTab": "Earth Burial",
+      "waterTitle": "Burial at Sea & Water Rituals",
+      "waterDesc": "A serene farewell designed for oceans, rivers, or lakes. The urn floats briefly, giving families a final peaceful moment before descending gracefully to dissolve.",
+      "waterStep1": "Place ashes inside the water-soluble bag.",
+      "waterStep2": "Seal with the biodegradable adhesive strip.",
+      "waterStep3": "Lower gently into water. Complete dissolution occurs in 10-15 minutes, leaving zero residue.",
+      "waterSpec1": "100% Salt & Water Soluble",
+      "waterSpec2": "pH-Neutral & Marine Safe",
+      "waterSpec3": "TSA Airport Travel Friendly",
+      "earthTitle": "Forest, Garden & Ground Burial",
+      "earthDesc": "A grounded tribute designed to integrate with the earth. Over a few weeks, the urn decomposes, returning nutrients to the soil and fostering new plant growth.",
+      "earthStep1": "Place ashes in the organic compostable pouch.",
+      "earthStep2": "Secure the lid using the natural clay seal.",
+      "earthStep3": "Bury in soil. Wildflower seeds inside will sprout, creating a living memory.",
+      "earthSpec1": "Composts in 3-5 Weeks",
+      "earthSpec2": "Wildflower Seeds Included",
+      "earthSpec3": "100% Organic Fibers",
+      "compatible": "Recommended Memorials:"
+    },
+    "timeline": {
+      "tag": "THE ECOLOGY OF RETURN",
+      "title": "The Lifecycle of Tribute",
+      "subtitle": "A step-by-step journey of how our premium biodegradable urns return to nature without leaving a footprint.",
+      "step1Title": "1. Secure Transit",
+      "step1Desc": "Made of lightweight cellulose and plant fibers, all Kamibi urns are TSA-approved for airport security carry-on, allowing stress-free travel to your ceremony location.",
+      "step2Title": "2. The Farewell",
+      "step2Desc": "Whether placed on water or buried in a quiet forest, the urn provides a dignified, elegant focal point for family remembrance.",
+      "step3Title": "3. Natural Dissolution",
+      "step3Desc": "Without plastic linings, glues, or metals, the urn breaks down organically. Water urns dissolve in 15 minutes; earth urns decompose in 4 weeks.",
+      "step4Title": "4. Living Legacy",
+      "step4Desc": "For ground burials, wildflowers bloom from the integrated seed card, transforming the spot into a vibrant, living memorial for generations."
+    },
+    "cta": {
+      "title": "Begin a Conscious Journey",
+      "subtitle": "Discover our collection of premium biodegradable urns and sharing sets.",
+      "button": "View Catalog"
+    }
+  },
+  "store": {
+    "title": "Our Memorial Collection",
+    "subtitle": "Choose an elegant, ecological pathway tailored to their memory.",
+    "filters": {
+      "all": "All products",
+      "water": "Water burial",
+      "earth": "Earth burial",
+      "sharing": "Sharing sets"
+    },
+    "quickView": "Quick View",
+    "addToCart": "Add to Cart"
+  },
+  "product": {
+    "reviews": "Reviews",
+    "rating": "Rating",
+    "quantity": "Quantity",
+    "addToCart": "Add to Cart",
+    "adding": "Adding...",
+    "added": "Added to Cart!",
+    "tabs": {
+      "guide": "Usage Guide",
+      "benefits": "Benefits",
+      "whyUs": "Why Choose Us"
+    },
+    "guide": {
+      "title": "How it Works",
+      "step1": {
+        "title": "Place Ashes",
+        "desc": "Carefully place the ashes into the biodegradable inner bag included in the kit."
+      },
+      "step2": {
+        "title": "Secure & Seal",
+        "desc": "Seal the urn securely using the compostable paper ribbon and natural clay seal."
+      },
+      "step3": {
+        "title": "The Ceremony",
+        "desc": "Submerge in water (dissolves in minutes) or bury in soil (biodegrades in weeks)."
+      }
+    },
+    "benefits": {
+      "title": "Respectful to the Earth",
+      "b1_title": "100% Biodegradable",
+      "b1_desc": "Made of organic starch, natural fibers, and vegetable-based dyes.",
+      "b2_title": "TSA Compliant",
+      "b2_desc": "Approved for carry-on air travel, letting you transport them safely.",
+      "b3_title": "Complete Kit Included",
+      "b3_desc": "Every urn comes with a biodegradable bag, twine, and memorial seed-card.",
+      "b4_title": "Zero Contaminants",
+      "b4_desc": "Guaranteed chemical-free, metal-free, and plastic-free materials."
+    },
+    "whyUs": {
+      "title": "The Kamibi Difference",
+      "table": {
+        "feature": "Feature",
+        "kamibi": "Kamibi Urns",
+        "traditional": "Traditional Urns",
+        "f1": "Environmental footprint",
+        "f1_k": "Positive (turns to soil/water)",
+        "f1_t": "High (metals, concrete, stone)",
+        "f2": "Design aesthetic",
+        "f2_k": "Contemporary & serene minimal",
+        "f2_t": "Heavy, somber, old-fashioned",
+        "f3": "Portability & TSA",
+        "f3_k": "Lightweight, airport-friendly",
+        "f3_t": "Heavy, subject to xray delays",
+        "f4": "Price fairness",
+        "f4_k": "Transparent, premium & fair",
+        "f4_t": "Highly marked up by funeral homes"
+      }
+    },
+    "reviewsSec": {
+      "title": "Words of Peace",
+      "write": "Write a review",
+      "submit": "Submit Review",
+      "name": "Your name",
+      "comment": "Share your experience",
+      "stars": "Rating"
+    },
+    "complements": {
+      "title": "Sharing Memorial Sets",
+      "desc": "Share a small, symbolic portion of the ashes with close family members across generations.",
+      "cta": "Add Sharing Set"
+    },
+    "similar": {
+      "title": "Other Memorial Paths"
+    }
+  },
+  "cart": {
+    "title": "Your Selection",
+    "empty": "Your cart is empty. Explore our collection to find the right memorial.",
+    "subtotal": "Subtotal",
+    "checkout": "Proceed to Checkout",
+    "continue": "Continue Shopping"
+  }
+}

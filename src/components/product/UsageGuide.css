@@ -1,0 +1,116 @@
+.usage-guide {
+  padding: var(--space-xl) 0;
+}
+
+.usage-header {
+  margin-bottom: var(--space-3xl);
+}
+
+.usage-title {
+  font-size: var(--text-4xl);
+  color: var(--color-charcoal);
+}
+
+/* Steps Grid */
+.usage-steps-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-2xl);
+  z-index: 1;
+}
+
+/* Connector Line */
+.usage-connector-line {
+  position: absolute;
+  top: 60px;
+  left: 10%;
+  width: 80%;
+  height: 1px;
+  border-top: 1.5px dashed var(--color-sand);
+  z-index: -1;
+}
+
+.usage-step-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  background-color: var(--color-warm-white);
+  border: 1px solid var(--color-sand-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--duration-fast) ease, box-shadow var(--duration-fast) ease;
+}
+
+.usage-step-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.step-badge-wrapper {
+  position: relative;
+  margin-bottom: var(--space-xs);
+}
+
+.step-number {
+  position: absolute;
+  top: -15px;
+  right: -25px;
+  font-size: 28px;
+  font-family: var(--font-display);
+  font-weight: 300;
+  color: var(--color-gold-light);
+}
+
+.step-icon-circle {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background-color: var(--color-cream);
+  border: 1.5px solid var(--color-gold);
+  color: var(--color-deep-sage);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--duration-fast) ease, color var(--duration-fast) ease;
+}
+
+.usage-step-card:hover .step-icon-circle {
+  background-color: var(--color-deep-sage);
+  color: var(--color-warm-white);
+  border-color: var(--color-deep-sage);
+}
+
+.step-title {
+  font-family: var(--font-body);
+  font-size: var(--text-lg);
+  font-weight: 500;
+  color: var(--color-charcoal);
+}
+
+.step-desc {
+  font-size: var(--text-sm);
+  color: var(--color-stone);
+  line-height: 1.6;
+  max-width: 250px;
+}
+
+/* Mobile responsive steps */
+@media (max-width: 768px) {
+  .usage-steps-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+  }
+  .usage-connector-line {
+    display: none;
+  }
+  .step-number {
+    position: relative;
+    top: 0;
+    right: 0;
+    margin-bottom: var(--space-xs);
+  }
+}

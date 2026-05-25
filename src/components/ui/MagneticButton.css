@@ -1,0 +1,98 @@
+.magnetic-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 2.25rem;
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: var(--radius-full);
+  transition: background-color var(--duration-normal) var(--ease-out-expo),
+              color var(--duration-normal) var(--ease-out-expo),
+              border-color var(--duration-normal) var(--ease-out-expo),
+              box-shadow var(--duration-normal) var(--ease-out-expo);
+  overflow: hidden;
+  z-index: 1;
+}
+
+.btn-content {
+  position: relative;
+  z-index: 2;
+  transition: transform var(--duration-fast) ease;
+}
+
+/* Primary variant */
+.btn-primary {
+  background-color: var(--color-terracotta);
+  color: var(--color-warm-white);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover {
+  background-color: var(--color-terracotta-deep);
+  box-shadow: var(--shadow-md), 0 0 20px rgba(196, 133, 106, 0.2);
+}
+
+/* Secondary variant */
+.btn-secondary {
+  background-color: var(--color-charcoal);
+  color: var(--color-warm-white);
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-midnight);
+}
+
+/* Outline variant */
+.btn-outline {
+  background-color: transparent;
+  color: var(--color-charcoal);
+  border: 1px solid var(--color-sand);
+}
+
+.btn-outline:hover {
+  border-color: var(--color-charcoal);
+  background-color: rgba(45, 45, 45, 0.02);
+}
+
+/* Text variant */
+.btn-text {
+  padding: 0.5rem 1rem;
+  background-color: transparent;
+  color: var(--color-stone);
+  font-size: var(--text-xs);
+  letter-spacing: 0.15em;
+  border-radius: 0;
+  border-bottom: 1px solid transparent;
+}
+
+.btn-text:hover {
+  color: var(--color-charcoal);
+  border-bottom-color: var(--color-gold);
+}
+
+/* Glow/Bubble effect */
+.btn-glow-effect {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 120%;
+  height: 120%;
+  background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 70%);
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.5s var(--ease-out-expo);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.magnetic-button:hover .btn-glow-effect {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* Make it slightly bounce on active click */
+.magnetic-button:active {
+  transform: scale(0.96) !important;
+}

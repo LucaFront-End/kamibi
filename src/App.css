@@ -1,0 +1,12 @@
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  position: relative;
+  background-color: var(--color-cream);
+}
+
+.main-content {
+  flex: 1;
+  width: 100%;
+}

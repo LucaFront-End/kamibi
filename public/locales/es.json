@@ -1,0 +1,194 @@
+{
+  "nav": {
+    "home": "Inicio",
+    "shop": "Colección",
+    "philosophy": "Filosofía",
+    "contact": "Contacto",
+    "cart": "Carrito"
+  },
+  "home": {
+    "hero": {
+      "title": "Regresar a la Naturaleza, en Paz",
+      "subtitle": "Urnas funerarias memoriales biodegradables contemporáneas diseñadas con reverencia, minimalismo y cuidado por el planeta.",
+      "cta": "Explorar Colección"
+    },
+    "philosophy": {
+      "tag": "FILOSOFÍA",
+      "title": "Una Despedida Pacífica",
+      "text1": "Kamibi Store redefine el proceso de homenaje, transformando los artículos funerarios tradicionales en tributos hermosos, ecológicos y profundamente significativos. Creemos que regresar a la naturaleza es un acto final de paz y amor profundo.",
+      "text2": "Elaboradas con materiales 100% naturales, orgánicos y compostables, nuestras urnas están diseñadas para devolver las cenizas armoniosamente al agua o a la tierra, dejando atrás solo recuerdos y nueva vida.",
+      "values": {
+        "respect": "Respeto Eterno",
+        "sustainability": "100% Biodegradable",
+        "serenity": "Serenidad Emocional",
+        "design": "Estética Minimalista"
+      }
+    },
+    "featured": {
+      "tag": "NUESTROS MEMORIALES",
+      "title": "Honrar la Vida con Naturaleza",
+      "view": "Ver Urna"
+    },
+    "ritual": {
+      "tag": "LOS RITUALES",
+      "title": "Viajes por Tierra y Agua",
+      "water": {
+        "title": "Ceremonia en Agua",
+        "desc": "Especialmente alineada para despedidas en océanos o lagos. Se disuelve suavemente, devolviendo los elementos al origen de la vida."
+      },
+      "earth": {
+        "title": "Entierro en Tierra",
+        "desc": "Perfecto para bosques, jardines o cementerios naturales. Se integra con el suelo para impulsar un nuevo crecimiento natural."
+      }
+    },
+    "testimonials": {
+      "title": "Paz Compartida",
+      "t1": {
+        "quote": "La ceremonia con la Terra Urn en el bosque nos dio una sensación de cierre y conexión que no creíamos posible. Verdaderamente hermosa.",
+        "author": "Sarah M.",
+        "location": "Oregon, EE.UU."
+      },
+      "t2": {
+        "quote": "Ver la Aqua Urn disolverse suavemente en el mar fue pacífico y sereno. Se sintió exactamente como lo que ella habría querido.",
+        "author": "David K.",
+        "location": "Columbia Británica, Canadá"
+      }
+    },
+    "ceremonies": {
+      "tag": "HONRANDO LA VIDA",
+      "title": "Ceremonias de Liberación",
+      "subtitle": "Descubre cómo las urnas Kamibi se adaptan hermosamente a diferentes rituales, ofreciendo un regreso digno a la naturaleza.",
+      "waterTab": "Ceremonia en Agua",
+      "earthTab": "Entierro en Tierra",
+      "waterTitle": "Entierro en el Mar y Rituales de Agua",
+      "waterDesc": "Una despedida serena diseñada para océanos, ríos o lagos. La urna flota brevemente, dando a las familias un último momento de paz antes de descender con gracia para disolverse.",
+      "waterStep1": "Coloca las cenizas dentro de la bolsa hidrosoluble.",
+      "waterStep2": "Sella la urna con la tira adhesiva biodegradable.",
+      "waterStep3": "Sumerge suavemente. La disolución completa ocurre en 10-15 minutos sin dejar residuos.",
+      "waterSpec1": "100% Soluble en Agua y Sal",
+      "waterSpec2": "pH Neutro y Seguro para el Mar",
+      "waterSpec3": "Apto para Viajes Aéreos TSA",
+      "earthTitle": "Entierro en Bosques, Jardines y Tierra",
+      "earthDesc": "Un tributo terrenal diseñado para integrarse con el suelo. En pocas semanas, la urna se descompone, devolviendo los nutrientes a la tierra y fomentando el crecimiento de vegetación.",
+      "earthStep1": "Coloca las cenizas en la bolsa orgánica compostable.",
+      "earthStep2": "Asegura la tapa usando el sello de arcilla natural.",
+      "earthStep3": "Entierra en el suelo. Las semillas de flores silvestres brotarán creando un memorial vivo.",
+      "earthSpec1": "Composta en 3-5 Semanas",
+      "earthSpec2": "Semillas Silvestres Incluidas",
+      "earthSpec3": "Fibras Orgánicas 100% Naturales",
+      "compatible": "Memoriales Recomendados:"
+    },
+    "timeline": {
+      "tag": "LA ECOLOGÍA DEL RETORNO",
+      "title": "El Ciclo del Tributo",
+      "subtitle": "Un viaje paso a paso sobre cómo nuestras urnas biodegradables premium regresan a la naturaleza sin dejar huella ambiental.",
+      "step1Title": "1. Tránsito Seguro",
+      "step1Desc": "Hechas de celulosa ligera y fibras vegetales, todas las urnas Kamibi están aprobadas por la TSA para equipaje de mano en aeropuertos, permitiéndote viajar sin preocupaciones.",
+      "step2Title": "2. La Despedida",
+      "step2Desc": "Ya sea depositada en el agua o enterrada en un bosque tranquilo, la urna actúa como un punto focal de paz y reverencia para la familia.",
+      "step3Title": "3. Disolución Natural",
+      "step3Desc": "Sin plásticos, pegamentos químicos ni metales, la urna se desintegra orgánicamente. Las de agua en 15 minutos; las de tierra en unas 4 semanas.",
+      "step4Title": "4. Legado Vivo",
+      "step4Desc": "En entierros en tierra, flores silvestres brotan de la tarjeta de semillas integrada, transformando el lugar en un tributo vivo para las futuras generaciones."
+    },
+    "cta": {
+      "title": "Comienza un Viaje Consciente",
+      "subtitle": "Descubre nuestra colección de urnas biodegradables premium y sets para compartir.",
+      "button": "Ver Catálogo"
+    }
+  },
+  "store": {
+    "title": "Nuestra Colección Memorial",
+    "subtitle": "Elige un camino elegante y ecológico adaptado a su memoria.",
+    "filters": {
+      "all": "Todos los productos",
+      "water": "Entierro en agua",
+      "earth": "Entierro en tierra",
+      "sharing": "Sets para compartir"
+    },
+    "quickView": "Vista Rápida",
+    "addToCart": "Agregar al Carrito"
+  },
+  "product": {
+    "reviews": "Reseñas",
+    "rating": "Calificación",
+    "quantity": "Cantidad",
+    "addToCart": "Agregar al Carrito",
+    "adding": "Agregando...",
+    "added": "¡Agregado al Carrito!",
+    "tabs": {
+      "guide": "Guía de Uso",
+      "benefits": "Beneficios",
+      "whyUs": "Por qué Elegirnos"
+    },
+    "guide": {
+      "title": "Cómo Funciona",
+      "step1": {
+        "title": "Colocar Cenizas",
+        "desc": "Coloca las cenizas con cuidado en la bolsa interior biodegradable incluida en el kit."
+      },
+      "step2": {
+        "title": "Cerrar y Sellar",
+        "desc": "Cierra la urna firmemente usando la cinta de papel compostable y el sello de arcilla natural."
+      },
+      "step3": {
+        "title": "La Ceremonia",
+        "desc": "Sumerge en agua (se disuelve en minutos) o entierra en tierra (se biodegrada en semanas)."
+      }
+    },
+    "benefits": {
+      "title": "Respetuoso con la Tierra",
+      "b1_title": "100% Biodegradable",
+      "b1_desc": "Hecho de almidón orgánico, fibras naturales y tintes a base de vegetales.",
+      "b2_title": "Cumple Normas TSA",
+      "b2_desc": "Aprobado para equipaje de mano en aviones, permitiéndote viajar seguro.",
+      "b3_title": "Kit de Despedida Incluido",
+      "b3_desc": "Cada urna incluye bolsa biodegradable, cuerda natural y tarjeta de semillas.",
+      "b4_title": "Cero Contaminantes",
+      "b4_desc": "Materiales libres de químicos, metales y plásticos."
+    },
+    "whyUs": {
+      "title": "La Diferencia Kamibi",
+      "table": {
+        "feature": "Característica",
+        "kamibi": "Urnas Kamibi",
+        "traditional": "Urnas Tradicionales",
+        "f1": "Huella ambiental",
+        "f1_k": "Positiva (vuelve a tierra/agua)",
+        "f1_t": "Alta (metales, concreto, piedra)",
+        "f2": "Diseño estético",
+        "f2_k": "Contemporáneo y mínimo sereno",
+        "f2_t": "Pesado, sombrío, antiguo",
+        "f3": "Portabilidad y TSA",
+        "f3_k": "Ligero, apto para aeropuertos",
+        "f3_t": "Pesado, sujeto a demoras en rayos X",
+        "f4": "Precio justo",
+        "f4_k": "Transparente, premium y justo",
+        "f4_t": "Alto margen en funerarias tradicionales"
+      }
+    },
+    "reviewsSec": {
+      "title": "Palabras de Paz",
+      "write": "Escribir una reseña",
+      "submit": "Enviar Reseña",
+      "name": "Tu nombre",
+      "comment": "Comparte tu experiencia",
+      "stars": "Calificación"
+    },
+    "complements": {
+      "title": "Mini Urnas - Sets para Compartir",
+      "desc": "Comparte una porción pequeña y simbólica de las cenizas entre familiares cercanos y generaciones.",
+      "cta": "Agregar Set de Compartir"
+    },
+    "similar": {
+      "title": "Otros Caminos Memoriales"
+    }
+  },
+  "cart": {
+    "title": "Tu Selección",
+    "empty": "Tu carrito está vacío. Explora la colección para encontrar el memorial adecuado.",
+    "subtotal": "Subtotal",
+    "checkout": "Proceder al Pago",
+    "continue": "Seguir Comprando"
+  }
+}

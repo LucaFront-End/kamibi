@@ -27,9 +27,7 @@ export const products = [
       "TSA carry-on compliant for safe travel"
     ],
     images: [
-      "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800&auto=format&fit=crop", // Elegant sand background texture
-      "https://images.unsplash.com/photo-1604014237800-1c9102c219da?q=80&w=800&auto=format&fit=crop", // Close up clay details
-      "https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?q=80&w=800&auto=format&fit=crop"  // Forest floor roots
+      "/products/terra-urn.png"
     ],
     variants: ["Standard Leaf Sleeve", "Golden Ribbon Band", "Natural Clay Band"]
   },
@@ -59,8 +57,7 @@ export const products = [
       "TSA carry-on compliant for safe travel"
     ],
     images: [
-      "https://images.unsplash.com/photo-1544816155-12df9643f363?q=80&w=800&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1615529182904-14819c35db37?q=80&w=800&auto=format&fit=crop"
+      "/products/angel-urn.png"
     ],
     variants: ["Pure White Bow", "Silver Twine Ribbon"]
   },
@@ -90,8 +87,7 @@ export const products = [
       "TSA carry-on compliant for safe travel"
     ],
     images: [
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1505118380757-91f5f5632de0?q=80&w=800&auto=format&fit=crop"
+      "/products/aqua-urn.png"
     ],
     variants: ["Ocean Mint Trim", "Seafoam Green Trim"]
   },
@@ -121,8 +117,7 @@ export const products = [
       "TSA carry-on compliant for safe travel"
     ],
     images: [
-      "https://images.unsplash.com/photo-1463936575829-25148e1db1b8?q=80&w=800&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1490750967868-88aa4486c946?q=80&w=800&auto=format&fit=crop"
+      "/products/flore-urn.png"
     ],
     variants: ["Cornflower Blue Accent", "Lavender Petal Accent"]
   },
@@ -152,8 +147,7 @@ export const products = [
       "TSA carry-on compliant for safe travel"
     ],
     images: [
-      "https://images.unsplash.com/photo-1526047932273-341f2a7631f9?q=80&w=800&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=800&auto=format&fit=crop"
+      "/products/iris-urn.png"
     ],
     variants: ["Soft Rose Satin Band", "Natural Twine Ribbon"]
   },
@@ -183,8 +177,7 @@ export const products = [
       "TSA carry-on compliant for airport travel"
     ],
     images: [
-      "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?q=80&w=800&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1512909006721-3d6018887383?q=80&w=800&auto=format&fit=crop"
+      "/products/mini-urns.png"
     ],
     variants: ["Assorted Earth Tones", "All White Set"]
   }

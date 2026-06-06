@@ -11,12 +11,16 @@ export const CTASection = () => {
 
   return (
     <section className="cta-section">
-      {/* Background with subtle parallax */}
+      {/* Background video with dark overlay */}
       <div className="cta-bg-wrapper">
-        <img
-          src="https://images.unsplash.com/photo-1463936575829-25148e1db1b8?q=80&w=1920&auto=format&fit=crop"
-          alt="Tree leaf silhouette against deep orange sunset sky"
-          className="cta-bg-img"
+        <video
+          className="cta-bg-video"
+          src="/videos/cta-background.mp4"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
         />
         <div className="cta-bg-overlay"></div>
       </div>

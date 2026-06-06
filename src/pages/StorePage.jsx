@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from '../context/LanguageContext';
-import { products } from '../lib/productsData';
+import { useWixProducts } from '../hooks/useWixProducts';
 import { ProductCard } from '../components/ui/ProductCard';
 import { PageTransition } from '../components/layout/PageTransition';
 import { ScrollReveal } from '../components/ui/ScrollReveal';
@@ -12,12 +12,13 @@ export const StorePage = () => {
   const { t } = useTranslation();
   const location = useLocation();
   const [filter, setFilter] = useState('all');
+  const { products, loading, error } = useWixProducts();
 
   // Sync category filter with query params if any
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const cat = params.get('cat');
-    if (cat && ['all', 'water', 'earth', 'sharing'].includes(cat)) {
+    if (cat && ['all', 'water', 'earth'].includes(cat)) {
       setFilter(cat);
     } else {
       setFilter('all');
@@ -29,9 +30,8 @@ export const StorePage = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  const filteredProducts = products.filter(
-    (product) => filter === 'all' || product.category === filter
-  );
+  // For now, all filters show all products (until we have enough per category)
+  const filteredProducts = products;
 
   return (
     <PageTransition>
@@ -50,7 +50,7 @@ export const StorePage = () => {
         <section className="store-catalog container">
           {/* Filters Bar */}
           <div className="store-filters">
-            {['all', 'water', 'earth', 'sharing'].map((cat) => (
+            {['all', 'water', 'earth'].map((cat) => (
               <button
                 key={cat}
                 onClick={() => setFilter(cat)}
@@ -61,26 +61,51 @@ export const StorePage = () => {
             ))}
           </div>
 
-          {/* Grid Products list with smooth layout transition animations */}
-          <motion.div 
-            layout 
-            className="store-grid"
-          >
-            <AnimatePresence mode="popLayout">
-              {filteredProducts.map((product) => (
-                <motion.div
-                  layout
-                  key={product.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                >
-                  <ProductCard product={product} />
-                </motion.div>
+          {/* Loading State — Skeleton Cards */}
+          {loading && (
+            <div className="store-grid">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="skeleton-card">
+                  <div className="skeleton-image skeleton-pulse"></div>
+                  <div className="skeleton-info">
+                    <div className="skeleton-title skeleton-pulse"></div>
+                    <div className="skeleton-tagline skeleton-pulse"></div>
+                    <div className="skeleton-price skeleton-pulse"></div>
+                  </div>
+                </div>
               ))}
-            </AnimatePresence>
-          </motion.div>
+            </div>
+          )}
+
+          {/* Error State */}
+          {error && !loading && (
+            <div className="store-error">
+              <p className="text-body">⚠️ {error}</p>
+            </div>
+          )}
+
+          {/* Grid Products list with smooth layout transition animations */}
+          {!loading && !error && (
+            <motion.div 
+              layout 
+              className="store-grid"
+            >
+              <AnimatePresence mode="popLayout">
+                {filteredProducts.map((product) => (
+                  <motion.div
+                    layout
+                    key={product.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                  >
+                    <ProductCard product={product} />
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </motion.div>
+          )}
         </section>
       </div>
     </PageTransition>

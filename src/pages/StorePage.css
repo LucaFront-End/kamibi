@@ -1,5 +1,6 @@
 .store-page {
   padding-top: var(--nav-height);
+  padding-bottom: var(--space-4xl);
   background-color: var(--color-cream);
   min-height: 100vh;
 }
@@ -80,4 +81,72 @@
   .filter-btn {
     padding: 0.35rem 0.75rem;
   }
+}
+
+/* Loading Skeleton Cards */
+.skeleton-card {
+  border-radius: var(--radius-lg, 12px);
+  overflow: hidden;
+  background: var(--color-warm-white, #faf9f6);
+}
+
+.skeleton-image {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  background: linear-gradient(
+    110deg,
+    rgba(0, 0, 0, 0.04) 30%,
+    rgba(0, 0, 0, 0.08) 50%,
+    rgba(0, 0, 0, 0.04) 70%
+  );
+  background-size: 200% 100%;
+}
+
+.skeleton-info {
+  padding: 1.25rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.skeleton-title {
+  height: 16px;
+  width: 70%;
+  border-radius: 4px;
+}
+
+.skeleton-tagline {
+  height: 12px;
+  width: 90%;
+  border-radius: 4px;
+}
+
+.skeleton-price {
+  height: 14px;
+  width: 35%;
+  border-radius: 4px;
+  margin-top: 0.25rem;
+}
+
+.skeleton-pulse {
+  background: linear-gradient(
+    110deg,
+    rgba(0, 0, 0, 0.04) 30%,
+    rgba(0, 0, 0, 0.08) 50%,
+    rgba(0, 0, 0, 0.04) 70%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Error State */
+.store-error {
+  text-align: center;
+  padding: var(--space-3xl) 0;
+  color: var(--color-stone);
 }

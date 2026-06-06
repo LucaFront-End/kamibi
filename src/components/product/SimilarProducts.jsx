@@ -1,17 +1,20 @@
 import React from 'react';
 import { useTranslation } from '../../context/LanguageContext';
-import { products } from '../../lib/productsData';
+import { useWixProducts } from '../../hooks/useWixProducts';
 import { ProductCard } from '../ui/ProductCard';
 import { ScrollReveal } from '../ui/ScrollReveal';
 import './SimilarProducts.css';
 
 export const SimilarProducts = ({ currentId }) => {
   const { t } = useTranslation();
+  const { products } = useWixProducts();
 
   // Find 3 products that are similar and not the current one, excluding mini-urns
   const similarList = products
-    .filter((p) => p.id !== currentId && p.id !== 'mini-urns')
+    .filter((p) => p.id !== currentId && p.slug !== 'mini-urns')
     .slice(0, 3);
+
+  if (similarList.length === 0) return null;
 
   return (
     <div className="similar-products">

@@ -107,7 +107,9 @@
       "sharing": "Sharing sets"
     },
     "quickView": "Quick View",
-    "addToCart": "Add to Cart"
+    "addToCart": "Add to Cart",
+    "loading": "Loading products...",
+    "error": "Failed to load products. Please try again."
   },
   "product": {
     "reviews": "Reviews",

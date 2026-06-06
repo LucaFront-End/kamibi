@@ -15,6 +15,13 @@
   align-items: flex-start;
 }
 
+/* Sticky gallery column — stays visible while scrolling product details */
+.product-gallery-sticky {
+  position: sticky;
+  top: calc(var(--nav-height) + var(--space-lg));
+  align-self: flex-start;
+}
+
 .product-purchase-details {
   display: flex;
   flex-direction: column;
@@ -43,6 +50,43 @@
   line-height: 1.7;
   color: var(--color-stone);
   margin-bottom: var(--space-md);
+}
+
+/* Rich text description from Wix — style the HTML content */
+.product-description-html p {
+  margin-bottom: 0.75em;
+  line-height: 1.8;
+}
+
+.product-description-html p:last-child {
+  margin-bottom: 0;
+}
+
+.product-description-html strong,
+.product-description-html b {
+  font-weight: 600;
+  color: var(--color-charcoal);
+}
+
+.product-description-html ul,
+.product-description-html ol {
+  padding-left: 1.5em;
+  margin-bottom: 0.75em;
+}
+
+.product-description-html li {
+  margin-bottom: 0.35em;
+  list-style: disc;
+}
+
+.product-description-html a {
+  color: var(--color-gold);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.product-description-html a:hover {
+  color: var(--color-terracotta);
 }
 
 /* Customizer Card Layout */
@@ -371,6 +415,9 @@
     grid-template-columns: 1fr;
     gap: var(--space-2xl);
   }
+  .product-gallery-sticky {
+    position: static;
+  }
 }
 @media (max-width: 480px) {
   .product-purchase-actions {
@@ -380,4 +427,82 @@
   .quantity-adjuster {
     justify-content: center;
   }
+}
+
+/* ─── Sharing Set Card ──────────────────────────────────────────────────────── */
+.sharing-set-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
+  border: 1.5px solid var(--color-border, #e0dbd4);
+  border-radius: var(--radius-md, 10px);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: var(--color-warm-white, #faf8f5);
+  margin-top: var(--space-sm);
+}
+
+.sharing-set-card:hover {
+  border-color: var(--color-gold, #c4a97d);
+  background: rgba(196, 169, 125, 0.04);
+}
+
+.sharing-set-card.active {
+  border-color: var(--color-gold, #c4a97d);
+  background: rgba(196, 169, 125, 0.08);
+}
+
+.sharing-set-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.sharing-set-checkbox {
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  border-radius: 5px;
+  border: 1.5px solid var(--color-muted, #b5ad9e);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  background: transparent;
+}
+
+.sharing-set-checkbox.checked {
+  background: var(--color-gold, #c4a97d);
+  border-color: var(--color-gold, #c4a97d);
+  color: white;
+}
+
+.sharing-set-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sharing-set-title {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-charcoal);
+  letter-spacing: 0.01em;
+}
+
+.sharing-set-desc {
+  font-size: var(--text-xs) !important;
+  color: var(--color-muted) !important;
+  line-height: 1.4;
+}
+
+.sharing-set-price {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-gold, #c4a97d);
+  white-space: nowrap;
 }

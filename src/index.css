@@ -345,6 +345,22 @@ input, textarea, select {
   border-radius: var(--radius-md);
 }
 
+.skeleton-pulse {
+  background: linear-gradient(
+    110deg,
+    rgba(0, 0, 0, 0.04) 30%,
+    rgba(0, 0, 0, 0.08) 50%,
+    rgba(0, 0, 0, 0.04) 70%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
 /* ---------- Responsive ---------- */
 @media (max-width: 1200px) {
   :root {

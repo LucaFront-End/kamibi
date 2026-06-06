@@ -107,7 +107,9 @@
       "sharing": "Sets para compartir"
     },
     "quickView": "Vista Rápida",
-    "addToCart": "Agregar al Carrito"
+    "addToCart": "Agregar al Carrito",
+    "loading": "Cargando productos...",
+    "error": "Error al cargar productos. Intenta de nuevo."
   },
   "product": {
     "reviews": "Reseñas",

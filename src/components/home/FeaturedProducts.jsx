@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { useTranslation } from '../../context/LanguageContext';
-import { products } from '../../lib/productsData';
+import { useWixProducts } from '../../hooks/useWixProducts';
 import { ScrollReveal } from '../ui/ScrollReveal';
 import { useNavigate } from 'react-router-dom';
 import './FeaturedProducts.css';
@@ -9,9 +9,10 @@ export const FeaturedProducts = () => {
   const { t, locale } = useTranslation();
   const navigate = useNavigate();
   const carouselRef = useRef(null);
+  const { products, loading } = useWixProducts();
 
   // Filter main urns for featured section (excluding mini-urns for clean visual balance)
-  const mainUrns = products.filter((p) => p.id !== 'mini-urns');
+  const mainUrns = products.filter((p) => p.slug !== 'mini-urns');
 
   const scrollLeft = () => {
     if (carouselRef.current) {
@@ -24,6 +25,46 @@ export const FeaturedProducts = () => {
       carouselRef.current.scrollBy({ left: 320, behavior: 'smooth' });
     }
   };
+
+  // Don't render the section if still loading or no products
+  if (loading || mainUrns.length === 0) {
+    return (
+      <section className="featured-products section-padding">
+        <div className="container">
+          <div className="featured-header">
+            <div className="featured-title-block">
+              <ScrollReveal direction="up" className="text-label featured-tag">
+                {t('home.featured.tag')}
+              </ScrollReveal>
+              <ScrollReveal direction="up" delay={0.15}>
+                <h2 className="heading-section featured-title">
+                  {t('home.featured.title')}
+                </h2>
+              </ScrollReveal>
+            </div>
+          </div>
+          {loading && (
+            <div className="carousel-viewport">
+              <div className="carousel-container">
+                {[...Array(4)].map((_, i) => (
+                  <div key={i} className="featured-product-card" style={{ pointerEvents: 'none' }}>
+                    <div className="card-image-wrapper">
+                      <div className="skeleton-image skeleton-pulse" style={{ aspectRatio: '3/4', borderRadius: 'var(--radius-lg, 12px)' }}></div>
+                    </div>
+                    <div className="card-info">
+                      <div className="skeleton-title skeleton-pulse" style={{ height: '16px', width: '65%', borderRadius: '4px' }}></div>
+                      <div className="skeleton-tagline skeleton-pulse" style={{ height: '12px', width: '85%', borderRadius: '4px', marginTop: '6px' }}></div>
+                      <div className="skeleton-price skeleton-pulse" style={{ height: '14px', width: '30%', borderRadius: '4px', marginTop: '8px' }}></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="featured-products section-padding">

@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "sitemap": "node scripts/generate-sitemap.cjs",
+    "build:full": "tsc && vite build && node scripts/generate-sitemap.cjs",
     "preview": "vite preview"
   },
   "devDependencies": {

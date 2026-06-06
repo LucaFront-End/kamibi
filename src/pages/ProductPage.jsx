@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useTranslation } from '../context/LanguageContext';
 import { useCart } from '../context/CartContext';
-import { products } from '../lib/productsData';
+import { useWixProduct } from '../hooks/useWixProducts';
 import { ProductGallery } from '../components/product/ProductGallery';
 import { UsageGuide } from '../components/product/UsageGuide';
 import { BenefitsSection } from '../components/product/BenefitsSection';
@@ -18,16 +18,23 @@ import './ProductPage.css';
 export const ProductPage = () => {
   const { slug } = useParams();
   const { t, locale } = useTranslation();
-  const { addToCart } = useCart();
-  const [product, setProduct] = useState(null);
+  const { addToCart, isLoading: cartLoading } = useCart();
+  const { product, loading, error } = useWixProduct(slug);
+
+  // Fetch the mini-urns product for the sharing set option
+  const MINI_URNS_SLUG = 'mini-biodegradables-urn-set';
+  const { product: miniUrnsProduct } = useWixProduct(
+    slug !== MINI_URNS_SLUG ? MINI_URNS_SLUG : null
+  );
+
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('guide'); // 'guide' | 'benefits' | 'whyUs'
   const [isAdding, setIsAdding] = useState(false);
   const [addedSuccess, setAddedSuccess] = useState(false);
   const [showStickyBar, setShowStickyBar] = useState(false);
-  const [hasEngraving, setHasEngraving] = useState(false);
-  const [engravingText, setEngravingText] = useState('');
+  const [addSharingSet, setAddSharingSet] = useState(false);
+
 
   // Sync scroll detection for mobile sticky action bar
   useEffect(() => {
@@ -42,39 +49,73 @@ export const ProductPage = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Fetch product based on URL slug
+  // Reset state when product loads
   useEffect(() => {
-    const foundProduct = products.find((p) => p.slug === slug);
-    if (foundProduct) {
-      setProduct(foundProduct);
-      setSelectedVariant(foundProduct.variants ? foundProduct.variants[0] : null);
+    if (product) {
+      setSelectedVariant(product.variants && product.variants.length > 0 ? product.variants[0] : null);
       setQuantity(1);
-      setHasEngraving(false);
-      setEngravingText('');
+      setAddSharingSet(false);
     }
     window.scrollTo(0, 0);
-  }, [slug]);
+  }, [product]);
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (!product) return;
     setIsAdding(true);
     
-    // Simulate loading for premium microinteraction
-    setTimeout(() => {
-      // Append personalization options if enabled
-      const finalVariant = hasEngraving 
-        ? `${selectedVariant} (Engraving: "${engravingText}")` 
-        : selectedVariant;
+    try {
+      await addToCart(product, quantity, selectedVariant);
 
-      addToCart(product, quantity, finalVariant);
-      setIsAdding(false);
+      // Also add mini-urns sharing set if toggled
+      if (addSharingSet && miniUrnsProduct) {
+        // Use the first variant of the mini urns
+        const miniVariant = miniUrnsProduct.variants?.[0] || null;
+        await addToCart(miniUrnsProduct, 1, miniVariant);
+      }
+
       setAddedSuccess(true);
-      
-      setTimeout(() => {
-        setAddedSuccess(false);
-      }, 2000);
-    }, 1000);
+      setTimeout(() => setAddedSuccess(false), 2000);
+    } catch (err) {
+      console.error('Error adding to cart:', err);
+    } finally {
+      setIsAdding(false);
+    }
   };
+
+  // Loading state — skeleton that mimics the product layout
+  if (loading) {
+    return (
+      <div className="product-page" style={{ paddingTop: 'var(--nav-height, 80px)' }}>
+        <section className="product-showcase-section container">
+          <div className="product-showcase-grid">
+            <div>
+              <div className="skeleton-pulse" style={{ aspectRatio: '3/4', borderRadius: 'var(--radius-lg, 12px)', width: '100%' }}></div>
+            </div>
+            <div className="product-purchase-details" style={{ display: 'flex', flexDirection: 'column', gap: '1rem', paddingTop: '2rem' }}>
+              <div className="skeleton-pulse" style={{ height: '14px', width: '120px', borderRadius: '4px' }}></div>
+              <div className="skeleton-pulse" style={{ height: '32px', width: '70%', borderRadius: '4px' }}></div>
+              <div className="skeleton-pulse" style={{ height: '22px', width: '100px', borderRadius: '4px' }}></div>
+              <div className="skeleton-pulse" style={{ height: '14px', width: '100%', borderRadius: '4px', marginTop: '0.5rem' }}></div>
+              <div className="skeleton-pulse" style={{ height: '14px', width: '95%', borderRadius: '4px' }}></div>
+              <div className="skeleton-pulse" style={{ height: '14px', width: '80%', borderRadius: '4px' }}></div>
+              <div className="skeleton-pulse" style={{ height: '48px', width: '100%', borderRadius: '8px', marginTop: '1.5rem' }}></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="product-not-found container section-padding text-center">
+        <h2 className="heading-section">⚠️ Error loading product</h2>
+        <p className="text-body">{error}</p>
+        <Link to="/store" className="back-link">Return to Collection</Link>
+      </div>
+    );
+  }
 
   if (!product) {
     return (
@@ -92,7 +133,7 @@ export const ProductPage = () => {
         <section className="product-showcase-section container">
           <div className="product-showcase-grid">
             {/* Gallery Column */}
-            <ScrollReveal direction="right">
+            <ScrollReveal direction="right" className="product-gallery-sticky">
               <ProductGallery images={product.images} name={product.name} />
             </ScrollReveal>
 
@@ -106,12 +147,17 @@ export const ProductPage = () => {
               
               <span className="product-purchase-price">${product.price.toFixed(2)}</span>
               
-              <p className="product-purchase-desc text-body">
-                {locale === 'en' ? product.descriptionEn : product.description}
-              </p>
+              <div
+                className="product-purchase-desc text-body product-description-html"
+                dangerouslySetInnerHTML={{
+                  __html: locale === 'en'
+                    ? product.descriptionHtmlEn || product.descriptionEn
+                    : product.descriptionHtml || product.description
+                }}
+              />
 
               {/* Personalization & Customizer Card */}
-              {product.variants && (
+              {product.variants && product.variants.length > 0 && (
                 <div className="product-customizer-card">
                   <div className="customizer-header">
                     <span className="text-label customizer-badge">
@@ -119,8 +165,8 @@ export const ProductPage = () => {
                     </span>
                     <p className="customizer-subtitle text-body">
                       {locale === 'en' 
-                        ? 'Interchangeable sleeves, bands & custom engraving' 
-                        : 'Cenefas intercambiables, cintas y grabado personalizado'}
+                        ? 'Interchangeable sleeves & bands' 
+                        : 'Cenefas y cintas intercambiables'}
                     </p>
                   </div>
 
@@ -142,39 +188,42 @@ export const ProductPage = () => {
                     </div>
                   </div>
 
-                  {/* Custom Engraving Toggle */}
-                  <div className="engraving-customizer">
-                    <label className="engraving-checkbox-container">
-                      <input
-                        type="checkbox"
-                        checked={hasEngraving}
-                        onChange={(e) => setHasEngraving(e.target.checked)}
-                      />
-                      <span className="checkmark"></span>
-                      <span className="checkbox-text text-body">
-                        {locale === 'en' 
-                          ? 'Add Custom Memorial Engraving (+ $15.00)' 
-                          : 'Agregar Grabado Conmemorativo (+ $15.00)'}
-                      </span>
-                    </label>
 
-                    {/* Animated Text Input */}
-                    {hasEngraving && (
-                      <div className="engraving-input-wrapper">
-                        <input
-                          type="text"
-                          maxLength={25}
-                          value={engravingText}
-                          onChange={(e) => setEngravingText(e.target.value)}
-                          placeholder={locale === 'en' ? 'Enter initials, name or dates (e.g. A.D. 1954 - 2026)' : 'Escribe iniciales, nombre o fechas (ej. A.D. 1954 - 2026)'}
-                          className="engraving-text-input"
-                        />
-                        <span className="engraving-char-count text-label">
-                          {engravingText.length} / 25
-                        </span>
-                      </div>
-                    )}
+                </div>
+              )}
+
+              {/* Sharing Set Option — shown on all products except mini-urns itself */}
+              {product.slug !== MINI_URNS_SLUG && miniUrnsProduct && (
+                <div
+                  className={`sharing-set-card ${addSharingSet ? 'active' : ''}`}
+                  onClick={() => setAddSharingSet(!addSharingSet)}
+                  role="button"
+                  tabIndex={0}
+                >
+                  <div className="sharing-set-toggle">
+                    <div className={`sharing-set-checkbox ${addSharingSet ? 'checked' : ''}`}>
+                      {addSharingSet && (
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      )}
+                    </div>
+                    <div className="sharing-set-info">
+                      <span className="sharing-set-title">
+                        {locale === 'en'
+                          ? 'Add Sharing Set — 4 Mini Urns'
+                          : 'Agregar Set para Compartir — 4 Mini Urnas'}
+                      </span>
+                      <span className="sharing-set-desc text-body">
+                        {locale === 'en'
+                          ? 'Share portions with loved ones across the world'
+                          : 'Comparte porciones con seres queridos en cualquier lugar'}
+                      </span>
+                    </div>
                   </div>
+                  <span className="sharing-set-price">
+                    +${miniUrnsProduct.price?.toFixed(2)}
+                  </span>
                 </div>
               )}
 
@@ -200,7 +249,7 @@ export const ProductPage = () => {
                   variant="primary"
                   onClick={handleAddToCart}
                   className={`purchase-add-btn ${addedSuccess ? 'success' : ''}`}
-                  disabled={isAdding}
+                  disabled={isAdding || cartLoading}
                 >
                   {isAdding ? (
                     <span className="btn-spinner"></span>
@@ -218,16 +267,18 @@ export const ProductPage = () => {
               </div>
 
               {/* Bullet Features */}
-              <ul className="product-quick-bullets">
-                {(locale === 'en' ? product.featuresEn : product.features).map((feat, idx) => (
-                  <li key={idx}>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="bullet-check">
-                      <polyline points="20 6 9 17 4 12" />
-                    </svg>
-                    <span>{feat}</span>
-                  </li>
-                ))}
-              </ul>
+              {product.features && product.features.length > 0 && (
+                <ul className="product-quick-bullets">
+                  {(locale === 'en' ? product.featuresEn : product.features).map((feat, idx) => (
+                    <li key={idx}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="bullet-check">
+                        <polyline points="20 6 9 17 4 12" />
+                      </svg>
+                      <span>{feat}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </ScrollReveal>
           </div>
         </section>
@@ -272,7 +323,7 @@ export const ProductPage = () => {
         </section>
 
         {/* Sharing Set Showcase */}
-        {product.id !== 'mini-urns' && (
+        {product.slug !== MINI_URNS_SLUG && (
           <section className="product-complements-container container">
             <ComplementsSection />
           </section>
@@ -294,7 +345,7 @@ export const ProductPage = () => {
             <button
               onClick={handleAddToCart}
               className="sticky-purchase-btn"
-              disabled={isAdding}
+              disabled={isAdding || cartLoading}
             >
               {isAdding ? "..." : t('product.addToCart')}
             </button>

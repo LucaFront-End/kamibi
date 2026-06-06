@@ -72,9 +72,6 @@ export const Footer = () => {
               <li>
                 <Link to="/store?cat=earth">{t('store.filters.earth')}</Link>
               </li>
-              <li>
-                <Link to="/store?cat=sharing">{t('store.filters.sharing')}</Link>
-              </li>
             </ul>
           </ScrollReveal>
 

@@ -1,16 +1,33 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { createClient, OAuthStrategy, EMPTY_TOKENS } from '@wix/sdk';
 import { products } from '@wix/stores';
-import { currentCart } from '@wix/ecom';
+import { currentCart, orders } from '@wix/ecom';
 import { redirects } from '@wix/redirects';
 import { posts } from '@wix/blog';
 import { members } from '@wix/members';
 import { WIX_CLIENT_ID, TOKEN_KEY } from '../lib/wixClient';
 
+const MEMBER_FLAG = 'kamibi_is_member';
+
+// ─── Member session helpers ──────────────────────────────────────────────────
+/** Check if user has an active member session. */
+export function isMemberSession() {
+  if (typeof window === 'undefined') return false;
+  return localStorage.getItem(MEMBER_FLAG) === 'true';
+}
+
+/** Set/clear the member session flag. */
+export function setMemberFlag(isMember) {
+  if (typeof window === 'undefined') return;
+  if (isMember) {
+    localStorage.setItem(MEMBER_FLAG, 'true');
+  } else {
+    localStorage.removeItem(MEMBER_FLAG);
+    localStorage.removeItem(TOKEN_KEY);
+  }
+}
+
 // ─── Token storage (localStorage) ─────────────────────────────────────────────
-// Mirrors the reference project exactly.
-// Returns EMPTY_TOKENS (not undefined) when no valid tokens exist —
-// the Wix SDK requires EMPTY_TOKENS as the "no token" sentinel value.
 function createTokenStorage() {
   return {
     getTokens() {
@@ -30,6 +47,21 @@ function createTokenStorage() {
     },
     setTokens(tokens) {
       if (typeof window === 'undefined') return;
+      // Protect member tokens from being overwritten with visitor tokens
+      const isMember = localStorage.getItem(MEMBER_FLAG) === 'true';
+      if (isMember) {
+        const currentRaw = localStorage.getItem(TOKEN_KEY);
+        if (currentRaw) {
+          try {
+            const current = JSON.parse(currentRaw);
+            const incomingRefresh = tokens?.refreshToken?.value;
+            const currentRefresh = current?.refreshToken?.value;
+            if (currentRefresh && incomingRefresh && currentRefresh !== incomingRefresh) {
+              return; // Block visitor token overwrite
+            }
+          } catch {}
+        }
+      }
       try {
         localStorage.setItem(TOKEN_KEY, JSON.stringify(tokens));
       } catch {}
@@ -40,7 +72,7 @@ function createTokenStorage() {
 // ─── Build client ──────────────────────────────────────────────────────────────
 function buildWixClient() {
   return createClient({
-    modules: { products, currentCart, redirects, posts, members },
+    modules: { products, currentCart, orders, redirects, posts, members },
     auth: OAuthStrategy({
       clientId: WIX_CLIENT_ID,
       tokenStorage: createTokenStorage(),
@@ -49,29 +81,21 @@ function buildWixClient() {
 }
 
 // ─── Context ───────────────────────────────────────────────────────────────────
-// Default value is null — prevents a second client being created at module load.
-// The real client is created inside WixContextProvider via useState.
 export const WixContext = createContext(null);
 
 export const WixContextProvider = ({ children }) => {
-  // useState factory ensures exactly ONE client instance for the whole app
   const [wixClient] = useState(() => buildWixClient());
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
     const init = async () => {
-      try {
-        const tokens = wixClient.auth.getTokens();
-        // EMPTY_TOKENS has no accessToken value — generate visitor tokens
-        if (!tokens?.accessToken?.value) {
-          console.log('[Wix] Generating visitor tokens...');
+      const existing = localStorage.getItem(TOKEN_KEY);
+      if (!existing) {
+        try {
           await wixClient.auth.generateVisitorTokens();
-          console.log('[Wix] ✅ Visitor tokens ready');
-        } else {
-          console.log('[Wix] ✅ Existing tokens found');
+        } catch (err) {
+          console.error('[Wix] Failed to generate visitor tokens:', err);
         }
-      } catch (err) {
-        console.error('[Wix] Failed to generate visitor tokens:', err);
       }
       setIsReady(true);
     };

@@ -10,7 +10,7 @@ import './Navbar.css';
 export const Navbar = () => {
   const { t, locale, toggleLanguage } = useTranslation();
   const { getItemCount, setIsCartOpen } = useCart();
-  const { isLoggedIn, currentMember, login } = useMembers();
+  const { isLoggedIn, memberName, memberEmail } = useMembers();
   const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -132,13 +132,13 @@ export const Navbar = () => {
 
             {/* User Account Icon */}
             <button
-              onClick={() => isLoggedIn ? navigate('/mi-cuenta') : login()}
+              onClick={() => navigate('/mi-cuenta')}
               className="user-toggle desktop-only"
               aria-label="Account"
             >
-              {isLoggedIn && currentMember ? (
+              {isLoggedIn && memberName ? (
                 <span className="user-avatar-initial">
-                  {(currentMember?.profile?.nickname || currentMember?.loginEmail || '?')[0].toUpperCase()}
+                  {memberName[0].toUpperCase()}
                 </span>
               ) : (
                 <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">

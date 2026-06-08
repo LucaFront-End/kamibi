@@ -46,9 +46,11 @@ export const Navbar = () => {
     { name: locale === 'es' ? 'Nosotros' : 'About', path: '/nosotros' },
   ];
 
+  const isTransparentDark = (location.pathname === '/' || location.pathname === '/nosotros') && !isScrolled;
+
   return (
     <>
-      <header className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
+      <header className={`navbar ${isScrolled ? 'scrolled' : ''} ${isTransparentDark ? 'transparent-dark-bg' : ''}`}>
         <div className="navbar-container">
           {/* Left Navigation Links */}
           <nav className="nav-menu desktop-only">

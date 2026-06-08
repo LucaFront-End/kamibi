@@ -280,3 +280,51 @@
     padding-left: var(--space-md);
   }
 }
+
+/* Transparent navbar over dark background themes */
+.navbar.transparent-dark-bg .nav-link {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.navbar.transparent-dark-bg .nav-link:hover {
+  color: var(--color-gold);
+}
+
+.navbar.transparent-dark-bg .navbar-logo {
+  color: var(--color-warm-white);
+}
+
+.navbar.transparent-dark-bg .lang-switcher {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.navbar.transparent-dark-bg .lang-switcher:hover {
+  color: var(--color-warm-white);
+}
+
+.navbar.transparent-dark-bg .active-lang {
+  color: var(--color-warm-white);
+}
+
+.navbar.transparent-dark-bg .cart-toggle {
+  color: var(--color-warm-white);
+}
+
+.navbar.transparent-dark-bg .cart-toggle:hover {
+  color: var(--color-gold);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.navbar.transparent-dark-bg .user-toggle {
+  color: var(--color-warm-white);
+}
+
+.navbar.transparent-dark-bg .user-toggle:hover {
+  color: var(--color-gold);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.navbar.transparent-dark-bg .hamburger-line {
+  background-color: var(--color-warm-white);
+}
+

@@ -33,6 +33,29 @@
   color: var(--color-gold);
 }
 
+/* Amazon Trust Badge */
+.amazon-trust-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: linear-gradient(135deg, #FF9900 0%, #FF6B00 100%);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 30px;
+  box-shadow: 0 4px 14px rgba(255, 153, 0, 0.35);
+  margin-bottom: var(--space-xs);
+}
+
+.amazon-trust-badge svg {
+  flex-shrink: 0;
+  stroke: #fff;
+}
+
 .product-purchase-title {
   font-size: var(--text-5xl);
   color: var(--color-charcoal);

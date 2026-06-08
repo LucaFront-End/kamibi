@@ -32,6 +32,27 @@
   max-width: 500px;
 }
 
+.footer-contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  margin-top: var(--space-md);
+}
+
+.footer-contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--text-sm);
+  color: var(--color-stone);
+  text-decoration: none;
+  transition: color var(--duration-fast) ease;
+}
+
+a.footer-contact-link:hover {
+  color: var(--color-gold);
+}
+
 .footer-title {
   font-family: var(--font-body);
   font-size: var(--text-base);

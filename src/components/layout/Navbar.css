@@ -80,7 +80,7 @@
 }
 
 .navbar-logo-img {
-  height: 90px;
+  height: 60px;
   width: auto;
   object-fit: contain;
   transition: filter var(--duration-normal) var(--ease-out-expo);

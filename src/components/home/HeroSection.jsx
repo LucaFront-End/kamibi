@@ -96,7 +96,7 @@ export const HeroSection = () => {
               <button
                 key={theme.id}
                 onClick={() => setActiveTheme(theme.id)}
-                className={`ambient-btn text-label ${activeTheme === theme.id ? 'active' : ''}`}
+                className={`ambient-btn ${activeTheme === theme.id ? 'active' : ''}`}
               >
                 <span className={`ambient-dot dot-${theme.id}`}></span>
                 {locale === 'en' ? theme.labelEn : theme.labelEs}

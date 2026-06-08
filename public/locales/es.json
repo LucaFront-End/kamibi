@@ -260,5 +260,42 @@
       "desc": "Urnas biodegradables de diseño contemporáneo para un retorno digno y sereno.",
       "ctaBtn": "Ver Colección"
     }
+  },
+  "contact": {
+    "hero": {
+      "tag": "CONTACTO",
+      "title": "Estamos aquí para acompañarte",
+      "subtitle": "Si tenés alguna pregunta sobre nuestras urnas biodegradables, envíos, o deseas asesoramiento personalizado, no dudes en escribirnos."
+    },
+    "info": {
+      "title": "Canales Directos",
+      "phone": "Teléfono",
+      "location": "Ubicación",
+      "hours": "Horario de Atención",
+      "hoursValue": "Lunes a Viernes, 9:00 - 18:00 (EST)",
+      "email": "Correo Electrónico"
+    },
+    "form": {
+      "title": "Envíanos un Mensaje",
+      "name": "Nombre Completo",
+      "email": "Correo Electrónico",
+      "message": "Tu Mensaje",
+      "placeholderName": "Ej. Juan Pérez",
+      "placeholderEmail": "ejemplo@correo.com",
+      "placeholderMessage": "Escribí tu mensaje aquí...",
+      "submit": "Enviar Mensaje",
+      "sending": "Enviando...",
+      "success": "¡Mensaje enviado con éxito! Nos comunicaremos contigo a la brevedad.",
+      "error": "Hubo un error al enviar el mensaje. Por favor, intenta de nuevo."
+    },
+    "faq": {
+      "title": "Preguntas Frecuentes",
+      "q1": "¿Las urnas están permitidas en aviones?",
+      "a1": "Sí, todas nuestras urnas de celulosa y arcilla mineral están aprobadas por la TSA como equipaje de mano.",
+      "q2": "¿Cuánto tardan en disolverse?",
+      "a2": "Las urnas de agua se disuelven completamente entre 10 y 15 minutos. Las urnas de tierra se descomponen en el suelo en un período de 3 a 5 semanas.",
+      "q3": "¿Hacen envíos internacionales?",
+      "a3": "Sí, realizamos envíos a todo el mundo con empaques protegidos y ecológicos."
+    }
   }
 }

@@ -100,6 +100,7 @@ export const Footer = () => {
             <ul className="footer-links">
               <li><Link to="/nosotros">{locale === 'es' ? 'Nosotros' : 'About'}</Link></li>
               <li><Link to="/blog">{locale === 'es' ? 'Blog' : 'Blog'}</Link></li>
+              <li><Link to="/contacto">{locale === 'es' ? 'Contacto' : 'Contact'}</Link></li>
               <li><Link to="/mi-cuenta">{locale === 'es' ? 'Mi cuenta' : 'My account'}</Link></li>
             </ul>
           </ScrollReveal>

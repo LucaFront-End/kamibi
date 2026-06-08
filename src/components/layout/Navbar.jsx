@@ -44,9 +44,10 @@ export const Navbar = () => {
     { name: t('nav.shop'), path: '/store' },
     { name: locale === 'es' ? 'Blog' : 'Blog', path: '/blog' },
     { name: locale === 'es' ? 'Nosotros' : 'About', path: '/nosotros' },
+    { name: locale === 'es' ? 'Contacto' : 'Contact', path: '/contacto' },
   ];
 
-  const isTransparentDark = (location.pathname === '/' || location.pathname === '/nosotros') && !isScrolled;
+  const isTransparentDark = (location.pathname === '/' || location.pathname === '/nosotros' || location.pathname === '/contacto') && !isScrolled;
 
   return (
     <>

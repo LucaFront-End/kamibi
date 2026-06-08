@@ -14,6 +14,7 @@ import { BlogPage } from './pages/BlogPage';
 import { BlogPostPage } from './pages/BlogPostPage';
 import { AccountPage } from './pages/AccountPage';
 import { AboutPage } from './pages/AboutPage';
+import { ContactPage } from './pages/ContactPage';
 import './App.css';
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
                     <Route path="/blog/:slug" element={<BlogPostPage />} />
                     <Route path="/mi-cuenta" element={<AccountPage />} />
                     <Route path="/nosotros" element={<AboutPage />} />
+                    <Route path="/contacto" element={<ContactPage />} />
                   </Routes>
                 </main>
 

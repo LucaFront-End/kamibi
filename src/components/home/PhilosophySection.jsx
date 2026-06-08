@@ -122,8 +122,8 @@ export const PhilosophySection = () => {
             className="visual-wrapper"
           >
             <img
-              src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=800&auto=format&fit=crop"
-              alt="Close up of organic texture detailing"
+              src="/images/philosophy-hero.png"
+              alt="Urna biodegradable Kamibi sobre musgo en un bosque sereno"
               className="philosophy-img"
             />
             <motion.div

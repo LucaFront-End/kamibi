@@ -32,6 +32,13 @@ function stripHtml(html) {
  * Normalizes a Wix Stores product into the shape expected by the app components.
  * This maps the Wix API response fields to the internal product structure.
  */
+// Wix Collection ID → app category mapping
+const COLLECTION_CATEGORY_MAP = {
+  'f84954f0-2bce-3f7a-2c98-203577ac2a14': 'water',  // Agua
+  '82f0b8b7-6684-6b61-4c58-89a6d4265429': 'earth',  // Tierra
+  'e730e772-0355-ef09-12aa-a6fd3a61a6d5': 'minis',  // Mini
+};
+
 export function normalizeProduct(wixProduct) {
   const {
     _id,
@@ -45,6 +52,7 @@ export function normalizeProduct(wixProduct) {
     ribbon,
     productType,
     numericId,
+    collectionIds,
     variants: wixVariants,
   } = wixProduct;
 
@@ -63,12 +71,17 @@ export function normalizeProduct(wixProduct) {
     return '';
   }).filter(Boolean);
 
-  // Extract category from collections or use productType, or fall back to ribbon
-  // Since Wix doesn't have a "category" field natively, we use the ribbon or
-  // a custom field. Fallback to 'earth' if nothing found.
-  const categoryRaw = (ribbon || '').toLowerCase().trim();
-  const validCategories = ['water', 'earth'];
-  const category = validCategories.includes(categoryRaw) ? categoryRaw : 'earth';
+  // Derive category from Wix collectionIds (configured in Wix dashboard)
+  // Priority: first recognized collectionId wins; fallback to 'earth'
+  let category = 'earth';
+  if (collectionIds && collectionIds.length > 0) {
+    for (const id of collectionIds) {
+      if (COLLECTION_CATEGORY_MAP[id]) {
+        category = COLLECTION_CATEGORY_MAP[id];
+        break;
+      }
+    }
+  }
 
   // Extract variants from productOptions (e.g., "Sleeve / Band" choices)
   const variants = [];

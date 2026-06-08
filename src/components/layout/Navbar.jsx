@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from '../../context/LanguageContext';
 import { useCart } from '../../context/CartContext';
+import { useMembers } from '../../context/MembersContext';
 import { useMagnetic } from '../../hooks/useMagnetic';
 import { motion, AnimatePresence } from 'framer-motion';
 import './Navbar.css';
@@ -9,6 +10,8 @@ import './Navbar.css';
 export const Navbar = () => {
   const { t, locale, toggleLanguage } = useTranslation();
   const { getItemCount, setIsCartOpen } = useCart();
+  const { isLoggedIn, currentMember, login } = useMembers();
+  const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
@@ -39,6 +42,8 @@ export const Navbar = () => {
   const navLinks = [
     { name: t('nav.home'), path: '/' },
     { name: t('nav.shop'), path: '/store' },
+    { name: locale === 'es' ? 'Blog' : 'Blog', path: '/blog' },
+    { name: locale === 'es' ? 'Nosotros' : 'About', path: '/nosotros' },
   ];
 
   return (
@@ -125,6 +130,24 @@ export const Navbar = () => {
               </AnimatePresence>
             </button>
 
+            {/* User Account Icon */}
+            <button
+              onClick={() => isLoggedIn ? navigate('/mi-cuenta') : login()}
+              className="user-toggle desktop-only"
+              aria-label="Account"
+            >
+              {isLoggedIn && currentMember ? (
+                <span className="user-avatar-initial">
+                  {(currentMember?.profile?.nickname || currentMember?.loginEmail || '?')[0].toUpperCase()}
+                </span>
+              ) : (
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+              )}
+            </button>
+
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -149,7 +172,9 @@ export const Navbar = () => {
             className="mobile-overlay-menu"
           >
             <nav className="mobile-nav-links">
-              {navLinks.map((link, idx) => (
+              {[...navLinks,
+                { name: locale === 'es' ? 'Mi cuenta' : 'My account', path: '/mi-cuenta' }
+              ].map((link, idx) => (
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}

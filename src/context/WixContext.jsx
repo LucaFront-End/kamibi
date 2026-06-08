@@ -3,6 +3,8 @@ import { createClient, OAuthStrategy, EMPTY_TOKENS } from '@wix/sdk';
 import { products } from '@wix/stores';
 import { currentCart } from '@wix/ecom';
 import { redirects } from '@wix/redirects';
+import { posts } from '@wix/blog';
+import { members } from '@wix/members';
 import { WIX_CLIENT_ID, TOKEN_KEY } from '../lib/wixClient';
 
 // ─── Token storage (localStorage) ─────────────────────────────────────────────
@@ -38,7 +40,7 @@ function createTokenStorage() {
 // ─── Build client ──────────────────────────────────────────────────────────────
 function buildWixClient() {
   return createClient({
-    modules: { products, currentCart, redirects },
+    modules: { products, currentCart, redirects, posts, members },
     auth: OAuthStrategy({
       clientId: WIX_CLIENT_ID,
       tokenStorage: createTokenStorage(),

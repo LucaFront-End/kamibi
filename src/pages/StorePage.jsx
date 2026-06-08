@@ -18,7 +18,7 @@ export const StorePage = () => {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const cat = params.get('cat');
-    if (cat && ['all', 'water', 'earth'].includes(cat)) {
+    if (cat && ['all', 'water', 'earth', 'minis'].includes(cat)) {
       setFilter(cat);
     } else {
       setFilter('all');
@@ -30,8 +30,10 @@ export const StorePage = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  // For now, all filters show all products (until we have enough per category)
-  const filteredProducts = products;
+  // Filter by category (from Wix collectionIds)
+  const filteredProducts = filter === 'all'
+    ? products
+    : products.filter((p) => p.category === filter);
 
   return (
     <PageTransition>
@@ -50,7 +52,7 @@ export const StorePage = () => {
         <section className="store-catalog container">
           {/* Filters Bar */}
           <div className="store-filters">
-            {['all', 'water', 'earth'].map((cat) => (
+            {['all', 'water', 'earth', 'minis'].map((cat) => (
               <button
                 key={cat}
                 onClick={() => setFilter(cat)}

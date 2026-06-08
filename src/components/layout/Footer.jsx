@@ -6,7 +6,7 @@ import { ScrollReveal } from '../ui/ScrollReveal';
 import './Footer.css';
 
 export const Footer = () => {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const backToTopRef = useMagnetic(0.4);
 
   const handleBackToTop = () => {
@@ -72,16 +72,30 @@ export const Footer = () => {
               <li>
                 <Link to="/store?cat=earth">{t('store.filters.earth')}</Link>
               </li>
+              <li>
+                <Link to="/store?cat=minis">{t('store.filters.minis')}</Link>
+              </li>
             </ul>
           </ScrollReveal>
 
-          <ScrollReveal direction="up" delay={0.15} className="footer-col">
+          <ScrollReveal direction="up" delay={0.1} className="footer-col">
+            <span className="text-label footer-label">
+              {locale === 'es' ? 'Empresa' : 'Company'}
+            </span>
+            <ul className="footer-links">
+              <li><Link to="/nosotros">{locale === 'es' ? 'Nosotros' : 'About'}</Link></li>
+              <li><Link to="/blog">{locale === 'es' ? 'Blog' : 'Blog'}</Link></li>
+              <li><Link to="/mi-cuenta">{locale === 'es' ? 'Mi cuenta' : 'My account'}</Link></li>
+            </ul>
+          </ScrollReveal>
+
+          <ScrollReveal direction="up" delay={0.25} className="footer-col">
             <span className="text-label footer-label">Legal</span>
             <ul className="footer-links">
               <li><a href="#privacy">Privacy Policy</a></li>
               <li><a href="#terms">Terms of Service</a></li>
               <li><a href="#tsa">TSA Compliance Guide</a></li>
-              <li><a href="#shipping">Shipping & Returns</a></li>
+              <li><a href="#shipping">Shipping &amp; Returns</a></li>
             </ul>
           </ScrollReveal>
 

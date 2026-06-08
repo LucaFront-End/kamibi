@@ -153,6 +153,38 @@
   box-shadow: 0 2px 4px rgba(196, 133, 106, 0.3);
 }
 
+/* User account toggle */
+.user-toggle {
+  position: relative;
+  color: var(--color-charcoal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  transition: background-color var(--duration-fast) ease, color var(--duration-fast) ease;
+}
+
+.user-toggle:hover {
+  color: var(--color-gold);
+  background-color: var(--color-warm-white);
+}
+
+.user-avatar-initial {
+  width: 28px;
+  height: 28px;
+  background: var(--color-gold);
+  color: #fff;
+  border-radius: 50%;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 /* Mobile Toggler */
 .mobile-menu-toggle {
   display: none;

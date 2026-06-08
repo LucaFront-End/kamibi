@@ -54,8 +54,8 @@ export const RitualSection = () => {
           <ScrollReveal direction="left" className="ritual-card earth-panel">
             <div className="ritual-bg-wrapper">
               <img
-                src="https://images.unsplash.com/photo-1463936575829-25148e1db1b8?q=80&w=800&auto=format&fit=crop"
-                alt="Sunbeams filters through forest trees"
+                src="https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=800&auto=format&fit=crop"
+                alt="Sunlight filtering through a lush green forest"
                 className="ritual-bg-img"
               />
               <div className="ritual-card-overlay"></div>

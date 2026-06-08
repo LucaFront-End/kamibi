@@ -192,5 +192,73 @@
     "subtotal": "Subtotal",
     "checkout": "Proceder al Pago",
     "continue": "Seguir Comprando"
+  },
+  "about": {
+    "hero": {
+      "tag": "NUESTRA HISTORIA",
+      "title": "Nacimos para que\nel adiós sea natural",
+      "scrollHint": "Descubrí nuestra historia"
+    },
+    "manifesto": {
+      "text": "Creemos que la muerte no es un final. Es un regreso. Y ese regreso merece ser tan bello, tan cuidado y tan lleno de vida como todo lo que vino antes."
+    },
+    "stats": {
+      "biodegradable": "Biodegradable",
+      "plastics": "Plásticos",
+      "returnTime": "Semanas hasta volver a la tierra",
+      "newLife": "Nueva vida que florece"
+    },
+    "journey": {
+      "tag": "NUESTRO VIAJE",
+      "title": "Uniendo pasado, presente y futuro",
+      "t1Title": "2021 — El Origen",
+      "t1Text": "Kamibi nació de una pregunta simple: ¿por qué el homenaje de despedida debe dejar una huella de plástico o metal que tarda siglos en degradarse? Iniciamos la búsqueda de una alternativa limpia, digna y natural.",
+      "t2Title": "2022 — Alquimia Orgánica",
+      "t2Text": "Colaboramos con artesanos y especialistas en botánica para formular una celulosa vegetal y un sellador de arcilla mineral de origen 100% puro. Eliminamos por completo los pegamentos artificiales.",
+      "t3Title": "2023 — Primeros Diseños",
+      "t3Text": "Lanzamos nuestras primeras colecciones para agua (Aqua) y tierra (Terra), integrando tarjetas de semillas que permiten que las cenizas den paso a un memorial vivo de flores silvestres.",
+      "t4Title": "2024 — Ciclo de Retorno",
+      "t4Text": "Hoy acompañamos a miles de familias en todo el mundo en ceremonias respetuosas, expandiendo nuestra visión hacia un futuro donde toda despedida devuelva vida al planeta."
+    },
+    "cycle": {
+      "tag": "EL CICLO",
+      "title": "El viaje del tributo",
+      "c1Title": "1. Modelado Consciente",
+      "c1Desc": "Moldeado a mano con fibras de celulosa vegetal y arcilla natural pura.",
+      "c2Title": "2. La Despedida",
+      "c2Desc": "Un memorial elegante y biodegradable que actúa como foco de reverencia.",
+      "c3Title": "3. Disolución",
+      "c3Desc": "Se integra con los elementos de manera natural: minutos en agua, semanas en tierra.",
+      "c4Title": "4. Renacimiento",
+      "c4Desc": "Las semillas silvestres florecen, atrayendo vida local y purificando el suelo."
+    },
+    "founders": {
+      "tag": "NUESTRO TALLER",
+      "title": "El alma detrás de Kamibi",
+      "text1": "No hacemos simplemente urnas. Diseñamos transiciones. Cada pieza que sale de nuestro taller lleva consigo la promesa de que el amor no termina, sino que se transforma en aire, agua y tierra fértil.",
+      "text2": "Desde la selección de materias primas orgánicas hasta el empaque reciclable, cada decisión está guiada por la reverencia. Creemos que honrar a quienes amamos no debe comprometer la tierra que heredarán las próximas generaciones.",
+      "signature": "— El Equipo Kamibi"
+    },
+    "materials": {
+      "tag": "LOS MATERIALES",
+      "title": "Solo lo que la naturaleza puede reconocer",
+      "m1Title": "Fibra de Celulosa",
+      "m1Desc": "Estructura ligera y resistente de origen vegetal, 100% compostable.",
+      "m2Title": "Arcilla Natural",
+      "m2Desc": "Sello y estructura minerales de origen puro, sin aditivos químicos.",
+      "m3Title": "Semillas Silvestres",
+      "m3Desc": "Cada urna de tierra contiene semillas que florecen como memorial vivo.",
+      "m4Title": "Sin Plastificantes",
+      "m4Desc": "Pegamentos orgánicos y tintas naturales que se disuelven sin dejar rastro."
+    },
+    "testimonial": {
+      "quote": "«La muerte no es la extinción de la luz; es solo apagar la lámpara porque ha llegado el amanecer.»",
+      "author": "Rabindranath Tagore"
+    },
+    "cta": {
+      "title": "Creá un homenaje inolvidable",
+      "desc": "Urnas biodegradables de diseño contemporáneo para un retorno digno y sereno.",
+      "ctaBtn": "Ver Colección"
+    }
   }
 }

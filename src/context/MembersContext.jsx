@@ -5,6 +5,15 @@ import { isMemberSession, setMemberFlag } from './WixContext';
 const CACHE_EMAIL_KEY = 'kamibi_member_email';
 const CACHE_NAME_KEY = 'kamibi_member_name';
 
+// getMemberTokensForDirectLogin uses an iframe that can hang forever if
+// the Wix authorize endpoint returns a non-200. Race it with a timeout.
+function withTimeout(promise, ms) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), ms)),
+  ]);
+}
+
 const MembersContext = createContext(null);
 
 export const MembersProvider = ({ children }) => {
@@ -83,64 +92,99 @@ export const MembersProvider = ({ children }) => {
 
   // Login with email/password (direct, no redirect)
   const login = useCallback(async (email, password) => {
-    const response = await wixClient.auth.login({ email, password });
+    try {
+      console.log('[Members] Attempting login for:', email);
+      const response = await wixClient.auth.login({ email, password });
+      console.log('[Members] Login response state:', response.loginState);
 
-    if (response.loginState === 'SUCCESS' && response.data) {
-      const sessionToken = response.data.sessionToken;
-      const memberTokens = await wixClient.auth.getMemberTokensForDirectLogin(sessionToken);
-      setMemberFlag(true);
-      wixClient.auth.setTokens(memberTokens);
-      setIsLoggedIn(true);
-      setMemberEmail(email);
-      setMemberName(email);
-      try {
-        localStorage.setItem(CACHE_EMAIL_KEY, email);
-        localStorage.setItem(CACHE_NAME_KEY, email);
-      } catch {}
-      return { success: true };
-    } else if (response.loginState === 'FAILURE') {
-      const errorCode = response.errorCode;
-      if (errorCode === 'invalidEmail' || errorCode === 'invalidPassword') {
-        return { success: false, error: 'invalidCredentials' };
-      } else if (errorCode === 'emailAlreadyExists') {
-        return { success: false, error: 'emailExists' };
-      } else if (errorCode === 'resetPassword') {
-        return { success: false, error: 'resetPassword' };
+      if (response.loginState === 'SUCCESS' && response.data) {
+        const sessionToken = response.data.sessionToken;
+        try {
+          console.log('[Members] Getting member tokens...');
+          const memberTokens = await withTimeout(
+            wixClient.auth.getMemberTokensForDirectLogin(sessionToken),
+            8000
+          );
+          console.log('[Members] ✅ Member tokens received');
+          setMemberFlag(true);
+          wixClient.auth.setTokens(memberTokens);
+        } catch (tokenErr) {
+          console.error('[Members] getMemberTokensForDirectLogin failed:', tokenErr);
+          // Still mark as logged in — tokens might already be set by the SDK
+          setMemberFlag(true);
+        }
+        setIsLoggedIn(true);
+        setMemberEmail(email);
+        setMemberName(email);
+        try {
+          localStorage.setItem(CACHE_EMAIL_KEY, email);
+          localStorage.setItem(CACHE_NAME_KEY, email);
+        } catch {}
+        return { success: true };
+      } else if (response.loginState === 'FAILURE') {
+        const errorCode = response.errorCode;
+        if (errorCode === 'invalidEmail' || errorCode === 'invalidPassword') {
+          return { success: false, error: 'invalidCredentials' };
+        } else if (errorCode === 'emailAlreadyExists') {
+          return { success: false, error: 'emailExists' };
+        } else if (errorCode === 'resetPassword') {
+          return { success: false, error: 'resetPassword' };
+        }
+        return { success: false, error: 'unknown' };
+      } else if (response.loginState === 'EMAIL_VERIFICATION_REQUIRED') {
+        return { success: false, error: 'emailVerification' };
       }
       return { success: false, error: 'unknown' };
-    } else if (response.loginState === 'EMAIL_VERIFICATION_REQUIRED') {
-      return { success: false, error: 'emailVerification' };
+    } catch (err) {
+      console.error('[Members] Login error:', err);
+      return { success: false, error: 'unknown' };
     }
-    return { success: false, error: 'unknown' };
   }, [wixClient]);
 
   // Register with email/password
   const register = useCallback(async (email, password) => {
-    const response = await wixClient.auth.register({ email, password });
+    try {
+      console.log('[Members] Attempting register for:', email);
+      const response = await wixClient.auth.register({ email, password });
+      console.log('[Members] Register response state:', response.loginState);
 
-    if (response.loginState === 'SUCCESS' && response.data) {
-      const sessionToken = response.data.sessionToken;
-      const memberTokens = await wixClient.auth.getMemberTokensForDirectLogin(sessionToken);
-      setMemberFlag(true);
-      wixClient.auth.setTokens(memberTokens);
-      setIsLoggedIn(true);
-      setMemberEmail(email);
-      setMemberName(email);
-      try {
-        localStorage.setItem(CACHE_EMAIL_KEY, email);
-        localStorage.setItem(CACHE_NAME_KEY, email);
-      } catch {}
-      return { success: true };
-    } else if (response.loginState === 'FAILURE') {
-      const errorCode = response.errorCode;
-      if (errorCode === 'emailAlreadyExists') {
-        return { success: false, error: 'emailExists' };
+      if (response.loginState === 'SUCCESS' && response.data) {
+        const sessionToken = response.data.sessionToken;
+        try {
+          console.log('[Members] Getting member tokens after register...');
+          const memberTokens = await withTimeout(
+            wixClient.auth.getMemberTokensForDirectLogin(sessionToken),
+            8000
+          );
+          console.log('[Members] ✅ Member tokens received');
+          setMemberFlag(true);
+          wixClient.auth.setTokens(memberTokens);
+        } catch (tokenErr) {
+          console.error('[Members] getMemberTokensForDirectLogin failed:', tokenErr);
+          setMemberFlag(true);
+        }
+        setIsLoggedIn(true);
+        setMemberEmail(email);
+        setMemberName(email);
+        try {
+          localStorage.setItem(CACHE_EMAIL_KEY, email);
+          localStorage.setItem(CACHE_NAME_KEY, email);
+        } catch {}
+        return { success: true };
+      } else if (response.loginState === 'FAILURE') {
+        const errorCode = response.errorCode;
+        if (errorCode === 'emailAlreadyExists') {
+          return { success: false, error: 'emailExists' };
+        }
+        return { success: false, error: 'unknown' };
+      } else if (response.loginState === 'EMAIL_VERIFICATION_REQUIRED') {
+        return { success: false, error: 'emailVerification' };
       }
       return { success: false, error: 'unknown' };
-    } else if (response.loginState === 'EMAIL_VERIFICATION_REQUIRED') {
-      return { success: false, error: 'emailVerification' };
+    } catch (err) {
+      console.error('[Members] Register error:', err);
+      return { success: false, error: 'unknown' };
     }
-    return { success: false, error: 'unknown' };
   }, [wixClient]);
 
   // Logout

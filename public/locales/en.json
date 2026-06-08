@@ -192,5 +192,73 @@
     "subtotal": "Subtotal",
     "checkout": "Proceed to Checkout",
     "continue": "Continue Shopping"
+  },
+  "about": {
+    "hero": {
+      "tag": "OUR STORY",
+      "title": "Born so that\ngoodbye feels natural",
+      "scrollHint": "Discover our story"
+    },
+    "manifesto": {
+      "text": "We believe death is not an ending. It is a return. And that return deserves to be as beautiful, as careful, and as full of life as everything that came before."
+    },
+    "stats": {
+      "biodegradable": "Biodegradable",
+      "plastics": "Plastics",
+      "returnTime": "Weeks to return to earth",
+      "newLife": "New life that blooms"
+    },
+    "journey": {
+      "tag": "OUR JOURNEY",
+      "title": "Connecting past, present, and future",
+      "t1Title": "2021 — The Origin",
+      "t1Text": "Kamibi was born from a simple question: why should a farewell tribute leave a footprint of plastic or metal that takes centuries to degrade? We began the search for a clean, dignified, and natural alternative.",
+      "t2Title": "2022 — Organic Alchemy",
+      "t2Text": "We collaborated with artisans and botany specialists to formulate a plant cellulose and pure mineral clay sealant. We completely eliminated artificial glues.",
+      "t3Title": "2023 — First Designs",
+      "t3Text": "We launched our first collections for water (Aqua) and earth (Terra), integrating seed cards that allow ashes to give way to a living memorial of wildflowers.",
+      "t4Title": "2024 — Cycle of Return",
+      "t4Text": "Today we accompany thousands of families worldwide in respectful ceremonies, expanding our vision toward a future where every farewell returns life to the planet."
+    },
+    "cycle": {
+      "tag": "THE CYCLE",
+      "title": "The journey of tribute",
+      "c1Title": "1. Conscious Crafting",
+      "c1Desc": "Handcrafted from plant cellulose fibers and pure natural clay.",
+      "c2Title": "2. The Farewell",
+      "c2Desc": "An elegant, biodegradable memorial that acts as a focal point of reverence.",
+      "c3Title": "3. Dissolution",
+      "c3Desc": "Integrates with the elements naturally: minutes in water, weeks in earth.",
+      "c4Title": "4. Rebirth",
+      "c4Desc": "Wildflower seeds bloom, attracting local wildlife and purifying the soil."
+    },
+    "founders": {
+      "tag": "OUR WORKSPACE",
+      "title": "The soul behind Kamibi",
+      "text1": "We don't just make urns. We design transitions. Every piece that leaves our studio carries the promise that love doesn't end, but transforms into air, water, and fertile earth.",
+      "text2": "From selecting organic raw materials to our recyclable packaging, every decision is guided by reverence. We believe honoring those we love should not compromise the earth that future generations will inherit.",
+      "signature": "— The Kamibi Team"
+    },
+    "materials": {
+      "tag": "THE MATERIALS",
+      "title": "Only what the earth recognizes",
+      "m1Title": "Cellulose Fiber",
+      "m1Desc": "Lightweight, strong plant-based structure, 100% compostable.",
+      "m2Title": "Natural Clay",
+      "m2Desc": "Pure mineral seal and structure, no chemical additives.",
+      "m3Title": "Wild Seeds",
+      "m3Desc": "Each earth urn contains seeds that bloom as a living memorial in the soil.",
+      "m4Title": "Plasticizer-Free",
+      "m4Desc": "Organic glues and natural inks that dissolve without a trace."
+    },
+    "testimonial": {
+      "quote": "“Death is not extinguishing the light; it is only putting out the lamp because the dawn has come.”",
+      "author": "Rabindranath Tagore"
+    },
+    "cta": {
+      "title": "Create an unforgettable tribute",
+      "desc": "Contemporary biodegradable urns for a dignified and serene return.",
+      "ctaBtn": "View Collection"
+    }
   }
 }

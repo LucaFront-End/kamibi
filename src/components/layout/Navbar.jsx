@@ -79,8 +79,11 @@ export const Navbar = () => {
           {/* Centered Brand Logo */}
           <div className="navbar-logo-wrapper">
             <Link to="/" ref={logoRef} className="navbar-logo">
-              KAMIBI
-              <span className="logo-dot">.</span>
+              <img
+                src="/images/kamibi-logo-dark.png"
+                alt="Kamibi"
+                className="navbar-logo-img"
+              />
             </Link>
           </div>
 

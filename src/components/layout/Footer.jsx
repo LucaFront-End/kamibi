@@ -20,7 +20,11 @@ export const Footer = () => {
         <div className="footer-top">
           <ScrollReveal direction="up" className="footer-brand-info">
             <Link to="/" className="footer-logo">
-              KAMIBI<span className="logo-dot">.</span>
+              <img
+                src="/images/kamibi-logo-dark.png"
+                alt="Kamibi"
+                className="footer-logo-img"
+              />
             </Link>
             <p className="footer-quote">
               &ldquo;{t('home.philosophy.text1')}&rdquo;

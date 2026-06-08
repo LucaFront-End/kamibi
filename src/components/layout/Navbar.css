@@ -70,19 +70,20 @@
 }
 
 .navbar-logo {
-  font-family: var(--font-display);
-  font-size: var(--text-2xl);
-  font-weight: 500;
-  letter-spacing: 0.25em;
-  color: var(--color-charcoal);
   display: flex;
-  align-items: baseline;
-  transition: color var(--duration-fast) ease;
+  align-items: center;
+  transition: opacity var(--duration-fast) ease;
 }
 
-.logo-dot {
-  color: var(--color-gold);
-  font-family: var(--font-body);
+.navbar-logo:hover {
+  opacity: 0.75;
+}
+
+.navbar-logo-img {
+  height: 90px;
+  width: auto;
+  object-fit: contain;
+  transition: filter var(--duration-normal) var(--ease-out-expo);
 }
 
 /* Right Actions */
@@ -290,8 +291,8 @@
   color: var(--color-gold);
 }
 
-.navbar.transparent-dark-bg .navbar-logo {
-  color: var(--color-warm-white);
+.navbar.transparent-dark-bg .navbar-logo-img {
+  filter: invert(1) brightness(2);
 }
 
 .navbar.transparent-dark-bg .lang-switcher {

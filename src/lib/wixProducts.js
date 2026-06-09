@@ -39,10 +39,6 @@ const COLLECTION_CATEGORY_MAP = {
   'e730e772-0355-ef09-12aa-a6fd3a61a6d5': 'minis',  // Mini
 };
 
-// Priority order: minis > earth > water
-// When a product belongs to multiple collections, the higher-priority category wins.
-const CATEGORY_PRIORITY = { minis: 3, earth: 2, water: 1 };
-
 export function normalizeProduct(wixProduct) {
   const {
     _id,
@@ -75,19 +71,22 @@ export function normalizeProduct(wixProduct) {
     return '';
   }).filter(Boolean);
 
-  // Derive category from Wix collectionIds.
-  // A product can belong to multiple collections; highest priority wins.
-  let category = 'earth';
+  // Derive all categories from Wix collectionIds.
+  // A product can belong to multiple categories (e.g. both water and earth).
+  const categories = [];
   if (collectionIds && collectionIds.length > 0) {
-    let bestPriority = 0;
     for (const id of collectionIds) {
       const cat = COLLECTION_CATEGORY_MAP[id];
-      if (cat && (CATEGORY_PRIORITY[cat] || 0) > bestPriority) {
-        category = cat;
-        bestPriority = CATEGORY_PRIORITY[cat];
+      if (cat && !categories.includes(cat)) {
+        categories.push(cat);
       }
     }
   }
+  // Primary category for legacy usage (most specific wins)
+  const primaryCategory = categories.includes('minis') ? 'minis'
+    : categories.includes('earth') ? 'earth'
+    : categories.includes('water') ? 'water'
+    : 'earth';
 
   // Extract variants from productOptions (e.g., "Sleeve / Band" choices)
   const variants = [];
@@ -169,7 +168,8 @@ export function normalizeProduct(wixProduct) {
     name: name || 'Untitled Product',
     tagline,
     price: Number(price),
-    category,
+    category: primaryCategory,   // Primary category (most specific)
+    categories,                  // All matching categories
     colorName,
     colorHex,
     shortDescription,

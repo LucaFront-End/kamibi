@@ -39,10 +39,10 @@ export const StorePage = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  // Filter by category (from Wix collectionIds)
+  // Filter by category — uses categories array so a product can appear in multiple filters
   const filteredProducts = filter === 'all'
     ? products
-    : products.filter((p) => p.category === filter);
+    : products.filter((p) => (p.categories || [p.category]).includes(filter));
 
   return (
     <PageTransition>

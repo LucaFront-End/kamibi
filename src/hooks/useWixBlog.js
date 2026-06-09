@@ -29,7 +29,9 @@ export function useWixPosts(limit = 10) {
           setPosts(response.items || []);
         }
       } catch (err) {
-        console.error('[Blog] Error fetching posts:', err);
+        console.error('[Blog] Full error object:', JSON.stringify(err, null, 2));
+        console.error('[Blog] Error message:', err?.message);
+        console.error('[Blog] Error details:', err?.details);
         if (!cancelled) setError(err?.message || 'Could not load articles.');
       } finally {
         if (!cancelled) setLoading(false);

@@ -13,6 +13,16 @@ function formatDate(dateStr, locale) {
   );
 }
 
+// Converts wix:image://v1/{fileId}/... to wixstatic CDN URL
+function wixImageUrl(wixUri, width = 1200, height = 630) {
+  if (!wixUri || typeof wixUri !== 'string') return null;
+  if (wixUri.startsWith('http')) return wixUri;
+  const withoutProto = wixUri.replace('wix:image://v1/', '');
+  const fileId = withoutProto.split('/')[0].split('#')[0];
+  if (!fileId) return null;
+  return `https://static.wixstatic.com/media/${fileId}/v1/fill/w_${width},h_${height},al_c,q_85,usm_0.33_1.00_0.00/file.jpg`;
+}
+
 export const BlogPostPage = () => {
   const { slug } = useParams();
   const { locale } = useTranslation();
@@ -47,7 +57,7 @@ export const BlogPostPage = () => {
     );
   }
 
-  const coverUrl = post.media?.wixMedia?.image?.url || null;
+  const coverUrl = wixImageUrl(post.media?.wixMedia?.image, 1400, 600);
 
   return (
     <PageTransition>
@@ -69,7 +79,7 @@ export const BlogPostPage = () => {
           {/* Meta */}
           <header className="blog-post-header">
             <span className="text-label blog-post-date">
-              {formatDate(post._createdDate, locale)}
+              {formatDate(post.firstPublishedDate, locale)}
             </span>
             <h1 className="blog-post-title heading-display">{post.title}</h1>
             {post.excerpt && (

@@ -8,6 +8,24 @@ import { motion } from 'framer-motion';
 import { useSEO } from '../hooks/useSEO';
 import './BlogPage.css';
 
+/**
+ * Converts a Wix image URI like:
+ * "wix:image://v1/{fileId}/{filename}#originWidth=1280&originHeight=720"
+ * to a usable HTTPS URL:
+ * "https://static.wixstatic.com/media/{fileId}"
+ */
+function wixImageUrl(wixUri, width = 800, height = 450) {
+  if (!wixUri || typeof wixUri !== 'string') return null;
+  if (wixUri.startsWith('http')) return wixUri; // already a normal URL
+
+  // Format: wix:image://v1/{fileId}/{filename}#...
+  const withoutProto = wixUri.replace('wix:image://v1/', '');
+  const fileId = withoutProto.split('/')[0].split('#')[0];
+  if (!fileId) return null;
+
+  return `https://static.wixstatic.com/media/${fileId}/v1/fill/w_${width},h_${height},al_c,q_85,usm_0.33_1.00_0.00/file.jpg`;
+}
+
 function formatDate(dateStr, locale) {
   if (!dateStr) return '';
   return new Date(dateStr).toLocaleDateString(
@@ -27,16 +45,6 @@ export const BlogPage = () => {
     descEs:  'Descubre artículos sobre urnas biodegradables, entierros en agua, funerales ecológicos, recursos de cremación y memoriales sustentables en el blog de Kamibi Store.',
     locale,
   });
-
-  // DEBUG — log first post structure to identify correct field names
-  if (posts.length > 0) {
-    console.log('[Blog DEBUG] First post keys:', Object.keys(posts[0]));
-    console.log('[Blog DEBUG] First post media:', JSON.stringify(posts[0].media, null, 2));
-    console.log('[Blog DEBUG] First post coverImage:', JSON.stringify(posts[0].coverImage, null, 2));
-    console.log('[Blog DEBUG] First post title:', posts[0].title);
-    console.log('[Blog DEBUG] First post excerpt:', posts[0].excerpt);
-    console.log('[Blog DEBUG] Full first post:', JSON.stringify(posts[0], null, 2));
-  }
 
   return (
     <PageTransition>
@@ -89,9 +97,9 @@ export const BlogPage = () => {
                 <ScrollReveal direction="up" className="blog-card blog-card--featured">
                   <Link to={`/blog/${posts[0].slug}`} className="blog-card-link">
                     <div className="blog-card-img-wrapper">
-                      {posts[0].media?.wixMedia?.image?.url ? (
+                      {wixImageUrl(posts[0].media?.wixMedia?.image, 1200, 675) ? (
                         <img
-                          src={posts[0].media.wixMedia.image.url}
+                          src={wixImageUrl(posts[0].media.wixMedia.image, 1200, 675)}
                           alt={posts[0].title}
                           className="blog-card-img"
                         />
@@ -102,11 +110,11 @@ export const BlogPage = () => {
                     </div>
                     <div className="blog-card-body">
                       <span className="text-label blog-card-date">
-                        {formatDate(posts[0]._createdDate, locale)}
+                        {formatDate(posts[0].firstPublishedDate, locale)}
                       </span>
                       <h2 className="blog-card-title heading-section">{posts[0].title}</h2>
                       <p className="blog-card-excerpt text-body">
-                        {posts[0].excerpt || posts[0].paidContent?.slice(0, 120)}
+                        {posts[0].excerpt?.slice(0, 160)}
                       </p>
                       <span className="blog-card-readmore">
                         {locale === 'es' ? 'Leer artículo' : 'Read article'} →
@@ -129,9 +137,9 @@ export const BlogPage = () => {
                   >
                     <Link to={`/blog/${post.slug}`} className="blog-card-link">
                       <div className="blog-card-img-wrapper">
-                        {post.media?.wixMedia?.image?.url ? (
+                        {wixImageUrl(post.media?.wixMedia?.image, 800, 450) ? (
                           <img
-                            src={post.media.wixMedia.image.url}
+                            src={wixImageUrl(post.media.wixMedia.image, 800, 450)}
                             alt={post.title}
                             className="blog-card-img"
                           />
@@ -142,7 +150,7 @@ export const BlogPage = () => {
                       </div>
                       <div className="blog-card-body">
                         <span className="text-label blog-card-date">
-                          {formatDate(post._createdDate, locale)}
+                          {formatDate(post.firstPublishedDate, locale)}
                         </span>
                         <h3 className="blog-card-title">{post.title}</h3>
                         <span className="blog-card-readmore">

@@ -75,18 +75,27 @@
 
 /* ── Featured card ────────────────────────────────────────────────────────── */
 .blog-card--featured {
+  overflow: hidden;
+}
+
+/* The grid goes on the Link so image-wrapper and body are the two columns */
+.blog-card--featured .blog-card-link {
   display: grid;
   grid-template-columns: 1fr;
+  min-height: 340px;
 }
 
 .blog-card--featured .blog-card-img-wrapper {
-  height: 420px;
   position: relative;
   overflow: hidden;
+  min-height: 300px;
 }
 
 .blog-card--featured .blog-card-body {
   padding: var(--space-xl) var(--space-2xl);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .blog-card--featured .blog-card-title {
@@ -99,6 +108,7 @@
   color: var(--color-muted);
   max-width: 680px;
   margin-bottom: var(--space-md);
+  line-height: 1.7;
 }
 
 /* ── Secondary grid ───────────────────────────────────────────────────────── */
@@ -213,12 +223,11 @@
 }
 
 @media (min-width: 768px) {
-  .blog-card--featured {
+  .blog-card--featured .blog-card-link {
     grid-template-columns: 1fr 1fr;
   }
   .blog-card--featured .blog-card-img-wrapper {
-    height: 100%;
-    min-height: 400px;
+    min-height: 420px;
   }
 }
 

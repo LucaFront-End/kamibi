@@ -57,16 +57,20 @@ export const BlogPostPage = () => {
     );
   }
 
-  // DEBUG — log full post structure from getPostBySlug
+  // DEBUG — log full post structure
   if (post) {
     console.log('[Post DEBUG] Keys:', Object.keys(post));
     console.log('[Post DEBUG] media:', JSON.stringify(post.media, null, 2));
-    console.log('[Post DEBUG] content type:', typeof post.content, '| length:', post.content?.length);
-    console.log('[Post DEBUG] richContent:', JSON.stringify(post.richContent, null, 2)?.slice(0, 500));
-    console.log('[Post DEBUG] contentText:', post.contentText?.slice(0, 300));
+    console.log('[Post DEBUG] content snippet:', String(post.content || '').slice(0, 200));
+    console.log('[Post DEBUG] contentText snippet:', String(post.contentText || '').slice(0, 200));
+    console.log('[Post DEBUG] richContent keys:', post.richContent ? Object.keys(post.richContent) : 'none');
   }
 
   const coverUrl = wixImageUrl(post?.media?.wixMedia?.image, 1400, 600);
+
+  // Best available content to render
+  const htmlContent = post?.content || '';
+  const textContent = post?.contentText || post?.excerpt || '';
 
   return (
     <PageTransition>
@@ -98,11 +102,16 @@ export const BlogPostPage = () => {
 
           <div className="blog-post-divider" />
 
-          {/* Content rendered from Wix rich text */}
-          <div
-            className="blog-post-content text-body"
-            dangerouslySetInnerHTML={{ __html: post.content || post.richContent?.nodes?.map(n => n.textData?.text || '').join('') || '' }}
-          />
+          {/* Content */}
+          <div className="blog-post-content text-body">
+            {htmlContent ? (
+              <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
+            ) : textContent ? (
+              <p>{textContent}</p>
+            ) : (
+              <p style={{ opacity: 0.5 }}>{locale === 'es' ? 'Contenido no disponible.' : 'Content not available.'}</p>
+            )}
+          </div>
         </div>
       </article>
     </PageTransition>

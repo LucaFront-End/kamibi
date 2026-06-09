@@ -39,6 +39,10 @@ const COLLECTION_CATEGORY_MAP = {
   'e730e772-0355-ef09-12aa-a6fd3a61a6d5': 'minis',  // Mini
 };
 
+// Priority order: minis > earth > water
+// When a product belongs to multiple collections, the higher-priority category wins.
+const CATEGORY_PRIORITY = { minis: 3, earth: 2, water: 1 };
+
 export function normalizeProduct(wixProduct) {
   const {
     _id,
@@ -71,14 +75,16 @@ export function normalizeProduct(wixProduct) {
     return '';
   }).filter(Boolean);
 
-  // Derive category from Wix collectionIds (configured in Wix dashboard)
-  // Priority: first recognized collectionId wins; fallback to 'earth'
+  // Derive category from Wix collectionIds.
+  // A product can belong to multiple collections; highest priority wins.
   let category = 'earth';
   if (collectionIds && collectionIds.length > 0) {
+    let bestPriority = 0;
     for (const id of collectionIds) {
-      if (COLLECTION_CATEGORY_MAP[id]) {
-        category = COLLECTION_CATEGORY_MAP[id];
-        break;
+      const cat = COLLECTION_CATEGORY_MAP[id];
+      if (cat && (CATEGORY_PRIORITY[cat] || 0) > bestPriority) {
+        category = cat;
+        bestPriority = CATEGORY_PRIORITY[cat];
       }
     }
   }
@@ -189,15 +195,7 @@ export function normalizeProduct(wixProduct) {
 export async function fetchAllProducts(wixClient) {
   try {
     const result = await wixClient.products.queryProducts().find();
-    const items = result.items || [];
-
-    // DEBUG — imprime collectionIds de cada producto en la consola del browser
-    // Borrar cuando se confirmen los IDs correctos
-    items.forEach(p => {
-      console.log(`[Wix DEBUG] "${p.name}" → collectionIds:`, p.collectionIds);
-    });
-
-    return items.map(normalizeProduct);
+    return (result.items || []).map(normalizeProduct);
   } catch (error) {
     console.error('[Wix] Failed to fetch products:', error);
     const msg = error?.message

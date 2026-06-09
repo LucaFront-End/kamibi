@@ -25,6 +25,7 @@ export function useWixPosts(limit = 10) {
           .find();
 
         if (!cancelled) {
+          console.log('[Blog DEBUG] Raw posts:', JSON.stringify(response.items?.[0], null, 2));
           setPosts(response.items || []);
         }
       } catch (err) {

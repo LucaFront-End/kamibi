@@ -189,7 +189,15 @@ export function normalizeProduct(wixProduct) {
 export async function fetchAllProducts(wixClient) {
   try {
     const result = await wixClient.products.queryProducts().find();
-    return (result.items || []).map(normalizeProduct);
+    const items = result.items || [];
+
+    // DEBUG — imprime collectionIds de cada producto en la consola del browser
+    // Borrar cuando se confirmen los IDs correctos
+    items.forEach(p => {
+      console.log(`[Wix DEBUG] "${p.name}" → collectionIds:`, p.collectionIds);
+    });
+
+    return items.map(normalizeProduct);
   } catch (error) {
     console.error('[Wix] Failed to fetch products:', error);
     const msg = error?.message

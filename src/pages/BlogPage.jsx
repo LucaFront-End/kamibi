@@ -28,6 +28,16 @@ export const BlogPage = () => {
     locale,
   });
 
+  // DEBUG — log first post structure to identify correct field names
+  if (posts.length > 0) {
+    console.log('[Blog DEBUG] First post keys:', Object.keys(posts[0]));
+    console.log('[Blog DEBUG] First post media:', JSON.stringify(posts[0].media, null, 2));
+    console.log('[Blog DEBUG] First post coverImage:', JSON.stringify(posts[0].coverImage, null, 2));
+    console.log('[Blog DEBUG] First post title:', posts[0].title);
+    console.log('[Blog DEBUG] First post excerpt:', posts[0].excerpt);
+    console.log('[Blog DEBUG] Full first post:', JSON.stringify(posts[0], null, 2));
+  }
+
   return (
     <PageTransition>
       <div className="blog-page">

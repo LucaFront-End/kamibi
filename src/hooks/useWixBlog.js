@@ -22,16 +22,14 @@ export function useWixPosts(limit = 10) {
         const response = await wixClient.posts
           .queryPosts()
           .limit(limit)
-          .descending('_createdDate')
+          .descending('publishedDate')
           .find();
 
         if (!cancelled) {
           setPosts(response.items || []);
         }
       } catch (err) {
-        console.error('[Blog] Full error object:', JSON.stringify(err, null, 2));
-        console.error('[Blog] Error message:', err?.message);
-        console.error('[Blog] Error details:', err?.details);
+        console.error('[Blog] Error fetching posts:', err?.message);
         if (!cancelled) setError(err?.message || 'Could not load articles.');
       } finally {
         if (!cancelled) setLoading(false);

@@ -57,7 +57,16 @@ export const BlogPostPage = () => {
     );
   }
 
-  const coverUrl = wixImageUrl(post.media?.wixMedia?.image, 1400, 600);
+  // DEBUG — log full post structure from getPostBySlug
+  if (post) {
+    console.log('[Post DEBUG] Keys:', Object.keys(post));
+    console.log('[Post DEBUG] media:', JSON.stringify(post.media, null, 2));
+    console.log('[Post DEBUG] content type:', typeof post.content, '| length:', post.content?.length);
+    console.log('[Post DEBUG] richContent:', JSON.stringify(post.richContent, null, 2)?.slice(0, 500));
+    console.log('[Post DEBUG] contentText:', post.contentText?.slice(0, 300));
+  }
+
+  const coverUrl = wixImageUrl(post?.media?.wixMedia?.image, 1400, 600);
 
   return (
     <PageTransition>

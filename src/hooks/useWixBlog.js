@@ -62,11 +62,20 @@ export function useWixPost(slug) {
       setLoading(true);
       setError(null);
       try {
-        const response = await wixClient.posts.getPostBySlug(slug);
+        // Request full content with fieldsets
+        const response = await wixClient.posts.getPostBySlug(slug, {
+          fieldsets: ['CONTENT_TEXT', 'FULL'],
+        });
         if (!cancelled) setPost(response);
       } catch (err) {
-        console.error('[Blog] Error fetching post:', err);
-        if (!cancelled) setError(err?.message || 'Could not load article.');
+        // Try without fieldsets as fallback
+        try {
+          const response = await wixClient.posts.getPostBySlug(slug);
+          if (!cancelled) setPost(response);
+        } catch (err2) {
+          console.error('[Blog] Error fetching post:', err2?.message);
+          if (!cancelled) setError(err2?.message || 'Could not load article.');
+        }
       } finally {
         if (!cancelled) setLoading(false);
       }

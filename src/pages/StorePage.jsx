@@ -6,10 +6,19 @@ import { PageTransition } from '../components/layout/PageTransition';
 import { ScrollReveal } from '../components/ui/ScrollReveal';
 import { useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useSEO } from '../hooks/useSEO';
 import './StorePage.css';
 
 export const StorePage = () => {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
+
+  useSEO({
+    titleEn: 'Shop Biodegradable Urns | Water Burial, Earth Burial & Memorial Urns',
+    titleEs: 'Comprar Urnas Biodegradables | Urnas para Agua, Tierra y Memoriales',
+    descEn:  'Browse biodegradable urns, eco friendly urns, ash scattering urns, burial at sea urns, and sustainable funeral urns. Premium memorial products with free shipping across USA and Canada.',
+    descEs:  'Explora urnas biodegradables, urnas ecológicas, urnas para esparcir cenizas y entierros en el mar. Productos memoriales premium con envío gratis a USA y Canadá.',
+    locale,
+  });
   const location = useLocation();
   const [filter, setFilter] = useState('all');
   const { products, loading, error } = useWixProducts();

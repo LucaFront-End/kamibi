@@ -5,6 +5,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { PageTransition } from '../components/layout/PageTransition';
 import { MagneticButton } from '../components/ui/MagneticButton';
 import { ScrollReveal } from '../components/ui/ScrollReveal';
+import { useSEO } from '../hooks/useSEO';
 import './AboutPage.css';
 
 export const AboutPage = () => {
@@ -12,6 +13,14 @@ export const AboutPage = () => {
   const navigate = useNavigate();
   const heroRef = useRef(null);
   const cycleRef = useRef(null);
+
+  useSEO({
+    titleEn: 'About Kamibi Store | Eco Friendly Urns & Sustainable Memorial Products',
+    titleEs: 'Sobre Kamibi Store | Urnas Ecológicas y Productos Memoriales Sustentables',
+    descEn:  'Learn how Kamibi Store helps families honor loved ones through biodegradable urns, eco memorial products, burial at sea urns, and environmentally responsible memorial solutions.',
+    descEs:  'Conoce cómo Kamibi Store ayuda a las familias a honrar a sus seres queridos mediante urnas biodegradables, memoriales ecológicos y soluciones sustentables para despedidas significativas.',
+    locale,
+  });
 
   // Parallax effects for Hero
   const { scrollYProgress } = useScroll({

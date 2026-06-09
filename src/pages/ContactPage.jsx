@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { PageTransition } from '../components/layout/PageTransition';
 import { MagneticButton } from '../components/ui/MagneticButton';
 import { ScrollReveal } from '../components/ui/ScrollReveal';
+import { useSEO } from '../hooks/useSEO';
 import './ContactPage.css';
 
 export const ContactPage = () => {
@@ -13,6 +14,14 @@ export const ContactPage = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [focusedField, setFocusedField] = useState('');
   const [activeFaq, setActiveFaq] = useState(null);
+
+  useSEO({
+    titleEn: 'Contact Kamibi Store | Biodegradable Urns USA & Canada',
+    titleEs: 'Contacto Kamibi Store | Urnas Biodegradables USA y Canadá',
+    descEn:  'Contact Kamibi Store for questions about biodegradable urns, water burial urns, natural burial urns, shipping, memorial products, and eco-friendly funeral solutions.',
+    descEs:  'Contacta a Kamibi Store para obtener información sobre urnas biodegradables, entierros en agua o tierra, productos memoriales ecológicos y envíos en Estados Unidos y Canadá.',
+    locale,
+  });
 
   const faqs = [
     { q: t('contact.faq.q1'), a: t('contact.faq.a1') },

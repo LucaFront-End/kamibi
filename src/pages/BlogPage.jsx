@@ -5,6 +5,7 @@ import { useWixPosts } from '../hooks/useWixBlog';
 import { PageTransition } from '../components/layout/PageTransition';
 import { ScrollReveal } from '../components/ui/ScrollReveal';
 import { motion } from 'framer-motion';
+import { useSEO } from '../hooks/useSEO';
 import './BlogPage.css';
 
 function formatDate(dateStr, locale) {
@@ -18,6 +19,14 @@ function formatDate(dateStr, locale) {
 export const BlogPage = () => {
   const { t, locale } = useTranslation();
   const { posts, loading, error } = useWixPosts(20);
+
+  useSEO({
+    titleEn: 'Biodegradable Urn Resources & Green Funeral Guides | Kamibi Store Blog',
+    titleEs: 'Guías de Urnas Biodegradables y Funerales Ecológicos | Blog Kamibi Store',
+    descEn:  'Explore articles about biodegradable urns, water burials, natural burials, eco friendly funerals, cremation resources, and sustainable memorial ideas from Kamibi Store.',
+    descEs:  'Descubre artículos sobre urnas biodegradables, entierros en agua, funerales ecológicos, recursos de cremación y memoriales sustentables en el blog de Kamibi Store.',
+    locale,
+  });
 
   return (
     <PageTransition>

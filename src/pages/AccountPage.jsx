@@ -379,7 +379,7 @@ export const AccountPage = () => {
                         <div className="profile-field">
                           <span className="profile-field-label">{t('support')}</span>
                           <p className="profile-field-desc">{t('supportText')}</p>
-                          <a href="mailto:info@kamibi.com" className="profile-support-link">
+                          <a href="mailto:contact@kamibistore.com" className="profile-support-link">
                             {t('contactSupport')}
                           </a>
                         </div>

@@ -94,7 +94,7 @@ export const ContactPage = () => {
                 </a>
 
                 {/* Email Card */}
-                <a href="mailto:contacto@kamibi.com" className="contact-card">
+                <a href="mailto:contact@kamibistore.com" className="contact-card">
                   <div className="contact-card-icon">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                       <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
@@ -103,7 +103,7 @@ export const ContactPage = () => {
                   </div>
                   <div className="contact-card-details">
                     <span className="text-label card-label">{t('contact.info.email')}</span>
-                    <span className="card-value">contacto@kamibi.com</span>
+                    <span className="card-value">contact@kamibistore.com</span>
                   </div>
                 </a>
 

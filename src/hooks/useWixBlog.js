@@ -22,7 +22,6 @@ export function useWixPosts(limit = 10) {
         const response = await wixClient.posts
           .queryPosts()
           .limit(limit)
-          .descending('publishedDate')
           .find();
 
         if (!cancelled) {

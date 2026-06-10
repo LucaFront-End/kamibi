@@ -34,14 +34,16 @@ export const ProductCard = ({ product }) => {
             {t('store.quickView')}
           </button>
         </div>
-        <span className="product-card-badge text-label">
-          {t(`store.filters.${product.category}`)}
-        </span>
       </div>
 
       {/* Info Panel */}
       <div className="product-card-info">
-        <h3 className="product-card-name">{product.name}</h3>
+        <div className="product-card-header">
+          <h3 className="product-card-name">{product.name}</h3>
+          <span className="product-card-badge text-label">
+            {t(`store.filters.${product.category}`)}
+          </span>
+        </div>
         <p className="product-card-tagline">
           {locale === 'en' ? product.tagline : product.shortDescription.substring(0, 60) + '...'}
         </p>

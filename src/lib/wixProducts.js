@@ -71,6 +71,7 @@ export function normalizeProduct(wixProduct) {
     return '';
   }).filter(Boolean);
 
+
   // Derive all categories from Wix collectionIds.
   // A product can belong to multiple categories (e.g. both water and earth).
   const categories = [];

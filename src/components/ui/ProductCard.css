@@ -20,7 +20,7 @@
   position: relative;
   width: 100%;
   aspect-ratio: 1;
-  background-color: transparent;
+  background-color: var(--color-cream);
   overflow: hidden;
 }
 

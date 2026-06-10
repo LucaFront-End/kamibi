@@ -29,6 +29,13 @@ export const ProductCard = ({ product }) => {
           className="product-card-img"
           loading="lazy"
         />
+        {/* Category badge — top-left overlay on the image */}
+        <span className="product-card-badge text-label">
+          {(product.categories && product.categories.length > 0
+            ? product.categories
+            : [product.category]
+          ).map(cat => t(`store.filters.${cat}`)).join(' / ')}
+        </span>
         <div className="product-card-hover-actions">
           <button className="product-card-quickview text-label">
             {t('store.quickView')}
@@ -38,15 +45,7 @@ export const ProductCard = ({ product }) => {
 
       {/* Info Panel */}
       <div className="product-card-info">
-        <div className="product-card-header">
-          <h3 className="product-card-name">{product.name}</h3>
-          <span className="product-card-badge text-label">
-            {(product.categories && product.categories.length > 0
-              ? product.categories
-              : [product.category]
-            ).map(cat => t(`store.filters.${cat}`)).join(' / ')}
-          </span>
-        </div>
+        <h3 className="product-card-name">{product.name}</h3>
         <p className="product-card-tagline">
           {locale === 'en' ? product.tagline : product.shortDescription.substring(0, 60) + '...'}
         </p>

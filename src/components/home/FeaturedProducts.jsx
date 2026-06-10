@@ -119,7 +119,10 @@ export const FeaturedProducts = () => {
                   </div>
                   {/* Category tag bubble */}
                   <span className="product-category-badge text-label">
-                    {t(`store.filters.${product.category}`)}
+                    {(product.categories && product.categories.length > 0
+                      ? product.categories
+                      : [product.category]
+                    ).map(cat => t(`store.filters.${cat}`)).join(' / ')}
                   </span>
                 </div>
 

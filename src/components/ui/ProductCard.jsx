@@ -41,7 +41,10 @@ export const ProductCard = ({ product }) => {
         <div className="product-card-header">
           <h3 className="product-card-name">{product.name}</h3>
           <span className="product-card-badge text-label">
-            {t(`store.filters.${product.category}`)}
+            {(product.categories && product.categories.length > 0
+              ? product.categories
+              : [product.category]
+            ).map(cat => t(`store.filters.${cat}`)).join(' / ')}
           </span>
         </div>
         <p className="product-card-tagline">

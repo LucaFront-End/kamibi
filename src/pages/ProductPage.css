@@ -186,6 +186,68 @@
   color: var(--color-warm-white);
 }
 
+/* Image-based swatch variant (when Wix choice has a linked image) */
+.swatch-btn.has-variant-img {
+  padding: 4px;
+  background-color: var(--color-warm-white);
+  border-radius: var(--radius-md);
+  min-width: 80px;
+}
+
+.swatch-btn.has-variant-img.active {
+  border-color: var(--color-gold);
+  background-color: var(--color-warm-white);
+  box-shadow: 0 0 0 2px var(--color-gold);
+}
+
+.swatch-img-preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.swatch-thumb {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: calc(var(--radius-md) - 2px);
+  display: block;
+  transition: transform var(--duration-fast) ease;
+}
+
+.swatch-btn.has-variant-img:hover .swatch-thumb {
+  transform: scale(1.04);
+}
+
+.swatch-label {
+  font-family: var(--font-body);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-stone);
+  white-space: nowrap;
+  max-width: 70px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.swatch-btn.has-variant-img.active .swatch-label {
+  color: var(--color-gold);
+  font-weight: 600;
+}
+
+/* Selected variant name shown inline after the label */
+.option-selected-label {
+  color: var(--color-gold);
+  font-style: italic;
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 600;
+  font-size: var(--text-xs);
+}
+
 /* Engraving Customizer */
 .engraving-customizer {
   border-top: 1px dashed rgba(232, 222, 209, 0.8);

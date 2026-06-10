@@ -1,9 +1,16 @@
 import React, { useState } from 'react';
 import './ProductGallery.css';
 
-export const ProductGallery = ({ images, name }) => {
-  const [activeIdx, setActiveIdx] = useState(0);
+export const ProductGallery = ({ images, name, activeIdx: externalIdx, onActiveIdxChange }) => {
+  const [internalIdx, setInternalIdx] = useState(0);
   const [zoomStyle, setZoomStyle] = useState({ display: 'none' });
+
+  // Support both controlled (parent drives) and uncontrolled (internal state) modes
+  const isControlled = externalIdx !== undefined && onActiveIdxChange !== undefined;
+  const activeIdx = isControlled ? externalIdx : internalIdx;
+  const setActiveIdx = isControlled
+    ? onActiveIdxChange
+    : setInternalIdx;
 
   // Hover zoom lens logic
   const handleMouseMove = (e) => {

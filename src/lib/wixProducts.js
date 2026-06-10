@@ -90,16 +90,28 @@ export function normalizeProduct(wixProduct) {
     : 'earth';
 
   // Extract variants from productOptions (e.g., "Sleeve / Band" choices)
+  // variantObjects: [{label, image}] — each choice with its associated image (if set in Wix)
+  // variants: string[] — backward-compat text labels
   const variants = [];
+  const variantObjects = [];
   if (productOptions && productOptions.length > 0) {
     // Use the first option's choices as variants
     const firstOption = productOptions[0];
     if (firstOption.choices) {
       firstOption.choices.forEach((choice) => {
-        variants.push(choice.description || choice.value);
+        const label = choice.description || choice.value || '';
+        // Wix stores per-choice media in choice.media (set via "Connect images" in dashboard)
+        const choiceImage =
+          choice.media?.mainMedia?.image?.url ||
+          choice.media?.items?.[0]?.image?.url ||
+          choice.media?.mainMedia?.thumbnail?.url ||
+          null;
+        variants.push(label);
+        variantObjects.push({ label, image: choiceImage });
       });
     }
   }
+
 
   // Extract color info from additionalInfoSections or productOptions
   let colorName = '';
@@ -182,7 +194,8 @@ export function normalizeProduct(wixProduct) {
     features,
     featuresEn,
     images: images.length > 0 ? images : ['/products/placeholder.png'],
-    variants,                               // Text labels for UI swatches
+    variants,                               // Text labels for UI swatches (backward-compat)
+    variantObjects,                         // [{label, image}] — with per-variant Wix images
     wixVariants: wixVariants || [],         // Raw Wix variant objects with real UUIDs
     // Keep original Wix ID for cart operations
     _wixId: _id,

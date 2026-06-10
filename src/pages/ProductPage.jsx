@@ -34,6 +34,8 @@ export const ProductPage = () => {
   const [addedSuccess, setAddedSuccess] = useState(false);
   const [showStickyBar, setShowStickyBar] = useState(false);
   const [addSharingSet, setAddSharingSet] = useState(false);
+  // Controls which image is shown in the gallery (syncs with variant selection)
+  const [galleryActiveIdx, setGalleryActiveIdx] = useState(0);
 
 
   // Sync scroll detection for mobile sticky action bar
@@ -52,7 +54,16 @@ export const ProductPage = () => {
   // Reset state when product loads
   useEffect(() => {
     if (product) {
-      setSelectedVariant(product.variants && product.variants.length > 0 ? product.variants[0] : null);
+      // Pre-select first variant
+      const firstVariant = product.variantObjects?.[0] ?? (product.variants?.[0] ? { label: product.variants[0], image: null } : null);
+      setSelectedVariant(firstVariant ? firstVariant.label : null);
+      // If first variant has an image, jump to it; otherwise start at 0
+      if (firstVariant?.image) {
+        const idx = product.images.indexOf(firstVariant.image);
+        setGalleryActiveIdx(idx !== -1 ? idx : 0);
+      } else {
+        setGalleryActiveIdx(0);
+      }
       setQuantity(1);
       setAddSharingSet(false);
     }
@@ -134,7 +145,12 @@ export const ProductPage = () => {
           <div className="product-showcase-grid">
             {/* Gallery Column */}
             <ScrollReveal direction="right" className="product-gallery-sticky">
-              <ProductGallery images={product.images} name={product.name} />
+              <ProductGallery
+                images={product.images}
+                name={product.name}
+                activeIdx={galleryActiveIdx}
+                onActiveIdxChange={setGalleryActiveIdx}
+              />
             </ScrollReveal>
 
             {/* Product Details & Selection Column */}
@@ -183,17 +199,38 @@ export const ProductPage = () => {
                   <div className="product-purchase-options">
                     <span className="text-label option-label">
                       {locale === 'en' ? 'Select Sleeve / Band Design' : 'Seleccionar Diseño de Cenefa / Cinta'}
+                      {selectedVariant && (
+                        <span className="option-selected-label"> — {selectedVariant}</span>
+                      )}
                     </span>
                     <div className="variant-swatches">
-                      {product.variants.map((v) => (
-                        <button
-                          key={v}
-                          onClick={() => setSelectedVariant(v)}
-                          className={`swatch-btn ${selectedVariant === v ? 'active' : ''}`}
-                        >
-                          {v}
-                        </button>
-                      ))}
+                      {(product.variantObjects || product.variants.map(v => ({ label: v, image: null }))).map((v) => {
+                        const hasImg = Boolean(v.image);
+                        return (
+                          <button
+                            key={v.label}
+                            onClick={() => {
+                              setSelectedVariant(v.label);
+                              // Jump gallery to this variant's image if available
+                              if (v.image) {
+                                const idx = product.images.indexOf(v.image);
+                                setGalleryActiveIdx(idx !== -1 ? idx : 0);
+                              }
+                            }}
+                            className={`swatch-btn ${selectedVariant === v.label ? 'active' : ''} ${hasImg ? 'has-variant-img' : ''}`}
+                            title={hasImg ? (locale === 'en' ? 'View image' : 'Ver imagen') : v.label}
+                          >
+                            {hasImg ? (
+                              <span className="swatch-img-preview">
+                                <img src={v.image} alt={v.label} className="swatch-thumb" />
+                                <span className="swatch-label">{v.label}</span>
+                              </span>
+                            ) : (
+                              v.label
+                            )}
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
 

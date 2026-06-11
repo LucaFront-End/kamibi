@@ -44,6 +44,8 @@ export function useWixPosts(limit = 10) {
 
 /**
  * Fetches a single blog post by slug.
+ * Tries getPostBySlug first (with RICH_CONTENT fieldset for full content),
+ * then falls back to queryPosts().eq('slug', slug) if not found.
  */
 export function useWixPost(slug) {
   const { wixClient, isReady } = useWixClient();
@@ -61,13 +63,47 @@ export function useWixPost(slug) {
     async function fetchPost() {
       setLoading(true);
       setError(null);
+      console.log('[Blog] Fetching post for slug:', slug);
+
+      // Strategy 1: getPostBySlug with RICH_CONTENT fieldset
       try {
-        const response = await wixClient.posts.getPostBySlug(slug);
-        // getPostBySlug returns { post: {...} }, not the post directly
+        const response = await wixClient.posts.getPostBySlug(slug, {
+          fieldsets: ['RICH_CONTENT'],
+        });
+        console.log('[Blog] getPostBySlug raw response:', response);
+
+        // Wix returns { post: {...} } or just the post object directly depending on SDK version
         const postData = response?.post || response;
-        if (!cancelled) setPost(postData);
+
+        if (postData && (postData._id || postData.id || postData.title)) {
+          console.log('[Blog] Post found via getPostBySlug:', postData.title || postData._id);
+          if (!cancelled) setPost(postData);
+          return;
+        }
+        console.warn('[Blog] getPostBySlug returned empty/null, trying queryPosts fallback...');
       } catch (err) {
-        console.error('[Blog] Error fetching post:', err?.message);
+        console.warn('[Blog] getPostBySlug threw error:', err?.message, '— trying queryPosts fallback...');
+      }
+
+      // Strategy 2: queryPosts fallback (handles cases where slug lookup differs)
+      try {
+        const queryRes = await wixClient.posts
+          .queryPosts({ fieldsets: ['RICH_CONTENT'] })
+          .eq('slug', slug)
+          .limit(1)
+          .find();
+
+        console.log('[Blog] queryPosts fallback result count:', queryRes.items?.length);
+
+        if (queryRes.items && queryRes.items.length > 0) {
+          console.log('[Blog] Post found via queryPosts:', queryRes.items[0].title);
+          if (!cancelled) setPost(queryRes.items[0]);
+        } else {
+          console.error('[Blog] Post not found for slug via either method:', slug);
+          if (!cancelled) setError('Post not found');
+        }
+      } catch (err) {
+        console.error('[Blog] queryPosts fallback also failed:', err?.message);
         if (!cancelled) setError(err?.message || 'Could not load article.');
       } finally {
         if (!cancelled) setLoading(false);
@@ -80,3 +116,4 @@ export function useWixPost(slug) {
 
   return { post, loading, error };
 }
+

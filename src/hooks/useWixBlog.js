@@ -65,47 +65,51 @@ export function useWixPost(slug) {
       setError(null);
       console.log('[Blog] Fetching post for slug:', slug);
 
-      // Strategy 1: getPostBySlug with RICH_CONTENT fieldset
       try {
-        const response = await wixClient.posts.getPostBySlug(slug, {
-          fieldsets: ['RICH_CONTENT'],
-        });
-        console.log('[Blog] getPostBySlug raw response:', response);
-
-        // Wix returns { post: {...} } or just the post object directly depending on SDK version
-        const postData = response?.post || response;
-
-        if (postData && (postData._id || postData.id || postData.title)) {
-          console.log('[Blog] Post found via getPostBySlug:', postData.title || postData._id);
-          if (!cancelled) setPost(postData);
-          return;
+        // Strategy 1: getPostBySlug with RICH_CONTENT fieldset
+        let postData = null;
+        try {
+          const response = await wixClient.posts.getPostBySlug(slug, {
+            fieldsets: ['RICH_CONTENT'],
+          });
+          console.log('[Blog] getPostBySlug raw response:', response);
+          const candidate = response?.post || response;
+          if (candidate && (candidate._id || candidate.id || candidate.title)) {
+            postData = candidate;
+            console.log('[Blog] Post found via getPostBySlug:', postData.title || postData._id);
+          } else {
+            console.warn('[Blog] getPostBySlug returned empty/null, trying queryPosts fallback...');
+          }
+        } catch (err) {
+          console.warn('[Blog] getPostBySlug threw error:', err?.message, '— trying queryPosts fallback...');
         }
-        console.warn('[Blog] getPostBySlug returned empty/null, trying queryPosts fallback...');
-      } catch (err) {
-        console.warn('[Blog] getPostBySlug threw error:', err?.message, '— trying queryPosts fallback...');
-      }
 
-      // Strategy 2: queryPosts fallback (handles cases where slug lookup differs)
-      try {
-        const queryRes = await wixClient.posts
-          .queryPosts({ fieldsets: ['RICH_CONTENT'] })
-          .eq('slug', slug)
-          .limit(1)
-          .find();
+        // Strategy 2: queryPosts fallback (only if strategy 1 didn't find it)
+        if (!postData) {
+          const queryRes = await wixClient.posts
+            .queryPosts({ fieldsets: ['RICH_CONTENT'] })
+            .eq('slug', slug)
+            .limit(1)
+            .find();
 
-        console.log('[Blog] queryPosts fallback result count:', queryRes.items?.length);
+          console.log('[Blog] queryPosts fallback result count:', queryRes.items?.length);
+          if (queryRes.items && queryRes.items.length > 0) {
+            postData = queryRes.items[0];
+            console.log('[Blog] Post found via queryPosts:', postData.title);
+          }
+        }
 
-        if (queryRes.items && queryRes.items.length > 0) {
-          console.log('[Blog] Post found via queryPosts:', queryRes.items[0].title);
-          if (!cancelled) setPost(queryRes.items[0]);
+        if (postData) {
+          if (!cancelled) setPost(postData);
         } else {
           console.error('[Blog] Post not found for slug via either method:', slug);
           if (!cancelled) setError('Post not found');
         }
       } catch (err) {
-        console.error('[Blog] queryPosts fallback also failed:', err?.message);
+        console.error('[Blog] Fatal error fetching post:', err?.message);
         if (!cancelled) setError(err?.message || 'Could not load article.');
       } finally {
+        // Always called — even when strategy 1 succeeds immediately
         if (!cancelled) setLoading(false);
       }
     }

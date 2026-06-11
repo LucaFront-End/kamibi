@@ -129,9 +129,6 @@ export const BlogPostPage = () => {
             <div className="blog-post-inner-layout">
               <ScrollReveal direction="up" delay={0.2} threshold={0.05}>
                 <div className="blog-post-content-wrapper">
-                  {post.excerpt && (
-                    <p className="blog-post-lead-excerpt">{post.excerpt}</p>
-                  )}
                   <div className="blog-post-body text-body">
                     {htmlContent ? (
                       <div dangerouslySetInnerHTML={{ __html: htmlContent }} />

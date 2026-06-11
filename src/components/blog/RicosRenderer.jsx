@@ -6,9 +6,9 @@ import React from 'react';
  * No external dependencies — works with React 18.
  */
 
-// Convert wix:image://v1/... to wixstatic CDN URL
-// Handles: { id }, { url }, wix:image:// strings, bare file IDs, plain https URLs
-function resolveWixImageUrl(src, width = 1200) {
+// Convert wix:image://v1/... or { id } to wixstatic CDN URL
+// Uses direct CDN URL (no /v1/fill/ transforms) to avoid 400 errors on .avif/.webp
+function resolveWixImageUrl(src) {
   if (!src) return null;
 
   // Extract a string URI from various possible structures
@@ -18,7 +18,6 @@ function resolveWixImageUrl(src, width = 1200) {
   } else if (src?.url) {
     uri = src.url;
   } else if (src?.id) {
-    // bare file id — could be "abc123.jpg" or just "abc123"
     uri = src.id;
   }
 
@@ -32,13 +31,13 @@ function resolveWixImageUrl(src, width = 1200) {
     const withoutProto = uri.replace('wix:image://v1/', '');
     const fileId = withoutProto.split('/')[0].split('#')[0];
     if (!fileId) return null;
-    return `https://static.wixstatic.com/media/${fileId}/v1/fill/w_${width},al_c,q_90,usm_0.33_1.00_0.00/file.jpg`;
+    return `https://static.wixstatic.com/media/${fileId}`;
   }
 
-  // Bare file ID (e.g. "abc123~mv2.jpg" or "abc123")
+  // Bare file ID (e.g. "45119e_abc123~mv2.avif")
   const fileId = uri.split('/')[0].split('#')[0];
   if (!fileId) return null;
-  return `https://static.wixstatic.com/media/${fileId}/v1/fill/w_${width},al_c,q_90,usm_0.33_1.00_0.00/file.jpg`;
+  return `https://static.wixstatic.com/media/${fileId}`;
 }
 
 // Apply text decorations (bold, italic, underline, link, etc.) to a string
@@ -179,7 +178,7 @@ function renderNode(node, key) {
       // ImageData.image is V1Media { src: FileSource { url, id }, width, height }
       const imgData = node.imageData || {};
       const mediaSrc = imgData.image?.src;   // FileSource { url?, id? }
-      const imgUrl = resolveWixImageUrl(mediaSrc, 1200);
+      const imgUrl = resolveWixImageUrl(mediaSrc);
       const alt = imgData.altText || '';
       console.log('[RicosRenderer] IMAGE src:', JSON.stringify(mediaSrc), '-> url:', imgUrl);
       if (!imgUrl) return null;
@@ -230,7 +229,7 @@ function renderNode(node, key) {
           {items.map((item, i) => {
             // Item.image.media.src = FileSource { url, id }
             const mediaSrc = item.image?.media?.src || item.image?.src || item.video?.thumbnail?.src;
-            const imgUrl = resolveWixImageUrl(mediaSrc, 800);
+            const imgUrl = resolveWixImageUrl(mediaSrc);
             if (!imgUrl) return null;
             return (
               <figure key={i} className="ricos-gallery-item">

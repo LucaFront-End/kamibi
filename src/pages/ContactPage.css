@@ -15,16 +15,44 @@
   position: relative;
   height: 55vh;
   min-height: 400px;
-  background-color: var(--color-charcoal);
+  background-color: var(--color-midnight);
   color: var(--color-cream);
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
   overflow: hidden;
-  padding-top: 80px; /* Offset for header */
+  padding-top: 80px;
 }
 
+/* Background image wrapper */
+.contact-hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.contact-hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 40%;
+}
+
+/* Dark gradient overlay on top of the image for text contrast */
+.contact-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(15, 15, 15, 0.42) 0%,
+    rgba(15, 15, 15, 0.58) 50%,
+    rgba(15, 15, 15, 0.78) 100%
+  );
+  z-index: 1;
+}
+
+/* Fade to page background at the bottom edge */
 .contact-hero::after {
   content: '';
   position: absolute;
@@ -35,16 +63,6 @@
   background: linear-gradient(to top, var(--color-cream) 0%, transparent 100%);
   pointer-events: none;
   z-index: 2;
-}
-
-.contact-hero-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at center, rgba(197, 168, 128, 0.05) 0%, transparent 70%);
-  z-index: 1;
 }
 
 .contact-hero-content {

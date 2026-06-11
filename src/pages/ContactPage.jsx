@@ -61,7 +61,15 @@ export const ContactPage = () => {
       <div className="contact-page">
         {/* Cinematic Hero */}
         <section className="contact-hero">
-          <div className="contact-hero-overlay"></div>
+          {/* Background image + overlay */}
+          <div className="contact-hero-bg">
+            <img
+              src="https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?q=80&w=1600&auto=format&fit=crop"
+              alt="Serene nature — Kamibi Contact"
+              className="contact-hero-img"
+            />
+            <div className="contact-hero-overlay"></div>
+          </div>
           <div className="container contact-hero-content">
             <ScrollReveal direction="up" delay={0.1}>
               <span className="text-label contact-hero-tag">

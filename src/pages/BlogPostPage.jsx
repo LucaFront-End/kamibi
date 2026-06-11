@@ -4,6 +4,7 @@ import { useTranslation } from '../context/LanguageContext';
 import { useWixPost } from '../hooks/useWixBlog';
 import { PageTransition } from '../components/layout/PageTransition';
 import { ScrollReveal } from '../components/ui/ScrollReveal';
+import { RicosRenderer } from '../components/blog/RicosRenderer';
 import { motion } from 'framer-motion';
 import './BlogPostPage.css';
 
@@ -63,12 +64,16 @@ export const BlogPostPage = () => {
 
   const coverUrl = wixImageUrl(post?.media?.wixMedia?.image, 1600, 800);
 
-  // Best available content to render
-  const htmlContent = post?.content || '';
-  const textContent = post?.contentText || post?.excerpt || '';
+  // Rich content from Wix editor (primary) — fallback to plain text
+  const richContent = post?.richContent || null;
+  const fallbackText = post?.contentText || post?.excerpt || '';
+
+  // Debug: log what content fields exist
+  console.log('[Post] richContent nodes:', richContent?.nodes?.length ?? 'none');
+  console.log('[Post] contentText length:', fallbackText.length);
 
   // Calculate reading time
-  const wordCount = post?.contentText ? post.contentText.trim().split(/\s+/).length : 0;
+  const wordCount = fallbackText ? fallbackText.trim().split(/\s+/).length : 0;
   const readingTime = Math.max(1, Math.ceil(wordCount / 225)); // average reading speed 225 wpm
 
   return (
@@ -129,11 +134,11 @@ export const BlogPostPage = () => {
             <div className="blog-post-inner-layout">
               <ScrollReveal direction="up" delay={0.2} threshold={0.05}>
                 <div className="blog-post-content-wrapper">
-                  <div className="blog-post-body text-body">
-                    {htmlContent ? (
-                      <div dangerouslySetInnerHTML={{ __html: htmlContent }} />
-                    ) : textContent ? (
-                      <p>{textContent}</p>
+                  <div className="blog-post-body">
+                    {richContent ? (
+                      <RicosRenderer content={richContent} fallback={fallbackText} />
+                    ) : fallbackText ? (
+                      <p>{fallbackText}</p>
                     ) : (
                       <p className="no-content-message">{locale === 'es' ? 'Contenido no disponible.' : 'Content not available.'}</p>
                     )}

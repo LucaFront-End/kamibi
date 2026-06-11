@@ -7,14 +7,36 @@ import React from 'react';
  */
 
 // Convert wix:image://v1/... to wixstatic CDN URL
+// Handles: { id }, { url }, wix:image:// strings, bare file IDs, plain https URLs
 function resolveWixImageUrl(src, width = 1200) {
   if (!src) return null;
-  // If it's an object with url or id
-  const uri = typeof src === 'string' ? src : (src?.url || src?.id || null);
+
+  // Extract a string URI from various possible structures
+  let uri = null;
+  if (typeof src === 'string') {
+    uri = src;
+  } else if (src?.url) {
+    uri = src.url;
+  } else if (src?.id) {
+    // bare file id — could be "abc123.jpg" or just "abc123"
+    uri = src.id;
+  }
+
   if (!uri) return null;
-  if (uri.startsWith('http')) return uri;
-  const withoutProto = uri.replace('wix:image://v1/', '');
-  const fileId = withoutProto.split('/')[0].split('#')[0];
+
+  // Already a full CDN URL
+  if (uri.startsWith('https://') || uri.startsWith('http://')) return uri;
+
+  // wix:image://v1/<fileId>/... format
+  if (uri.startsWith('wix:image://')) {
+    const withoutProto = uri.replace('wix:image://v1/', '');
+    const fileId = withoutProto.split('/')[0].split('#')[0];
+    if (!fileId) return null;
+    return `https://static.wixstatic.com/media/${fileId}/v1/fill/w_${width},al_c,q_90,usm_0.33_1.00_0.00/file.jpg`;
+  }
+
+  // Bare file ID (e.g. "abc123~mv2.jpg" or "abc123")
+  const fileId = uri.split('/')[0].split('#')[0];
   if (!fileId) return null;
   return `https://static.wixstatic.com/media/${fileId}/v1/fill/w_${width},al_c,q_90,usm_0.33_1.00_0.00/file.jpg`;
 }
@@ -154,10 +176,13 @@ function renderNode(node, key) {
 
     case 'IMAGE': {
       const imgData = node.imageData || {};
+      // Debug: log the full imageData structure to understand Wix format
+      console.log('[RicosRenderer] IMAGE node imageData:', JSON.stringify(imgData, null, 2));
       const src = imgData.image?.src;
       const imgUrl = resolveWixImageUrl(src, 1200);
-      const alt = imgData.altText || imgData.image?.src?.id || '';
-      const caption = imgData.caption;
+      const alt = imgData.altText || imgData.image?.altText || '';
+      const caption = imgData.caption || imgData.image?.caption;
+      console.log('[RicosRenderer] Resolved image URL:', imgUrl);
       if (!imgUrl) return null;
       return (
         <figure key={key}>
@@ -186,15 +211,19 @@ function renderNode(node, key) {
     case 'GALLERY': {
       // Render gallery images in a grid
       const items = node.galleryData?.items || [];
+      console.log('[RicosRenderer] GALLERY node galleryData:', JSON.stringify(node.galleryData, null, 2));
       if (items.length === 0) return null;
       return (
         <div key={key} className="ricos-gallery">
           {items.map((item, i) => {
-            const imgUrl = resolveWixImageUrl(item.image?.media?.src, 800);
+            // Try all possible paths for item image
+            const mediaSrc = item.image?.media?.src || item.image?.src || item.media?.src || item.src;
+            const imgUrl = resolveWixImageUrl(mediaSrc, 800);
+            console.log('[RicosRenderer] Gallery item src:', mediaSrc, '-> url:', imgUrl);
             if (!imgUrl) return null;
             return (
               <figure key={i} className="ricos-gallery-item">
-                <img src={imgUrl} alt={item.title || ''} loading="lazy" />
+                <img src={imgUrl} alt={item.title || item.image?.altText || ''} loading="lazy" />
               </figure>
             );
           })}

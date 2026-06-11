@@ -106,24 +106,26 @@ function renderNode(node, key) {
   switch (node.type) {
     case 'PARAGRAPH': {
       const children = renderInlineChildren(node.nodes || []);
-      // Check if paragraph is empty
       const isEmpty = (node.nodes || []).every(n => !n.textData?.text?.trim());
       if (isEmpty) return <br key={key} />;
       return <p key={key}>{children}</p>;
     }
 
-    case 'HEADING_ONE':
-      return <h1 key={key}>{renderInlineChildren(node.nodes || [])}</h1>;
-    case 'HEADING_TWO':
-      return <h2 key={key}>{renderInlineChildren(node.nodes || [])}</h2>;
-    case 'HEADING_THREE':
-      return <h3 key={key}>{renderInlineChildren(node.nodes || [])}</h3>;
-    case 'HEADING_FOUR':
-      return <h4 key={key}>{renderInlineChildren(node.nodes || [])}</h4>;
-    case 'HEADING_FIVE':
-      return <h5 key={key}>{renderInlineChildren(node.nodes || [])}</h5>;
-    case 'HEADING_SIX':
-      return <h6 key={key}>{renderInlineChildren(node.nodes || [])}</h6>;
+    // Wix uses a single HEADING type with headingData.level (1-6)
+    case 'HEADING': {
+      const level = node.headingData?.level || 2;
+      const children = renderInlineChildren(node.nodes || []);
+      const Tag = `h${Math.min(Math.max(level, 1), 6)}`;
+      return React.createElement(Tag, { key }, children);
+    }
+
+    // Keep legacy heading names as fallback just in case
+    case 'HEADING_ONE':   return <h1 key={key}>{renderInlineChildren(node.nodes || [])}</h1>;
+    case 'HEADING_TWO':   return <h2 key={key}>{renderInlineChildren(node.nodes || [])}</h2>;
+    case 'HEADING_THREE': return <h3 key={key}>{renderInlineChildren(node.nodes || [])}</h3>;
+    case 'HEADING_FOUR':  return <h4 key={key}>{renderInlineChildren(node.nodes || [])}</h4>;
+    case 'HEADING_FIVE':  return <h5 key={key}>{renderInlineChildren(node.nodes || [])}</h5>;
+    case 'HEADING_SIX':   return <h6 key={key}>{renderInlineChildren(node.nodes || [])}</h6>;
 
     case 'BULLETED_LIST':
       return (
@@ -143,7 +145,6 @@ function renderNode(node, key) {
       return (
         <li key={key}>
           {(node.nodes || []).map((child, i) => {
-            // List items wrap paragraphs — unwrap them
             if (child.type === 'PARAGRAPH') {
               return <React.Fragment key={i}>{renderInlineChildren(child.nodes || [])}</React.Fragment>;
             }
@@ -175,25 +176,27 @@ function renderNode(node, key) {
     }
 
     case 'IMAGE': {
+      // ImageData.image is V1Media { src: FileSource { url, id }, width, height }
       const imgData = node.imageData || {};
-      // Debug: log the full imageData structure to understand Wix format
-      console.log('[RicosRenderer] IMAGE node imageData:', JSON.stringify(imgData, null, 2));
-      const src = imgData.image?.src;
-      const imgUrl = resolveWixImageUrl(src, 1200);
-      const alt = imgData.altText || imgData.image?.altText || '';
-      const caption = imgData.caption || imgData.image?.caption;
-      console.log('[RicosRenderer] Resolved image URL:', imgUrl);
+      const mediaSrc = imgData.image?.src;   // FileSource { url?, id? }
+      const imgUrl = resolveWixImageUrl(mediaSrc, 1200);
+      const alt = imgData.altText || '';
+      console.log('[RicosRenderer] IMAGE src:', JSON.stringify(mediaSrc), '-> url:', imgUrl);
       if (!imgUrl) return null;
       return (
         <figure key={key}>
           <img src={imgUrl} alt={alt} loading="lazy" />
-          {caption && <figcaption>{caption}</figcaption>}
         </figure>
       );
     }
 
+    // Caption is a separate node that follows IMAGE in Wix Ricos
+    case 'CAPTION': {
+      const text = renderInlineChildren(node.nodes || []);
+      return <figcaption key={key}>{text}</figcaption>;
+    }
+
     case 'VIDEO': {
-      // For embedded videos, show a placeholder link
       const videoUrl = node.videoData?.video?.src?.url;
       if (!videoUrl) return null;
       return (
@@ -208,22 +211,30 @@ function renderNode(node, key) {
     case 'DIVIDER':
       return <hr key={key} className="ricos-divider" />;
 
+    case 'GIF': {
+      const gifUrl = node.gifData?.original?.gif || node.gifData?.downsized?.gif;
+      if (!gifUrl) return null;
+      return (
+        <figure key={key}>
+          <img src={gifUrl} alt="gif" loading="lazy" />
+        </figure>
+      );
+    }
+
     case 'GALLERY': {
-      // Render gallery images in a grid
+      // GalleryData.items: Item[] where Item.image: Image { media: V1Media { src: FileSource } }
       const items = node.galleryData?.items || [];
-      console.log('[RicosRenderer] GALLERY node galleryData:', JSON.stringify(node.galleryData, null, 2));
       if (items.length === 0) return null;
       return (
         <div key={key} className="ricos-gallery">
           {items.map((item, i) => {
-            // Try all possible paths for item image
-            const mediaSrc = item.image?.media?.src || item.image?.src || item.media?.src || item.src;
+            // Item.image.media.src = FileSource { url, id }
+            const mediaSrc = item.image?.media?.src || item.image?.src || item.video?.thumbnail?.src;
             const imgUrl = resolveWixImageUrl(mediaSrc, 800);
-            console.log('[RicosRenderer] Gallery item src:', mediaSrc, '-> url:', imgUrl);
             if (!imgUrl) return null;
             return (
               <figure key={i} className="ricos-gallery-item">
-                <img src={imgUrl} alt={item.title || item.image?.altText || ''} loading="lazy" />
+                <img src={imgUrl} alt={item.altText || item.title || ''} loading="lazy" />
               </figure>
             );
           })}
@@ -233,16 +244,23 @@ function renderNode(node, key) {
 
     case 'LINK_PREVIEW': {
       const preview = node.linkPreviewData || {};
+      const href = preview.link?.url || '#';
       return (
-        <a key={key} href={preview.url || '#'} target="_blank" rel="noopener noreferrer" className="ricos-link-preview">
+        <a key={key} href={href} target="_blank" rel="noopener noreferrer" className="ricos-link-preview">
+          {preview.thumbnailUrl && <img src={preview.thumbnailUrl} alt={preview.title || ''} />}
           <strong>{preview.title}</strong>
           {preview.description && <span>{preview.description}</span>}
         </a>
       );
     }
 
+    case 'HTML': {
+      const html = node.htmlData?.html || '';
+      if (!html) return null;
+      return <div key={key} dangerouslySetInnerHTML={{ __html: html }} />;
+    }
+
     case 'TEXT':
-      // Standalone text nodes (edge case)
       return renderTextNode(node, key);
 
     default:
@@ -257,6 +275,7 @@ function renderNode(node, key) {
       return null;
   }
 }
+
 
 /**
  * RicosRenderer — renders a Wix Ricos richContent document as JSX.

@@ -357,16 +357,6 @@
    RESPONSIVE
    ═══════════════════════════════════════════ */
 @media (max-width: 991px) {
-  .desktop-timeline {
-    grid-template-columns: 1fr;
-    gap: var(--space-2xl);
-  }
-  .timeline-display-card {
-    aspect-ratio: 16/11;
-  }
-}
-
-@media (max-width: 768px) {
   .ecology-timeline-section {
     padding: var(--space-3xl) 0;
   }
@@ -376,11 +366,12 @@
   .timeline-section-header {
     margin-bottom: var(--space-2xl);
   }
-  /* Swap layouts */
+  /* Swap layouts: hide desktop, show mobile accordion */
   .desktop-timeline {
-    display: none;
+    display: none !important;
   }
   .mobile-timeline {
-    display: flex;
+    display: flex !important;
   }
 }
+

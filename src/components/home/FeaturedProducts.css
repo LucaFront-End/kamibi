@@ -209,12 +209,31 @@
 
 @media (max-width: 768px) {
   .featured-header {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    align-items: center;
     gap: var(--space-md);
   }
+  .featured-title-block {
+    flex: 1;
+  }
+  .featured-title {
+    font-size: var(--text-3xl);
+  }
+  /* Compact arrows on mobile */
   .carousel-nav {
-    display: none; /* Swipe on mobile */
+    display: flex;
+    gap: 6px;
+  }
+  .carousel-nav-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--color-sand);
+    background-color: var(--color-warm-white);
+  }
+  .carousel-nav-btn svg {
+    width: 14px;
+    height: 14px;
   }
   .carousel-viewport {
     scroll-snap-type: x mandatory;
@@ -261,3 +280,4 @@
   width: 24px;
   border-radius: 4px;
 }
+

@@ -228,25 +228,91 @@
 @media (max-width: 991px) {
   .timeline-interactive-container {
     grid-template-columns: 1fr;
-    gap: var(--space-2xl);
+    gap: var(--space-xl);
   }
   .timeline-display-card {
-    aspect-ratio: 16/11;
+    aspect-ratio: auto;
+    min-height: 280px;
   }
-}
-@media (max-width: 500px) {
-  .timeline-step-btn {
-    padding: var(--space-sm) var(--space-md);
-  }
-  .step-btn-badge {
-    width: 30px;
-    height: 30px;
-    font-size: var(--text-sm);
+  .timeline-section-header {
+    margin-bottom: var(--space-2xl);
   }
 }
 
 @media (max-width: 768px) {
+  .ecology-timeline-section {
+    padding: var(--space-3xl) 0;
+  }
   .timeline-title {
     font-size: var(--text-3xl) !important;
   }
+  .timeline-interactive-container {
+    gap: var(--space-lg);
+  }
+  /* Horizontal scrollable steps on mobile */
+  .timeline-left-column {
+    flex-direction: row;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: var(--space-sm);
+    padding-bottom: var(--space-xs);
+    margin: 0 calc(-1 * var(--container-padding));
+    padding-left: var(--container-padding);
+    padding-right: var(--container-padding);
+  }
+  .timeline-left-column::-webkit-scrollbar {
+    display: none;
+  }
+  .timeline-step-btn {
+    flex-shrink: 0;
+    width: auto;
+    min-width: 200px;
+    scroll-snap-align: start;
+    padding: var(--space-sm) var(--space-md);
+  }
+  .timeline-step-btn:hover {
+    transform: none;
+  }
+  .step-btn-badge {
+    width: 28px;
+    height: 28px;
+    font-size: var(--text-xs);
+  }
+  .step-btn-tag {
+    font-size: 8px;
+  }
+  .step-btn-title {
+    font-size: var(--text-xs);
+  }
+  .step-btn-indicator {
+    width: 6px;
+    height: 6px;
+    right: 12px;
+  }
+  /* Compact display card */
+  .timeline-display-card {
+    min-height: 240px;
+    padding: var(--space-xl) var(--space-lg);
+    border-radius: var(--radius-lg);
+  }
+  .timeline-card-icon-container {
+    width: 60px;
+    height: 60px;
+    margin-bottom: var(--space-md);
+  }
+  .timeline-svg {
+    width: 28px;
+    height: 28px;
+  }
+  .timeline-card-title {
+    font-size: var(--text-xl);
+  }
+  .timeline-card-desc {
+    font-size: var(--text-xs);
+  }
+  .card-ambient-glow {
+    width: 200px;
+    height: 200px;
+  }
 }
+

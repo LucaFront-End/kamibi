@@ -1,5 +1,4 @@
 .ecology-timeline-section {
-  display: none;
   padding: var(--space-5xl) 0;
   background-color: var(--color-cream);
   position: relative;
@@ -369,7 +368,6 @@
 
 @media (max-width: 768px) {
   .ecology-timeline-section {
-    display: block;
     padding: var(--space-3xl) 0;
   }
   .timeline-title {

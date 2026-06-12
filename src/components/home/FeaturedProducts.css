@@ -216,4 +216,48 @@
   .carousel-nav {
     display: none; /* Swipe on mobile */
   }
+  .carousel-viewport {
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+  .featured-product-card {
+    scroll-snap-align: start;
+    width: 85vw;
+    max-width: 340px;
+    flex-shrink: 0;
+  }
+}
+
+/* Mobile-only utility */
+.mobile-only {
+  display: none;
+}
+@media (max-width: 768px) {
+  .mobile-only {
+    display: flex;
+  }
+}
+
+/* Carousel Dot Indicators */
+.carousel-dots {
+  justify-content: center;
+  gap: 8px;
+  padding: var(--space-md) 0 0;
+}
+
+.carousel-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: none;
+  background-color: var(--color-sand);
+  cursor: pointer;
+  padding: 0;
+  transition: all var(--duration-normal) ease;
+}
+
+.carousel-dot.active {
+  background-color: var(--color-gold);
+  width: 24px;
+  border-radius: 4px;
 }

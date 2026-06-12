@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { useTranslation } from '../../context/LanguageContext';
 import { useWixProducts } from '../../hooks/useWixProducts';
 import { ScrollReveal } from '../ui/ScrollReveal';
@@ -13,6 +13,8 @@ export const FeaturedProducts = () => {
 
   // Filter main urns for featured section (excluding mini-urns for clean visual balance)
   const mainUrns = products.filter((p) => p.slug !== 'mini-urns');
+  const [activeSlide, setActiveSlide] = useState(0);
+  const userInteracted = useRef(false);
 
   const scrollLeft = () => {
     if (carouselRef.current) {
@@ -24,6 +26,67 @@ export const FeaturedProducts = () => {
     if (carouselRef.current) {
       carouselRef.current.scrollBy({ left: 320, behavior: 'smooth' });
     }
+  };
+
+  // Track active slide from scroll position
+  const handleScroll = useCallback(() => {
+    if (!carouselRef.current) return;
+    const el = carouselRef.current;
+    const cardWidth = 320 + 24; // card width + gap
+    const idx = Math.round(el.scrollLeft / cardWidth);
+    setActiveSlide(idx);
+  }, []);
+
+  useEffect(() => {
+    const el = carouselRef.current;
+    if (!el) return;
+    el.addEventListener('scroll', handleScroll, { passive: true });
+    // Mark user interaction on touch
+    const markInteraction = () => { userInteracted.current = true; };
+    el.addEventListener('touchstart', markInteraction, { passive: true, once: true });
+    return () => {
+      el.removeEventListener('scroll', handleScroll);
+      el.removeEventListener('touchstart', markInteraction);
+    };
+  }, [handleScroll]);
+
+  // Mobile auto-slide: peek right after 2s, then auto-advance every 4s
+  useEffect(() => {
+    if (mainUrns.length <= 1) return;
+    const isMobile = window.innerWidth <= 768;
+    if (!isMobile) return;
+
+    // Initial peek hint
+    const peekTimer = setTimeout(() => {
+      if (!carouselRef.current || userInteracted.current) return;
+      carouselRef.current.scrollTo({ left: 80, behavior: 'smooth' });
+      setTimeout(() => {
+        if (!carouselRef.current || userInteracted.current) return;
+        carouselRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+      }, 600);
+    }, 1800);
+
+    // Auto-advance loop
+    const cardWidth = 320 + 24;
+    let currentIdx = 0;
+    const advanceTimer = setInterval(() => {
+      if (!carouselRef.current || userInteracted.current) return;
+      currentIdx = (currentIdx + 1) % mainUrns.length;
+      carouselRef.current.scrollTo({ left: currentIdx * cardWidth, behavior: 'smooth' });
+    }, 4500);
+
+    return () => {
+      clearTimeout(peekTimer);
+      clearInterval(advanceTimer);
+    };
+  }, [mainUrns.length]);
+
+  // Scroll to a specific slide (dot click)
+  const goToSlide = (idx) => {
+    userInteracted.current = true;
+    if (!carouselRef.current) return;
+    const cardWidth = 320 + 24;
+    carouselRef.current.scrollTo({ left: idx * cardWidth, behavior: 'smooth' });
   };
 
   // Don't render the section if still loading or no products
@@ -99,7 +162,7 @@ export const FeaturedProducts = () => {
           </ScrollReveal>
         </div>
 
-        {/* Carousel Grid */}
+        {/* Carousel Grid + Dot Indicators */}
         <div className="carousel-viewport" ref={carouselRef}>
           <div className="carousel-container">
             {mainUrns.map((product, idx) => (
@@ -145,6 +208,20 @@ export const FeaturedProducts = () => {
             ))}
           </div>
         </div>
+
+        {/* Mobile dot indicators */}
+        {mainUrns.length > 1 && (
+          <div className="carousel-dots mobile-only">
+            {mainUrns.map((_, idx) => (
+              <button
+                key={idx}
+                className={`carousel-dot ${activeSlide === idx ? 'active' : ''}`}
+                onClick={() => goToSlide(idx)}
+                aria-label={`Go to product ${idx + 1}`}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

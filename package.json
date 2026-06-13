@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@wix/blog": "^1.0.612",
+    "@wix/data": "^1.0.473",
     "@wix/ecom": "^1.0.2074",
     "@wix/identity": "^1.0.196",
     "@wix/members": "^1.0.459",

@@ -156,6 +156,7 @@ export const Footer = () => {
               <li><Link to="/about">{locale === 'es' ? 'Nosotros' : 'About'}</Link></li>
               <li><Link to="/blog">{locale === 'es' ? 'Blog' : 'Blog'}</Link></li>
               <li><Link to="/contact">{locale === 'es' ? 'Contacto' : 'Contact'}</Link></li>
+              <li><Link to="/zonas">{locale === 'es' ? 'Zonas' : 'Locations'}</Link></li>
               <li><Link to="/mi-cuenta">{locale === 'es' ? 'Mi cuenta' : 'My account'}</Link></li>
             </ul>
           </ScrollReveal>

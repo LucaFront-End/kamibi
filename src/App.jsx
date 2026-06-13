@@ -15,6 +15,9 @@ import { BlogPostPage } from './pages/BlogPostPage';
 import { AccountPage } from './pages/AccountPage';
 import { AboutPage } from './pages/AboutPage';
 import { ContactPage } from './pages/ContactPage';
+import { CityLandingPage } from './pages/CityLandingPage';
+import { DynamicStorePage } from './pages/DynamicStorePage';
+import { ZonasPage } from './pages/ZonasPage';
 import './App.css';
 
 function App() {
@@ -38,6 +41,12 @@ function App() {
                     <Route path="/mi-cuenta" element={<AccountPage />} />
                     <Route path="/about" element={<AboutPage />} />
                     <Route path="/contact" element={<ContactPage />} />
+                    {/* Dynamic CMS store pages */}
+                    <Route path="/tienda/:slug" element={<DynamicStorePage />} />
+                    {/* Hub page for all dynamic landings & stores */}
+                    <Route path="/zonas" element={<ZonasPage />} />
+                    {/* Catch-all: dynamic CMS landing pages */}
+                    <Route path="/:slug" element={<CityLandingPage />} />
                   </Routes>
                 </main>
 

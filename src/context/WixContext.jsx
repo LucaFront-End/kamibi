@@ -5,6 +5,7 @@ import { currentCart, orders } from '@wix/ecom';
 import { redirects } from '@wix/redirects';
 import { posts } from '@wix/blog';
 import { members } from '@wix/members';
+import { items } from '@wix/data';
 import { WIX_CLIENT_ID, TOKEN_KEY } from '../lib/wixClient';
 
 const MEMBER_FLAG = 'kamibi_is_member';
@@ -72,7 +73,7 @@ function createTokenStorage() {
 // ─── Build client ──────────────────────────────────────────────────────────────
 function buildWixClient() {
   return createClient({
-    modules: { products, currentCart, orders, redirects, posts, members },
+    modules: { products, currentCart, orders, redirects, posts, members, items },
     auth: OAuthStrategy({
       clientId: WIX_CLIENT_ID,
       tokenStorage: createTokenStorage(),

@@ -1,0 +1,56 @@
+.zonas-page { min-height: 100vh; }
+
+.zonas-hero {
+  padding: 10rem 0 5rem;
+  background: var(--color-charcoal);
+  text-align: center;
+}
+.zonas-hero-content { max-width: 700px; margin: 0 auto; }
+.zonas-tag { color: var(--color-gold); margin-bottom: 1rem; display: block; }
+.zonas-title { color: #fff; margin-bottom: 1.25rem; }
+.zonas-subtitle { color: rgba(255,255,255,0.6); max-width: 550px; margin: 0 auto; line-height: 1.7; }
+
+.zonas-section { padding: 5rem 0; background: var(--color-cream); }
+.zonas-stores-section { background: #f3efe8; }
+.zonas-section-header { text-align: center; margin-bottom: 3rem; }
+.zonas-section-header .text-label { color: var(--color-gold); margin-bottom: 0.5rem; display: block; }
+
+.zonas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.25rem; }
+
+.zona-card {
+  background: #fff; border-radius: 16px; padding: 1.75rem;
+  border: 1px solid rgba(0,0,0,0.04); display: flex; flex-direction: column;
+  gap: 1rem; height: 100%; transition: box-shadow 0.4s ease;
+}
+.zona-card:hover { box-shadow: 0 16px 48px rgba(0,0,0,0.07); }
+.zona-card-store { border-left: 3px solid var(--color-gold); }
+.zona-card-icon { font-size: 1.75rem; line-height: 1; }
+.zona-card-content { flex: 1; }
+.zona-card-city { font-family: var(--font-heading); font-size: 1.15rem; font-weight: 500; color: var(--color-charcoal); margin-bottom: 0.25rem; }
+.zona-card-country { font-family: var(--font-body); font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-gold); display: block; margin-bottom: 0.75rem; }
+.zona-card-excerpt { font-family: var(--font-body); font-size: 0.88rem; color: var(--color-stone); line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+.zona-card-actions { display: flex; gap: 0.75rem; padding-top: 0.5rem; border-top: 1px solid rgba(0,0,0,0.05); }
+.zona-card-btn { display: inline-flex; align-items: center; gap: 0.4rem; font-family: var(--font-body); font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none; padding: 0.55rem 1.25rem; border-radius: 100px; transition: all 0.3s ease; font-weight: 500; }
+.zona-card-btn.primary { background: var(--color-charcoal); color: #fff; }
+.zona-card-btn.primary:hover { background: #2a2520; transform: translateX(2px); }
+.btn-arrow { transition: transform 0.3s ease; font-size: 0.9rem; }
+.zona-card-btn:hover .btn-arrow { transform: translateX(3px); }
+
+.zonas-loading { padding: 5rem 0; background: var(--color-cream); }
+.zonas-skeleton-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.25rem; }
+.zona-skeleton-card { background: #fff; border-radius: 16px; overflow: hidden; border: 1px solid rgba(0,0,0,0.04); }
+.zona-skeleton-top { height: 8px; background: rgba(0,0,0,0.04); }
+.zona-skeleton-body { padding: 1.75rem; display: flex; flex-direction: column; gap: 0.75rem; }
+.zona-skeleton-line { height: 16px; border-radius: 4px; background: rgba(0,0,0,0.06); }
+.zona-skeleton-line.short { width: 60%; }
+
+.zonas-empty { padding: 8rem 0; background: var(--color-cream); text-align: center; }
+.zonas-empty h2 { font-family: var(--font-heading); color: var(--color-charcoal); margin: 1.5rem 0 0.75rem; }
+
+@media (max-width: 768px) {
+  .zonas-hero { padding: 8rem 0 3.5rem; }
+  .zonas-section { padding: 3.5rem 0; }
+  .zonas-grid { grid-template-columns: 1fr; }
+  .zona-card { padding: 1.5rem; }
+}

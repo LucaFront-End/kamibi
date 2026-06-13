@@ -187,15 +187,33 @@ export const CartProvider = ({ children }) => {
         channelType: 'WEB',
       });
 
+      console.log('[Cart] Checkout created:', checkout.checkoutId);
+
+      const WIX_BASE_DOMAIN = 'dilodigitalmx.wixsite.com/kamibi-store';
+      const BROKEN_DOMAIN = 'www.kamibistore.com';
+
       const { redirectSession } = await wixClient.redirects.createRedirectSession({
         ecomCheckout: { checkoutId: checkout.checkoutId },
         callbacks: {
           postFlowUrl: window.location.origin,
-          thankYouPageUrl: window.location.origin,
+          thankYouPageUrl: `https://${WIX_BASE_DOMAIN}/thank-you`,
         },
       });
 
-      window.location.href = redirectSession.fullUrl;
+      // The Wix SDK generates URLs using the custom domain (kamibistore.com)
+      // which doesn't work. Replace it with the base Wix domain that does work.
+      let checkoutUrl = redirectSession.fullUrl;
+      checkoutUrl = checkoutUrl.replaceAll(BROKEN_DOMAIN, WIX_BASE_DOMAIN);
+      // Also fix any URL-encoded versions of the broken domain
+      checkoutUrl = checkoutUrl.replaceAll(encodeURIComponent(BROKEN_DOMAIN), encodeURIComponent(WIX_BASE_DOMAIN));
+      checkoutUrl = checkoutUrl.replaceAll(
+        encodeURIComponent(`https://${BROKEN_DOMAIN}`),
+        encodeURIComponent(`https://${WIX_BASE_DOMAIN}`)
+      );
+
+      console.log('[Cart] Original URL:', redirectSession.fullUrl);
+      console.log('[Cart] Fixed URL:', checkoutUrl);
+      window.location.href = checkoutUrl;
     } catch (err) {
       console.error('[Cart] Checkout error:', err);
       alert('Error initiating checkout. Please try again.');

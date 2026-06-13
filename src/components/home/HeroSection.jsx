@@ -6,7 +6,7 @@ import { ScrollReveal } from '../ui/ScrollReveal';
 import { useNavigate } from 'react-router-dom';
 import './HeroSection.css';
 
-export const HeroSection = () => {
+export const HeroSection = ({ overrideTitle, overrideSubtitle }) => {
   const { t, locale } = useTranslation();
   const navigate = useNavigate();
   const [activeTheme, setActiveTheme] = useState('dawn'); // 'dawn' | 'sunset' | 'twilight'
@@ -65,12 +65,12 @@ export const HeroSection = () => {
             <div className="hero-card-badge text-label">Kamibi Memorials</div>
             
             <SplitText className="hero-title heading-display">
-              {t('home.hero.title')}
+              {overrideTitle || t('home.hero.title')}
             </SplitText>
 
             <ScrollReveal direction="up" delay={0.4} className="hero-subtitle-wrapper">
               <p className="hero-subtitle text-body">
-                {t('home.hero.subtitle')}
+                {overrideSubtitle || t('home.hero.subtitle')}
               </p>
             </ScrollReveal>
 

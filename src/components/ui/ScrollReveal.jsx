@@ -8,6 +8,7 @@ export const ScrollReveal = ({
   duration = 0.8,
   className = '',
   threshold = 0.1,
+  ...props
 }) => {
   const getVariants = () => {
     switch (direction) {
@@ -52,6 +53,7 @@ export const ScrollReveal = ({
         delay: delay,
         ease: [0.16, 1, 0.3, 1], // easeOutExpo
       }}
+      {...props}
     >
       {children}
     </motion.div>

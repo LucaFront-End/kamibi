@@ -44,10 +44,10 @@ export const Navbar = () => {
     { name: t('nav.shop'), path: '/store' },
     { name: locale === 'es' ? 'Blog' : 'Blog', path: '/blog' },
     { name: locale === 'es' ? 'Nosotros' : 'About', path: '/about' },
-    { name: locale === 'es' ? 'Contacto' : 'Contact', path: '/contacto' },
+    { name: locale === 'es' ? 'Contacto' : 'Contact', path: '/contact' },
   ];
 
-  const isTransparentDark = (location.pathname === '/' || location.pathname === '/about' || location.pathname === '/contacto') && !isScrolled;
+  const isTransparentDark = (location.pathname === '/' || location.pathname === '/about' || location.pathname === '/contact') && !isScrolled;
 
   return (
     <>

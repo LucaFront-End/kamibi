@@ -39,8 +39,26 @@ export const ContactPage = () => {
     if (!formData.name || !formData.email || !formData.message) return;
     setIsSubmitting(true);
 
-    // Simulate Wix Forms or custom mail dispatch delay
-    setTimeout(() => {
+    fetch("https://formsubmit.co/ajax/contact@kamibistore.com", {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        name: formData.name,
+        email: formData.email,
+        message: formData.message,
+        _captcha: "false",
+        _template: "plain",
+        _subject: locale === 'es' ? "Nuevo Contacto - Kamibi" : "New Lead - Kamibi"
+      })
+    })
+    .then(res => {
+      if (!res.ok) throw new Error("Network response was not ok");
+      return res.json();
+    })
+    .then(() => {
       setIsSubmitting(false);
       setIsSubmitted(true);
       setFormData({ name: '', email: '', message: '' });
@@ -49,7 +67,12 @@ export const ContactPage = () => {
       setTimeout(() => {
         setIsSubmitted(false);
       }, 5000);
-    }, 1500);
+    })
+    .catch(err => {
+      setIsSubmitting(false);
+      console.error(err);
+      alert(locale === 'es' ? 'Hubo un error al enviar el formulario. Por favor intenta de nuevo.' : 'There was an error sending the form. Please try again.');
+    });
   };
 
   const toggleFaq = (index) => {

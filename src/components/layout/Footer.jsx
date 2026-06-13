@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from '../../context/LanguageContext';
 import { useMagnetic } from '../../hooks/useMagnetic';
@@ -8,6 +8,45 @@ import './Footer.css';
 export const Footer = () => {
   const { t, locale } = useTranslation();
   const backToTopRef = useMagnetic(0.4);
+  const [email, setEmail] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const handleNewsletterSubmit = (e) => {
+    e.preventDefault();
+    if (!email) return;
+    setIsSubmitting(true);
+
+    fetch("https://formsubmit.co/ajax/contact@kamibistore.com", {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        email: email,
+        newsletter_subscription: "true",
+        _captcha: "false",
+        _template: "plain",
+        _subject: locale === 'es' ? "Nueva Suscripción Newsletter - Kamibi" : "New Newsletter Subscriber - Kamibi"
+      })
+    })
+    .then(res => {
+      if (!res.ok) throw new Error("Network response was not ok");
+      return res.json();
+    })
+    .then(() => {
+      setIsSubmitting(false);
+      setIsSubmitted(true);
+      setEmail('');
+      setTimeout(() => setIsSubmitted(false), 5000);
+    })
+    .catch(err => {
+      setIsSubmitting(false);
+      console.error(err);
+      alert(locale === 'es' ? 'Hubo un error al suscribirte. Por favor intenta de nuevo.' : 'There was an error subscribing. Please try again.');
+    });
+  };
 
   const handleBackToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -49,29 +88,41 @@ export const Footer = () => {
           {/* Newsletter Signup Form */}
           <ScrollReveal direction="up" delay={0.2} className="footer-newsletter">
             <h4 className="footer-title">{t('home.cta.subtitle')}</h4>
-            <form className="newsletter-form" onSubmit={(e) => e.preventDefault()}>
+            <form className="newsletter-form" onSubmit={handleNewsletterSubmit}>
               <input
                 type="email"
                 placeholder="email@example.com"
                 className="newsletter-input"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={isSubmitting}
                 required
               />
-              <button type="submit" className="newsletter-submit">
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                  <polyline points="12 5 19 12 12 19" />
-                </svg>
+              <button type="submit" className="newsletter-submit" disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <span className="newsletter-spinner"></span>
+                ) : (
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                    <polyline points="12 5 19 12 12 19" />
+                  </svg>
+                )}
               </button>
             </form>
+            {isSubmitted && (
+              <p className="newsletter-success-msg" style={{ fontSize: '12px', color: 'var(--color-gold)', marginTop: '8px' }}>
+                {locale === 'es' ? '¡Gracias por suscribirte!' : 'Thank you for subscribing!'}
+              </p>
+            )}
           </ScrollReveal>
         </div>
 
@@ -104,7 +155,7 @@ export const Footer = () => {
             <ul className="footer-links">
               <li><Link to="/about">{locale === 'es' ? 'Nosotros' : 'About'}</Link></li>
               <li><Link to="/blog">{locale === 'es' ? 'Blog' : 'Blog'}</Link></li>
-              <li><Link to="/contacto">{locale === 'es' ? 'Contacto' : 'Contact'}</Link></li>
+              <li><Link to="/contact">{locale === 'es' ? 'Contacto' : 'Contact'}</Link></li>
               <li><Link to="/mi-cuenta">{locale === 'es' ? 'Mi cuenta' : 'My account'}</Link></li>
             </ul>
           </ScrollReveal>

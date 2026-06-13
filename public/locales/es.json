@@ -102,8 +102,8 @@
     "subtitle": "Elige un camino elegante y ecológico adaptado a su memoria.",
     "filters": {
       "all": "Todos los productos",
-      "water": "Entierro en agua",
-      "earth": "Entierro en tierra",
+      "water": "Agua",
+      "earth": "Tierra",
       "minis": "Minis"
     },
     "quickView": "Vista Rápida",

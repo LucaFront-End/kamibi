@@ -43,11 +43,11 @@ export const Navbar = () => {
     { name: t('nav.home'), path: '/' },
     { name: t('nav.shop'), path: '/store' },
     { name: locale === 'es' ? 'Blog' : 'Blog', path: '/blog' },
-    { name: locale === 'es' ? 'Nosotros' : 'About', path: '/nosotros' },
+    { name: locale === 'es' ? 'Nosotros' : 'About', path: '/about' },
     { name: locale === 'es' ? 'Contacto' : 'Contact', path: '/contacto' },
   ];
 
-  const isTransparentDark = (location.pathname === '/' || location.pathname === '/nosotros' || location.pathname === '/contacto') && !isScrolled;
+  const isTransparentDark = (location.pathname === '/' || location.pathname === '/about' || location.pathname === '/contacto') && !isScrolled;
 
   return (
     <>

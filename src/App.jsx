@@ -36,7 +36,7 @@ function App() {
                     <Route path="/blog" element={<BlogPage />} />
                     <Route path="/blog/:slug" element={<BlogPostPage />} />
                     <Route path="/mi-cuenta" element={<AccountPage />} />
-                    <Route path="/nosotros" element={<AboutPage />} />
+                    <Route path="/about" element={<AboutPage />} />
                     <Route path="/contacto" element={<ContactPage />} />
                   </Routes>
                 </main>

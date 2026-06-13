@@ -38,7 +38,7 @@
 }
 
 /* Hide mobile accordion on desktop */
-.mobile-timeline, .timeline-accordion.mobile-timeline {
+.mobile-timeline {
   display: none !important;
 }
 

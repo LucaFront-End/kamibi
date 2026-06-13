@@ -18,8 +18,8 @@
   margin-bottom: var(--space-xs);
 }
 
-.timeline-title {
-  font-size: var(--text-5xl);
+.eco-timeline-title {
+  font-size: var(--text-5xl) !important;
   margin-bottom: var(--space-sm);
 }
 
@@ -38,8 +38,8 @@
 }
 
 /* Hide mobile accordion on desktop */
-.mobile-timeline {
-  display: none;
+.mobile-timeline, .timeline-accordion.mobile-timeline {
+  display: none !important;
 }
 
 /* Left Buttons column */
@@ -365,7 +365,7 @@
   .timeline-section-header {
     margin-bottom: var(--space-2xl);
   }
-  .timeline-title {
+  .eco-timeline-title {
     font-size: var(--text-3xl) !important;
   }
   /* Show accordion, hide desktop grid */

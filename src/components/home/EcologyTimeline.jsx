@@ -65,7 +65,7 @@ export const EcologyTimeline = () => {
       <div className="container">
         <ScrollReveal direction="up" className="timeline-section-header text-center">
           <span className="text-label timeline-tag">{t('home.timeline.tag')}</span>
-          <h2 className="heading-section timeline-title">{t('home.timeline.title')}</h2>
+          <h2 className="heading-section eco-timeline-title">{t('home.timeline.title')}</h2>
           <p className="timeline-subtitle text-body">{t('home.timeline.subtitle')}</p>
         </ScrollReveal>
 

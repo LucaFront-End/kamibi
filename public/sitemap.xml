@@ -2,10 +2,18 @@
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap>
     <loc>https://kamibi.vercel.app/sitemap-pages.xml</loc>
-    <lastmod>2026-06-06</lastmod>
+    <lastmod>2026-06-13</lastmod>
   </sitemap>
   <sitemap>
     <loc>https://kamibi.vercel.app/sitemap-productos.xml</loc>
-    <lastmod>2026-06-06</lastmod>
+    <lastmod>2026-06-13</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>https://kamibi.vercel.app/sitemap-landings.xml</loc>
+    <lastmod>2026-06-13</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>https://kamibi.vercel.app/sitemap-tiendas.xml</loc>
+    <lastmod>2026-06-13</lastmod>
   </sitemap>
 </sitemapindex>

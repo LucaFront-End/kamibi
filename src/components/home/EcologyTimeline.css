@@ -356,17 +356,19 @@
 /* ═══════════════════════════════════════════
    RESPONSIVE
    ═══════════════════════════════════════════ */
-@media (max-width: 991px) {
+
+/* Mobile only: swap layouts + compact spacing */
+@media (max-width: 768px) {
   .ecology-timeline-section {
     padding: var(--space-3xl) 0;
-  }
-  .timeline-title {
-    font-size: var(--text-3xl) !important;
   }
   .timeline-section-header {
     margin-bottom: var(--space-2xl);
   }
-  /* Swap layouts: hide desktop, show mobile accordion */
+  .timeline-title {
+    font-size: var(--text-3xl) !important;
+  }
+  /* Show accordion, hide desktop grid */
   .desktop-timeline {
     display: none !important;
   }
@@ -374,4 +376,3 @@
     display: flex !important;
   }
 }
-

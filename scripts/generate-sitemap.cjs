@@ -19,7 +19,7 @@ const fs = require('fs');
 const path = require('path');
 
 // ─── Config ────────────────────────────────────────────────────────────────────
-const SITE_URL = 'https://kamibi.vercel.app';
+const SITE_URL = 'https://kamibistore.com';
 const WIX_CLIENT_ID = '296237fc-b597-4736-b888-367dd4fd1740';
 const OUTPUT_DIR = path.resolve(__dirname, '..', 'public');
 

@@ -34,9 +34,9 @@ function stripHtml(html) {
  */
 // Wix Collection ID → app category mapping
 const COLLECTION_CATEGORY_MAP = {
-  'f84954f0-2bce-3f7a-2c98-203577ac2a14': 'water',  // Agua
-  '82f0b8b7-6684-6b61-4c58-89a6d4265429': 'earth',  // Tierra
-  'e730e772-0355-ef09-12aa-a6fd3a61a6d5': 'minis',  // Mini
+  'f84954f0-2bce-3f7a-2c98-203577ac2a14': 'urns',   // Agua → Urnas Biodegradables
+  '82f0b8b7-6684-6b61-4c58-89a6d4265429': 'urns',   // Tierra → Urnas Biodegradables
+  'e730e772-0355-ef09-12aa-a6fd3a61a6d5': 'minis',   // Mini
 };
 
 export function normalizeProduct(wixProduct) {
@@ -85,9 +85,8 @@ export function normalizeProduct(wixProduct) {
   }
   // Primary category for legacy usage (most specific wins)
   const primaryCategory = categories.includes('minis') ? 'minis'
-    : categories.includes('earth') ? 'earth'
-    : categories.includes('water') ? 'water'
-    : 'earth';
+    : categories.includes('urns') ? 'urns'
+    : 'urns';
 
   // Extract variants from productOptions (e.g., "Sleeve / Band" choices)
   // variantObjects: [{label, image}] — each choice with its associated image (if set in Wix)

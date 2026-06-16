@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from '../../context/LanguageContext';
 import { ScrollReveal } from '../ui/ScrollReveal';
@@ -8,6 +8,17 @@ import './CeremonyVisualizer.css';
 export const CeremonyVisualizer = () => {
   const { t, locale } = useTranslation();
   const [activeTab, setActiveTab] = useState('water'); // 'water' | 'earth'
+  const isPaused = useRef(false);
+
+  // Auto-rotate between water and earth every 6 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (!isPaused.current) {
+        setActiveTab(prev => prev === 'water' ? 'earth' : 'water');
+      }
+    }, 6000);
+    return () => clearInterval(interval);
+  }, []);
 
   const data = {
     water: {
@@ -56,7 +67,11 @@ export const CeremonyVisualizer = () => {
   const current = data[activeTab];
 
   return (
-    <section className={`ceremony-visualizer-section ${current.themeClass}`}>
+    <section
+      className={`ceremony-visualizer-section ${current.themeClass}`}
+      onMouseEnter={() => { isPaused.current = true; }}
+      onMouseLeave={() => { isPaused.current = false; }}
+    >
       <div className="container">
         <ScrollReveal direction="up" className="visualizer-header text-center">
           <span className="text-label visualizer-tag">{t('home.ceremonies.tag')}</span>
@@ -69,8 +84,8 @@ export const CeremonyVisualizer = () => {
               onClick={() => setActiveTab('water')}
               className={`visualizer-tab-btn text-label ${activeTab === 'water' ? 'active' : ''}`}
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: '8px' }}>
-                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '8px' }}>
+                <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
               </svg>
               {t('home.ceremonies.waterTab')}
             </button>
@@ -78,9 +93,10 @@ export const CeremonyVisualizer = () => {
               onClick={() => setActiveTab('earth')}
               className={`visualizer-tab-btn text-label ${activeTab === 'earth' ? 'active' : ''}`}
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: '8px' }}>
-                <path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20Z" />
-                <path d="M12 6v6l4 2" />
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '8px' }}>
+                <path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22l1.68-4.2A16.7 16.7 0 0 0 17 8Z" />
+                <path d="M17 8c3-1.47 5-4.42 5-8a1 1 0 0 0-1-1c-3.58 0-6.53 2-8 5" />
+                <path d="M2 22l2-2" />
               </svg>
               {t('home.ceremonies.earthTab')}
             </button>

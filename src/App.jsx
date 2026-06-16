@@ -18,6 +18,7 @@ import { ContactPage } from './pages/ContactPage';
 import { CityLandingPage } from './pages/CityLandingPage';
 import { DynamicStorePage } from './pages/DynamicStorePage';
 import { ZonasPage } from './pages/ZonasPage';
+import { ThankYouPage } from './pages/ThankYouPage';
 import './App.css';
 
 function App() {
@@ -45,6 +46,8 @@ function App() {
                     <Route path="/tienda/:slug" element={<DynamicStorePage />} />
                     {/* Hub page for all dynamic landings & stores */}
                     <Route path="/zonas" element={<ZonasPage />} />
+                    {/* Thank You page after checkout */}
+                    <Route path="/thank-you" element={<ThankYouPage />} />
                     {/* Catch-all: dynamic CMS landing pages */}
                     <Route path="/:slug" element={<CityLandingPage />} />
                   </Routes>

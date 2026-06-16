@@ -83,13 +83,13 @@
       "title": "The Lifecycle of Tribute",
       "subtitle": "A step-by-step journey of how our premium biodegradable urns return to nature without leaving a footprint.",
       "step1Title": "1. Secure Transit",
-      "step1Desc": "Made of lightweight cellulose and plant fibers, all Kamibi urns are TSA-approved for airport security carry-on, allowing stress-free travel to your ceremony location.",
+      "step1Desc": "Made of lightweight cellulose and plant fibers, all Kamibi urns are TSA-compliant for airport security carry-on, allowing stress-free travel to your ceremony location.",
       "step2Title": "2. The Farewell",
       "step2Desc": "Whether placed on water or buried in a quiet forest, the urn provides a dignified, elegant focal point for family remembrance.",
       "step3Title": "3. Natural Dissolution",
-      "step3Desc": "Without plastic linings, glues, or metals, the urn breaks down organically. Water urns dissolve in 15 minutes; earth urns decompose in 4 weeks.",
+      "step3Desc": "Without plastic linings, glues, or metals, the urn breaks down organically. Made with soy-based inks for a toxin-free biodegradation.",
       "step4Title": "4. Living Legacy",
-      "step4Desc": "For ground burials, wildflowers bloom from the integrated seed card, transforming the spot into a vibrant, living memorial for generations."
+      "step4Desc": "As it decomposes, the urn nourishes the earth and generates new life, transforming the site into a living tribute for future generations."
     },
     "cta": {
       "title": "Begin a Conscious Journey",
@@ -102,9 +102,8 @@
     "subtitle": "Choose an elegant, ecological pathway tailored to their memory.",
     "filters": {
       "all": "All products",
-      "water": "Water",
-      "earth": "Earth Burial",
-      "minis": "Minis"
+      "urns": "Biodegradable Urns",
+      "minis": "Biodegradable Mini Urns"
     },
     "quickView": "Quick View",
     "addToCart": "Add to Cart",
@@ -126,16 +125,44 @@
     "guide": {
       "title": "How it Works",
       "step1": {
-        "title": "Place Ashes",
-        "desc": "Carefully place the ashes into the biodegradable inner bag included in the kit."
+        "title": "Remove the Cover",
+        "hook": "Begin the tribute",
+        "desc": "Carefully slide off the outer sleeve and prepare the urn for the ceremony."
       },
       "step2": {
-        "title": "Secure & Seal",
-        "desc": "Seal the urn securely using the compostable paper ribbon and natural clay seal."
+        "title": "Prepare the Memories",
+        "hook": "A space for your words",
+        "desc": "Remove the included cards and pen to write your farewell messages."
       },
       "step3": {
-        "title": "The Ceremony",
-        "desc": "Submerge in water (dissolves in minutes) or bury in soil (biodegrades in weeks)."
+        "title": "Place the Ashes",
+        "hook": "An act of love and respect",
+        "desc": "Carefully place the ashes inside the biodegradable urn."
+      },
+      "step4": {
+        "title": "Write Your Message",
+        "hook": "Words that transcend",
+        "desc": "Share memories, gratitude, or your last words for your loved one."
+      },
+      "step5": {
+        "title": "Close the Urn",
+        "hook": "Ready for the farewell",
+        "desc": "Secure the urn and place the sleeve back for an elegant finish."
+      },
+      "step6": {
+        "title": "Transport with Care",
+        "hook": "Accompany every moment",
+        "desc": "Carry the urn peacefully to the chosen ceremony location."
+      },
+      "step7": {
+        "title": "Prepare for Immersion",
+        "hook": "Ease its return to the sea",
+        "desc": "Follow the indicated preparation for a natural and harmonious immersion."
+      },
+      "step8": {
+        "title": "Farewell with Serenity",
+        "hook": "A peaceful goodbye",
+        "desc": "Gently place the urn on the water and take a moment to honor their memory as it returns to nature."
       }
     },
     "benefits": {
@@ -214,9 +241,9 @@
       "t1Title": "2021 — The Origin",
       "t1Text": "Kamibi was born from a simple question: why should a farewell tribute leave a footprint of plastic or metal that takes centuries to degrade? We began the search for a clean, dignified, and natural alternative.",
       "t2Title": "2022 — Organic Alchemy",
-      "t2Text": "We collaborated with artisans and botany specialists to formulate a plant cellulose and pure mineral clay sealant. We completely eliminated artificial glues.",
+      "t2Text": "We collaborated with artisans and botany specialists to formulate recycled cellulose fibers and water-soluble bags and threads to contain the ashes.",
       "t3Title": "2023 — First Designs",
-      "t3Text": "We launched our first collections for water (Aqua) and earth (Terra), integrating seed cards that allow ashes to give way to a living memorial of wildflowers.",
+      "t3Text": "We launched our first collections for water (Aqua) and earth (Terra), designed to biodegrade naturally and allow ashes to return to the environment without contaminating, promoting an eco-friendly farewell.",
       "t4Title": "2024 — Cycle of Return",
       "t4Text": "Today we accompany thousands of families worldwide in respectful ceremonies, expanding our vision toward a future where every farewell returns life to the planet."
     },
@@ -224,7 +251,7 @@
       "tag": "THE CYCLE",
       "title": "The journey of tribute",
       "c1Title": "1. Conscious Crafting",
-      "c1Desc": "Handcrafted from plant cellulose fibers and pure natural clay.",
+      "c1Desc": "Handcrafted from recycled cellulose fibers and pure natural clay.",
       "c2Title": "2. The Farewell",
       "c2Desc": "An elegant, biodegradable memorial that acts as a focal point of reverence.",
       "c3Title": "3. Dissolution",
@@ -297,5 +324,16 @@
       "q3": "Do you ship internationally?",
       "a3": "Yes, we ship worldwide using secure, eco-friendly packaging."
     }
+  },
+  "thankYou": {
+    "tag": "ORDER CONFIRMED",
+    "title": "Thank You for Your Purchase",
+    "subtitle": "Your order has been successfully processed. You will receive a confirmation email with your purchase details and shipping information.",
+    "orderLabel": "Order No.:",
+    "message": "Every Kamibi urn is an act of love toward nature and the ones we cherish. Thank you for choosing an eco-friendly farewell.",
+    "continueShopping": "Continue Exploring",
+    "backHome": "Back to Home",
+    "contactNote": "Have a question about your order?",
+    "contactLink": "Contact Us"
   }
 }

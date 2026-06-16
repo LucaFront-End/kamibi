@@ -83,13 +83,13 @@
       "title": "El Ciclo del Tributo",
       "subtitle": "Un viaje paso a paso sobre cómo nuestras urnas biodegradables premium regresan a la naturaleza sin dejar huella ambiental.",
       "step1Title": "1. Tránsito Seguro",
-      "step1Desc": "Hechas de celulosa ligera y fibras vegetales, todas las urnas Kamibi están aprobadas por la TSA para equipaje de mano en aeropuertos, permitiéndote viajar sin preocupaciones.",
+      "step1Desc": "Hechas de celulosa ligera y fibras vegetales, todas las urnas Kamibi cumplen con la normativa TSA para equipaje de mano en aeropuertos, permitiéndote viajar sin preocupaciones.",
       "step2Title": "2. La Despedida",
       "step2Desc": "Ya sea depositada en el agua o enterrada en un bosque tranquilo, la urna actúa como un punto focal de paz y reverencia para la familia.",
       "step3Title": "3. Disolución Natural",
-      "step3Desc": "Sin plásticos, pegamentos químicos ni metales, la urna se desintegra orgánicamente. Las de agua en 15 minutos; las de tierra en unas 4 semanas.",
+      "step3Desc": "Sin plásticos, pegamentos químicos ni metales, la urna se desintegra orgánicamente. Elaborada con tintas de soya para una biodegradación libre de toxinas.",
       "step4Title": "4. Legado Vivo",
-      "step4Desc": "En entierros en tierra, flores silvestres brotan de la tarjeta de semillas integrada, transformando el lugar en un tributo vivo para las futuras generaciones."
+      "step4Desc": "Al descomponerse, la urna nutre la tierra y genera nueva vida, transformando el lugar en un tributo vivo para las futuras generaciones."
     },
     "cta": {
       "title": "Comienza un Viaje Consciente",
@@ -102,9 +102,8 @@
     "subtitle": "Elige un camino elegante y ecológico adaptado a su memoria.",
     "filters": {
       "all": "Todos los productos",
-      "water": "Agua",
-      "earth": "Tierra",
-      "minis": "Minis"
+      "urns": "Urnas Biodegradables",
+      "minis": "Urnas Biodegradables Minis"
     },
     "quickView": "Vista Rápida",
     "addToCart": "Agregar al Carrito",
@@ -126,16 +125,44 @@
     "guide": {
       "title": "Cómo Funciona",
       "step1": {
-        "title": "Colocar Cenizas",
-        "desc": "Coloca las cenizas con cuidado en la bolsa interior biodegradable incluida en el kit."
+        "title": "Retira la cubierta",
+        "hook": "Comienza el homenaje",
+        "desc": "Desliza cuidadosamente la funda exterior y prepara la urna para la ceremonia."
       },
       "step2": {
-        "title": "Cerrar y Sellar",
-        "desc": "Cierra la urna firmemente usando la cinta de papel compostable y el sello de arcilla natural."
+        "title": "Prepara los recuerdos",
+        "hook": "Un espacio para tus palabras",
+        "desc": "Retira las tarjetas y el bolígrafo incluidos para escribir tus mensajes de despedida."
       },
       "step3": {
-        "title": "La Ceremonia",
-        "desc": "Sumerge en agua (se disuelve en minutos) o entierra en tierra (se biodegrada en semanas)."
+        "title": "Coloca las cenizas",
+        "hook": "Un acto de amor y respeto",
+        "desc": "Deposita las cenizas con cuidado dentro de la urna biodegradable."
+      },
+      "step4": {
+        "title": "Escribe tu mensaje",
+        "hook": "Palabras que trascienden",
+        "desc": "Comparte recuerdos, agradecimientos o tus últimas palabras para tu ser querido."
+      },
+      "step5": {
+        "title": "Cierra la urna",
+        "hook": "Todo listo para la despedida",
+        "desc": "Asegura la urna y vuelve a colocar la funda para un acabado elegante."
+      },
+      "step6": {
+        "title": "Transporta con cuidado",
+        "hook": "Acompaña cada momento",
+        "desc": "Lleva la urna con tranquilidad hasta el lugar elegido para la ceremonia."
+      },
+      "step7": {
+        "title": "Prepara la inmersión",
+        "hook": "Facilita su regreso al mar",
+        "desc": "Realiza la preparación indicada para permitir una inmersión natural y armoniosa."
+      },
+      "step8": {
+        "title": "Despide con serenidad",
+        "hook": "Un adiós en paz",
+        "desc": "Coloca suavemente la urna sobre el agua y dedica un momento a honrar su memoria mientras regresa a la naturaleza."
       }
     },
     "benefits": {
@@ -214,9 +241,9 @@
       "t1Title": "2021 — El Origen",
       "t1Text": "Kamibi nació de una pregunta simple: ¿por qué el homenaje de despedida debe dejar una huella de plástico o metal que tarda siglos en degradarse? Iniciamos la búsqueda de una alternativa limpia, digna y natural.",
       "t2Title": "2022 — Alquimia Orgánica",
-      "t2Text": "Colaboramos con artesanos y especialistas en botánica para formular una celulosa vegetal y un sellador de arcilla mineral de origen 100% puro. Eliminamos por completo los pegamentos artificiales.",
+      "t2Text": "Colaboramos con artesanos y especialistas en botánica para formular fibras de celulosa recicladas y bolsas e hilos hidrosolubles para contener las cenizas.",
       "t3Title": "2023 — Primeros Diseños",
-      "t3Text": "Lanzamos nuestras primeras colecciones para agua (Aqua) y tierra (Terra), integrando tarjetas de semillas que permiten que las cenizas den paso a un memorial vivo de flores silvestres.",
+      "t3Text": "Lanzamos nuestras primeras colecciones para agua (Aqua) y tierra (Terra), diseñadas para biodegradarse de forma natural y permitir que las cenizas regresen al entorno sin contaminar, promoviendo una despedida respetuosa con el medio ambiente.",
       "t4Title": "2024 — Ciclo de Retorno",
       "t4Text": "Hoy acompañamos a miles de familias en todo el mundo en ceremonias respetuosas, expandiendo nuestra visión hacia un futuro donde toda despedida devuelva vida al planeta."
     },
@@ -224,7 +251,7 @@
       "tag": "EL CICLO",
       "title": "El viaje del tributo",
       "c1Title": "1. Modelado Consciente",
-      "c1Desc": "Moldeado a mano con fibras de celulosa vegetal y arcilla natural pura.",
+      "c1Desc": "Moldeado a mano con fibras de celulosas recicladas y arcilla natural pura.",
       "c2Title": "2. La Despedida",
       "c2Desc": "Un memorial elegante y biodegradable que actúa como foco de reverencia.",
       "c3Title": "3. Disolución",
@@ -297,5 +324,16 @@
       "q3": "¿Hacen envíos internacionales?",
       "a3": "Sí, realizamos envíos a todo el mundo con empaques protegidos y ecológicos."
     }
+  },
+  "thankYou": {
+    "tag": "PEDIDO CONFIRMADO",
+    "title": "Gracias por tu compra",
+    "subtitle": "Tu pedido ha sido procesado con éxito. Recibirás un correo de confirmación con los detalles de tu compra y la información de envío.",
+    "orderLabel": "N.º de Pedido:",
+    "message": "Cada urna Kamibi es un acto de amor hacia la naturaleza y hacia quien amamos. Gracias por elegir una despedida respetuosa con el planeta.",
+    "continueShopping": "Seguir Explorando",
+    "backHome": "Volver al Inicio",
+    "contactNote": "¿Tenés alguna pregunta sobre tu pedido?",
+    "contactLink": "Contactanos"
   }
 }

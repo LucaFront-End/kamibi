@@ -196,7 +196,7 @@ export const CartProvider = ({ children }) => {
         ecomCheckout: { checkoutId: checkout.checkoutId },
         callbacks: {
           postFlowUrl: window.location.origin,
-          thankYouPageUrl: `https://${WIX_BASE_DOMAIN}/thank-you`,
+          thankYouPageUrl: `${window.location.origin}/thank-you`,
         },
       });
 

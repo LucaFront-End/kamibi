@@ -137,10 +137,7 @@ export const Footer = () => {
                 <Link to="/store">{t('store.filters.all')}</Link>
               </li>
               <li>
-                <Link to="/store?cat=water">{t('store.filters.water')}</Link>
-              </li>
-              <li>
-                <Link to="/store?cat=earth">{t('store.filters.earth')}</Link>
+                <Link to="/store?cat=urns">{t('store.filters.urns')}</Link>
               </li>
               <li>
                 <Link to="/store?cat=minis">{t('store.filters.minis')}</Link>

@@ -1,18 +1,16 @@
 .ceremony-visualizer-section {
   padding: var(--space-5xl) 0;
-  border-top: 1px solid var(--color-sand-light);
-  border-bottom: 1px solid var(--color-sand-light);
   transition: background-color var(--duration-slow) var(--ease-out-expo);
   position: relative;
   overflow: hidden;
 }
 
 .visualizer-water-theme {
-  background-color: rgba(184, 197, 197, 0.12);
+  background-color: rgba(184, 197, 197, 0.06);
 }
 
 .visualizer-earth-theme {
-  background-color: rgba(196, 133, 106, 0.08);
+  background-color: rgba(196, 133, 106, 0.04);
 }
 
 .visualizer-header {
@@ -40,12 +38,13 @@
 /* Tabs switcher */
 .visualizer-tabs-container {
   display: inline-flex;
-  background-color: var(--color-warm-white);
-  border: 1px solid var(--color-sand);
+  background-color: rgba(255, 253, 249, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(232, 222, 209, 0.5);
   border-radius: var(--radius-full);
   padding: 4px;
   margin-top: var(--space-lg);
-  box-shadow: var(--shadow-sm);
 }
 
 .visualizer-tab-btn {

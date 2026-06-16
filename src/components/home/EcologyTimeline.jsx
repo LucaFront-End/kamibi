@@ -18,7 +18,7 @@ export const EcologyTimeline = () => {
         </svg>
       ),
       bgGlow: 'rgba(196, 169, 125, 0.08)',
-      featureTag: locale === 'en' ? 'TSA Certified' : 'Certificado TSA'
+      featureTag: locale === 'en' ? 'TSA Compliance' : 'Cumplimiento de Normas TSA'
     },
     {
       title: t('home.timeline.step2Title'),

@@ -27,7 +27,7 @@ export const StorePage = () => {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const cat = params.get('cat');
-    if (cat && ['all', 'water', 'earth', 'minis'].includes(cat)) {
+    if (cat && ['all', 'urns', 'minis'].includes(cat)) {
       setFilter(cat);
     } else {
       setFilter('all');
@@ -61,7 +61,7 @@ export const StorePage = () => {
         <section className="store-catalog container">
           {/* Filters Bar */}
           <div className="store-filters">
-            {['all', 'water', 'earth', 'minis'].map((cat) => (
+            {['all', 'urns', 'minis'].map((cat) => (
               <button
                 key={cat}
                 onClick={() => setFilter(cat)}

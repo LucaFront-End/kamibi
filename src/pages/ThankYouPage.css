@@ -1,0 +1,210 @@
+.thankyou-page {
+  min-height: 80vh;
+}
+
+.thankyou-hero {
+  position: relative;
+  padding: var(--space-5xl) 0;
+  overflow: hidden;
+}
+
+/* Ambient background glows */
+.thankyou-ambient {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.thankyou-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.3;
+}
+
+.thankyou-glow-1 {
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(196, 169, 125, 0.25), transparent 70%);
+  top: -100px;
+  right: -100px;
+  animation: floatGlow 8s ease-in-out infinite alternate;
+}
+
+.thankyou-glow-2 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(139, 158, 139, 0.2), transparent 70%);
+  bottom: -80px;
+  left: -80px;
+  animation: floatGlow 10s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes floatGlow {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(30px, -20px) scale(1.1); }
+}
+
+/* Content */
+.thankyou-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+/* Animated check icon */
+.thankyou-icon-wrapper {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background-color: var(--color-cream);
+  border: 2px solid var(--color-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-xl);
+  box-shadow: 0 8px 40px rgba(196, 169, 125, 0.2);
+}
+
+.thankyou-check-svg {
+  color: var(--color-deep-sage);
+}
+
+/* Tag */
+.thankyou-tag {
+  color: var(--color-gold);
+  margin-bottom: var(--space-sm);
+  letter-spacing: 0.12em;
+}
+
+/* Title */
+.thankyou-title {
+  font-size: var(--text-5xl);
+  color: var(--color-charcoal);
+  margin-bottom: var(--space-md);
+  line-height: 1.15;
+}
+
+/* Subtitle */
+.thankyou-subtitle {
+  color: var(--color-stone);
+  font-size: var(--text-lg);
+  line-height: 1.7;
+  max-width: 520px;
+  margin-bottom: var(--space-xl);
+}
+
+/* Order badge */
+.thankyou-order-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  background-color: var(--color-warm-white);
+  border: 1px solid var(--color-sand);
+  border-radius: var(--radius-full);
+  padding: 0.6rem 1.4rem;
+  margin-bottom: var(--space-2xl);
+  box-shadow: var(--shadow-sm);
+}
+
+.thankyou-order-badge .text-label {
+  color: var(--color-stone);
+}
+
+.thankyou-order-id {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-charcoal);
+  letter-spacing: 0.08em;
+}
+
+/* Message card */
+.thankyou-message-card {
+  background-color: var(--color-warm-white);
+  border: 1px solid var(--color-sand-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl) var(--space-2xl);
+  margin-bottom: var(--space-2xl);
+  max-width: 500px;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+}
+
+.thankyou-leaf-icon {
+  color: var(--color-deep-sage);
+  margin-bottom: var(--space-md);
+  opacity: 0.7;
+}
+
+.thankyou-message-text {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-style: italic;
+  color: var(--color-charcoal);
+  line-height: 1.7;
+  font-weight: 400;
+}
+
+/* Action buttons */
+.thankyou-actions {
+  display: flex;
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.thankyou-btn-primary {
+  padding: 0.9rem 2.2rem;
+  font-size: var(--text-sm);
+}
+
+.thankyou-btn-secondary {
+  padding: 0.9rem 2.2rem;
+  font-size: var(--text-sm);
+}
+
+/* Contact note */
+.thankyou-contact-note {
+  font-size: var(--text-sm);
+  color: var(--color-stone);
+}
+
+.thankyou-contact-link {
+  color: var(--color-gold);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color var(--duration-fast) ease;
+}
+
+.thankyou-contact-link:hover {
+  color: var(--color-charcoal);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .thankyou-title {
+    font-size: var(--text-3xl) !important;
+  }
+  .thankyou-subtitle {
+    font-size: var(--text-base);
+  }
+  .thankyou-icon-wrapper {
+    width: 100px;
+    height: 100px;
+  }
+  .thankyou-check-svg {
+    width: 48px;
+    height: 48px;
+  }
+  .thankyou-message-card {
+    padding: var(--space-lg);
+  }
+}

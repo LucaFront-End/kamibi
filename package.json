@@ -17,6 +17,7 @@
   "dependencies": {
     "@wix/blog": "^1.0.612",
     "@wix/contacts": "^1.0.27",
+    "@wix/crm": "^1.0.1565",
     "@wix/data": "^1.0.473",
     "@wix/ecom": "^1.0.2074",
     "@wix/identity": "^1.0.196",

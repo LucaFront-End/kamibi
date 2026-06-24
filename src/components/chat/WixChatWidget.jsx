@@ -49,16 +49,19 @@ export const WixChatWidget = () => {
           // Verify conversation exists by listing messages
           const res = await fetch(`/api/chat?action=list&conversationId=${conversationId}`);
           if (res.ok) {
-            const data = await res.json();
-            if (data.messages) {
-              const sorted = [...data.messages].sort((a, b) => {
-                const dateA = new Date(a.createdAt || a._createdDate || 0);
-                const dateB = new Date(b.createdAt || b._createdDate || 0);
-                return dateA - dateB;
-              });
-              setMessages(sorted);
-              setStatus('online');
-              return;
+            const contentType = res.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+              const data = await res.json();
+              if (data.messages) {
+                const sorted = [...data.messages].sort((a, b) => {
+                  const dateA = new Date(a.createdAt || a._createdDate || 0);
+                  const dateB = new Date(b.createdAt || b._createdDate || 0);
+                  return dateA - dateB;
+                });
+                setMessages(sorted);
+                setStatus('online');
+                return;
+              }
             }
           }
           // If stored ID is invalid/expired, clear it
@@ -104,7 +107,14 @@ export const WixChatWidget = () => {
         body: JSON.stringify({ action: 'init', name, email }),
       });
 
-      const data = await res.json();
+      const contentType = res.headers.get('content-type');
+      let data = {};
+      if (contentType && contentType.includes('application/json')) {
+        data = await res.json();
+      } else {
+        const textErr = await res.text();
+        throw new Error(textErr || 'A server error occurred');
+      }
 
       if (!res.ok) {
         throw new Error(data.error || 'Failed to initialize chat');
@@ -139,15 +149,18 @@ export const WixChatWidget = () => {
     try {
       const res = await fetch(`/api/chat?action=list&conversationId=${convoId}`);
       if (res.ok) {
-        const data = await res.json();
-        if (data.messages) {
-          // Sort messages chronologically
-          const sorted = [...data.messages].sort((a, b) => {
-            const dateA = new Date(a.createdAt || a._createdDate || 0);
-            const dateB = new Date(b.createdAt || b._createdDate || 0);
-            return dateA - dateB;
-          });
-          setMessages(sorted);
+        const contentType = res.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+          const data = await res.json();
+          if (data.messages) {
+            // Sort messages chronologically
+            const sorted = [...data.messages].sort((a, b) => {
+              const dateA = new Date(a.createdAt || a._createdDate || 0);
+              const dateB = new Date(b.createdAt || b._createdDate || 0);
+              return dateA - dateB;
+            });
+            setMessages(sorted);
+          }
         }
       }
     } catch (err) {
@@ -196,7 +209,15 @@ export const WixChatWidget = () => {
       });
 
       if (!res.ok) {
-        throw new Error('Failed to send message');
+        const contentType = res.headers.get('content-type');
+        let errMsg = 'Failed to send message';
+        if (contentType && contentType.includes('application/json')) {
+          const data = await res.json();
+          errMsg = data.error || errMsg;
+        } else {
+          errMsg = await res.text() || errMsg;
+        }
+        throw new Error(errMsg);
       }
 
       await fetchMessages(conversationId);

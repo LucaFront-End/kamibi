@@ -1,6 +1,6 @@
 import { createClient, ApiKeyStrategy } from '@wix/sdk';
 import { conversations, messages } from '@wix/inbox';
-import { contacts } from '@wix/contacts';
+import { contacts } from '@wix/crm';
 
 // Initialize Wix Client using Admin API Key
 const wixClient = createClient({

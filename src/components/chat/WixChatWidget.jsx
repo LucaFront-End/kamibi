@@ -117,7 +117,14 @@ export const WixChatWidget = () => {
       }
 
       if (!res.ok) {
-        throw new Error(data.error || 'Failed to initialize chat');
+        let errMsg = data.error || 'Failed to initialize chat';
+        if (data.details) {
+          errMsg += ` - ${data.details}`;
+        }
+        if (data.wixData) {
+          errMsg += ` - Wix Details: ${JSON.stringify(data.wixData)}`;
+        }
+        throw new Error(errMsg);
       }
 
       if (data.conversationId) {

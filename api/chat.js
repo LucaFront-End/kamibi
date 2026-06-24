@@ -114,7 +114,7 @@ export default async function handler(req, res) {
               info: {
                 name: nameObj,
                 emails: {
-                  items: [{ tag: 'MAIN', address: cleanEmail }],
+                  items: [{ tag: 'MAIN', email: cleanEmail }], // Fixed: tag and email (not address)
                 },
               },
               allowDuplicates: true,
@@ -125,7 +125,7 @@ export default async function handler(req, res) {
         } catch (err) {
           console.error('[WixChat] Error creating contact:', err.message, JSON.stringify(err.data || {}));
           return res.status(500).json({
-            error: 'Failed to create contact in CRM',
+            error: `Failed to create contact in CRM: ${err.message}`,
             details: err.message,
             wixData: err.data,
           });
@@ -138,10 +138,10 @@ export default async function handler(req, res) {
 
       // 3. Get or create inbox conversation
       try {
-        const convoRes = await wixFetch('/inbox/v2/conversations/getOrCreate', {
+        const convoRes = await wixFetch('/inbox/v2/conversations', { // Fixed: /inbox/v2/conversations instead of /getOrCreate
           method: 'POST',
           body: JSON.stringify({
-            participant: { contactId },
+            participantId: { contactId }, // Fixed: participantId instead of participant
           }),
         });
         const conversationId =
@@ -152,7 +152,7 @@ export default async function handler(req, res) {
       } catch (err) {
         console.error('[WixChat] Error creating conversation:', err.message, JSON.stringify(err.data || {}));
         return res.status(500).json({
-          error: 'Failed to initialize conversation',
+          error: `Failed to initialize conversation: ${err.message}`,
           details: err.message,
           wixData: err.data,
         });
@@ -188,6 +188,7 @@ export default async function handler(req, res) {
           method: 'POST',
           body: JSON.stringify({
             conversationId,
+            conversation_id: conversationId, // Support both snake_case and camelCase
             message: {
               content: {
                 basic: {
@@ -198,6 +199,7 @@ export default async function handler(req, res) {
               visibility: 'BUSINESS_AND_PARTICIPANT',
             },
             sendAs: 'PARTICIPANT',
+            send_as: 'PARTICIPANT', // Support both formats
           }),
         });
         return res.status(200).json(sendRes);

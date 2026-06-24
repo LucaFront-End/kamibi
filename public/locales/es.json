@@ -335,5 +335,23 @@
     "backHome": "Volver al Inicio",
     "contactNote": "¿Tenés alguna pregunta sobre tu pedido?",
     "contactLink": "Contactanos"
+  },
+  "chat": {
+    "bubbleTooltip": "Chatea con nosotros",
+    "title": "Soporte Kamibi",
+    "statusOnline": "En línea",
+    "statusOffline": "Desconectado",
+    "statusConnecting": "Conectando...",
+    "inputPlaceholder": "Escribe tu mensaje...",
+    "send": "Enviar",
+    "fallbackTitle": "Déjanos un mensaje",
+    "fallbackDesc": "El chat en vivo no está disponible en este momento. Escríbenos y te responderemos por correo electrónico.",
+    "fallbackSuccess": "Mensaje enviado con éxito. Te responderemos pronto.",
+    "fallbackError": "Hubo un error al enviar el mensaje. Inténtalo de nuevo.",
+    "nameLabel": "Nombre",
+    "emailLabel": "Correo Electrónico",
+    "messageLabel": "Mensaje",
+    "submitBtn": "Enviar Mensaje",
+    "tryChatBtn": "Reintentar chat"
   }
 }

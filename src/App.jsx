@@ -7,6 +7,7 @@ import { MembersProvider } from './context/MembersContext';
 import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
 import { CartDrawer } from './components/layout/CartDrawer';
+import { WixChatWidget } from './components/chat/WixChatWidget';
 import { HomePage } from './pages/HomePage';
 import { StorePage } from './pages/StorePage';
 import { ProductPage } from './pages/ProductPage';
@@ -55,6 +56,7 @@ function App() {
 
                 <Footer />
                 <CartDrawer />
+                <WixChatWidget />
               </div>
             </Router>
           </MembersProvider>

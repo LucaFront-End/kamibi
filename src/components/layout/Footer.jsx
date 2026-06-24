@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from '../../context/LanguageContext';
 import { useMagnetic } from '../../hooks/useMagnetic';
+import { useFormCMS } from '../../hooks/useFormCMS';
 import { ScrollReveal } from '../ui/ScrollReveal';
 import './Footer.css';
 
 export const Footer = () => {
   const { t, locale } = useTranslation();
   const backToTopRef = useMagnetic(0.4);
+  const { submitToCMS } = useFormCMS();
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -36,10 +38,21 @@ export const Footer = () => {
       return res.json();
     })
     .then(() => {
+      // Capture email before resetting state
+      const submittedEmail = email;
+
       setIsSubmitting(false);
       setIsSubmitted(true);
       setEmail('');
       setTimeout(() => setIsSubmitted(false), 5000);
+
+      // Fire-and-forget: also save to Wix CMS
+      submitToCMS({
+        type: 'newsletter',
+        email: submittedEmail,
+        locale,
+        source: 'footer',
+      });
     })
     .catch(err => {
       setIsSubmitting(false);

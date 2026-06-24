@@ -5,10 +5,12 @@ import { PageTransition } from '../components/layout/PageTransition';
 import { MagneticButton } from '../components/ui/MagneticButton';
 import { ScrollReveal } from '../components/ui/ScrollReveal';
 import { useSEO } from '../hooks/useSEO';
+import { useFormCMS } from '../hooks/useFormCMS';
 import './ContactPage.css';
 
 export const ContactPage = () => {
   const { t, locale } = useTranslation();
+  const { submitToCMS } = useFormCMS();
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -59,9 +61,22 @@ export const ContactPage = () => {
       return res.json();
     })
     .then(() => {
+      // Capture values before resetting form state
+      const submittedData = { ...formData };
+
       setIsSubmitting(false);
       setIsSubmitted(true);
       setFormData({ name: '', email: '', message: '' });
+
+      // Fire-and-forget: also save to Wix CMS
+      submitToCMS({
+        type: 'contact',
+        name: submittedData.name,
+        email: submittedData.email,
+        message: submittedData.message,
+        locale,
+        source: 'contact-page',
+      });
       
       // Auto-hide success message after 5 seconds
       setTimeout(() => {

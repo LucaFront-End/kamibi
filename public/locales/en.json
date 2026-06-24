@@ -335,5 +335,23 @@
     "backHome": "Back to Home",
     "contactNote": "Have a question about your order?",
     "contactLink": "Contact Us"
+  },
+  "chat": {
+    "bubbleTooltip": "Chat with us",
+    "title": "Kamibi Support",
+    "statusOnline": "Online",
+    "statusOffline": "Offline",
+    "statusConnecting": "Connecting...",
+    "inputPlaceholder": "Type your message...",
+    "send": "Send",
+    "fallbackTitle": "Leave us a message",
+    "fallbackDesc": "Live chat is temporarily unavailable. Write to us and we will reply via email.",
+    "fallbackSuccess": "Message sent successfully! We will get back to you soon.",
+    "fallbackError": "There was an error sending your message. Please try again.",
+    "nameLabel": "Name",
+    "emailLabel": "Email Address",
+    "messageLabel": "Message",
+    "submitBtn": "Send Message",
+    "tryChatBtn": "Try chat again"
   }
 }

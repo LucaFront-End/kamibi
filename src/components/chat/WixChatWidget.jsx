@@ -56,8 +56,8 @@ export const WixChatWidget = () => {
               const data = await res.json();
               if (data.messages) {
                 const sorted = [...data.messages].sort((a, b) => {
-                  const dateA = new Date(a.createdAt || a._createdDate || 0);
-                  const dateB = new Date(b.createdAt || b._createdDate || 0);
+                  const dateA = new Date(a.createdDate || a.createdAt || a._createdDate || 0);
+                  const dateB = new Date(b.createdDate || b.createdAt || b._createdDate || 0);
                   return dateA - dateB;
                 });
                 setMessages(sorted);
@@ -164,8 +164,8 @@ export const WixChatWidget = () => {
           if (data.messages) {
             // Sort messages chronologically
             const sorted = [...data.messages].sort((a, b) => {
-              const dateA = new Date(a.createdAt || a._createdDate || 0);
-              const dateB = new Date(b.createdAt || b._createdDate || 0);
+              const dateA = new Date(a.createdDate || a.createdAt || a._createdDate || 0);
+              const dateB = new Date(b.createdDate || b.createdAt || b._createdDate || 0);
               return dateA - dateB;
             });
             setMessages(sorted);
@@ -305,7 +305,7 @@ export const WixChatWidget = () => {
   const isMessageFromVisitor = (msg) => {
     const dir = msg.direction || '';
     return (
-      dir.includes('PARTICIPANT') ||
+      dir === 'PARTICIPANT_TO_BUSINESS' ||
       dir === 'visitor' ||
       msg.sender?.role === 'visitor' ||
       msg.id?.startsWith('temp-')
@@ -538,7 +538,7 @@ export const WixChatWidget = () => {
                             <p>{text}</p>
                           </div>
                           <span className="timestamp">
-                            {new Date(msg.createdAt || msg._createdDate).toLocaleTimeString(locale, {
+                            {new Date(msg.createdDate || msg.createdAt || msg._createdDate).toLocaleTimeString(locale, {
                               hour: '2-digit',
                               minute: '2-digit',
                             })}

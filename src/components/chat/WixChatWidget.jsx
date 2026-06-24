@@ -12,9 +12,10 @@ export const WixChatWidget = () => {
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState('');
   const [conversationId, setConversationId] = useState(() => localStorage.getItem('kamibi_chat_convo_id') || '');
-  const [status, setStatus] = useState('connecting'); // 'connecting' | 'setup' (needs name/email) | 'online' | 'fallback'
+  const [status, setStatus] = useState('connecting'); // 'connecting' | 'setup' | 'online' | 'fallback'
   const [isSending, setIsSending] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isTyping, setIsTyping] = useState(false); // Visual typing indicator state
 
   // Initial user info form for chat setup
   const [initForm, setInitForm] = useState({ name: '', email: '' });
@@ -29,6 +30,7 @@ export const WixChatWidget = () => {
   const [fallbackError, setFallbackError] = useState('');
 
   const messagesEndRef = useRef(null);
+  const inputRef = useRef(null);
 
   // Scroll to bottom of message history
   const scrollToBottom = () => {
@@ -38,8 +40,10 @@ export const WixChatWidget = () => {
   useEffect(() => {
     if (isOpen) {
       scrollToBottom();
+      // Auto-focus input
+      setTimeout(() => inputRef.current?.focus(), 300);
     }
-  }, [messages, isOpen]);
+  }, [messages, isOpen, isTyping]);
 
   // Initial setup: retrieve conversation or check if logged in member
   useEffect(() => {
@@ -140,7 +144,6 @@ export const WixChatWidget = () => {
       }
     } catch (err) {
       console.error('[WixChat] Initialization failed:', err);
-      // If server keys are missing, show fallback form immediately
       if (err.message?.includes('configure') || err.message?.includes('WIX_API_KEY')) {
         setStatus('fallback');
         setFallbackError(err.message);
@@ -162,7 +165,6 @@ export const WixChatWidget = () => {
         if (contentType && contentType.includes('application/json')) {
           const data = await res.json();
           if (data.messages) {
-            // Sort messages chronologically
             const sorted = [...data.messages].sort((a, b) => {
               const dateA = new Date(a.createdDate || a.createdAt || a._createdDate || 0);
               const dateB = new Date(b.createdDate || b.createdAt || b._createdDate || 0);
@@ -188,33 +190,30 @@ export const WixChatWidget = () => {
     return () => clearInterval(interval);
   }, [status, isOpen, conversationId]);
 
-  // Send message to Wix Inbox via serverless API
-  const handleSendMessage = async (e) => {
-    e.preventDefault();
-    if (!inputText.trim() || isSending || !conversationId) return;
-
-    const messageText = inputText.trim();
-    setInputText('');
+  // Send message helper
+  const sendMessageToServer = async (text) => {
     setIsSending(true);
-
-    // Optimistically add message to state
+    // Optimistically add message
     const tempMessage = {
       id: `temp-${Date.now()}`,
       direction: 'PARTICIPANT_TO_BUSINESS',
       createdAt: new Date().toISOString(),
       content: {
         basic: {
-          items: [{ text: messageText }]
+          items: [{ text }]
         }
       }
     };
     setMessages(prev => [...prev, tempMessage]);
 
+    // Simulate typing feedback briefly when user sends a message
+    setIsTyping(true);
+
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'send', conversationId, text: messageText }),
+        body: JSON.stringify({ action: 'send', conversationId, text }),
       });
 
       if (!res.ok) {
@@ -234,10 +233,57 @@ export const WixChatWidget = () => {
       console.error('[WixChat] Error sending message:', err);
     } finally {
       setIsSending(false);
+      // Turn off mock typing indicator after a short delay
+      setTimeout(() => setIsTyping(false), 1500);
     }
   };
 
-  // Handle fallback form submission (submissions directly to Wix CMS)
+  const handleSendMessage = async (e) => {
+    e.preventDefault();
+    if (!inputText.trim() || isSending || !conversationId) return;
+
+    const messageText = inputText.trim();
+    setInputText('');
+    await sendMessageToServer(messageText);
+  };
+
+  // Quick Prompts / FAQ options based on locale
+  const quickPrompts = locale === 'es' ? [
+    { text: '¿Cuáles son las opciones de envío? 🚚', reply: 'Hola! ¿Cuáles son las opciones de envío y entrega a domicilio?' },
+    { text: '¿Dónde puedo retirar mi compra? 📍', reply: 'Hola! Quería consultar cuáles son los puntos de retiro o sucursales.' },
+    { text: 'Quiero hablar con un asesor 💬', reply: 'Hola! Necesito asistencia personalizada con un asesor de soporte.' }
+  ] : [
+    { text: 'What are the shipping options? 🚚', reply: 'Hi! What are the shipping and home delivery options?' },
+    { text: 'Where can I pick up my order? 📍', reply: 'Hi! I would like to know the pickup locations.' },
+    { text: 'I want to speak with an agent 💬', reply: 'Hi! I need personalized assistance from a support agent.' }
+  ];
+
+  const handleQuickPromptClick = async (prompt) => {
+    if (isSending || !conversationId) return;
+    await sendMessageToServer(prompt.reply);
+  };
+
+  // Run diagnostics helper
+  const runDiagnostics = async () => {
+    setRunningDiag(true);
+    setDiagInfo(null);
+    try {
+      const res = await fetch('/api/chat?action=diagnostic');
+      if (res.ok) {
+        const data = await res.json();
+        setDiagInfo(data);
+      } else {
+        const text = await res.text();
+        setDiagInfo({ error: `Backend returned ${res.status}: ${text}` });
+      }
+    } catch (err) {
+      setDiagInfo({ error: err.message });
+    } finally {
+      setRunningDiag(false);
+    }
+  };
+
+  // Fallback form submission
   const handleFallbackSubmit = async (e) => {
     e.preventDefault();
     if (!fallbackForm.email.trim() || !fallbackForm.message.trim() || fallbackSubmitting) return;
@@ -246,7 +292,6 @@ export const WixChatWidget = () => {
     setFallbackError('');
 
     try {
-      // Direct write to collection (since items.insert is allowed for visitors)
       const payload = {
         type: 'contact',
         name: fallbackForm.name,
@@ -269,26 +314,6 @@ export const WixChatWidget = () => {
     }
   };
 
-  const runDiagnostics = async () => {
-    setRunningDiag(true);
-    setDiagInfo(null);
-    try {
-      const res = await fetch('/api/chat?action=diagnostic');
-      if (res.ok) {
-        const data = await res.json();
-        setDiagInfo(data);
-      } else {
-        const text = await res.text();
-        setDiagInfo({ error: `Backend returned ${res.status}: ${text}` });
-      }
-    } catch (err) {
-      setDiagInfo({ error: err.message });
-    } finally {
-      setRunningDiag(false);
-    }
-  };
-
-  // Setup form submission
   const handleInitSubmit = (e) => {
     e.preventDefault();
     if (initForm.email.trim()) {
@@ -296,12 +321,10 @@ export const WixChatWidget = () => {
     }
   };
 
-  // Parse message text
   const getMessageText = (msg) => {
     return msg.content?.basic?.items?.[0]?.text || msg.content?.basic?.text || msg.text || '';
   };
 
-  // Determine message sender (visitor vs business)
   const isMessageFromVisitor = (msg) => {
     const dir = msg.direction || '';
     return (
@@ -318,8 +341,8 @@ export const WixChatWidget = () => {
       <motion.button
         className="wix-chat-bubble"
         onClick={() => setIsOpen(!isOpen)}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
+        whileHover={{ scale: 1.08 }}
+        whileTap={{ scale: 0.92 }}
         aria-label={t('chat.bubbleTooltip')}
         title={t('chat.bubbleTooltip')}
       >
@@ -328,9 +351,12 @@ export const WixChatWidget = () => {
             <path fill="currentColor" d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
           </svg>
         ) : (
-          <svg viewBox="0 0 24 24" className="chat-icon">
-            <path fill="currentColor" d="M12,2A10,10 0 0,0 2,12C2,14.63 3.03,17.03 4.71,18.83L3,23L7.47,21.82C8.84,22.58 10.37,23 12,23A10,10 0 0,0 22,13A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20C10.66,20 9.42,19.67 8.33,19.09L8.06,18.94L5.16,19.7L5.94,17.8L5.78,17.55C5.28,16.75 5,15.82 5,14.83A8,8 0 0,1 12,4M12,6A6,6 0 0,0 6,12A6,6 0 0,0 12,18A6,6 0 0,0 18,12a6,6 0 0,0-6-6z" />
-          </svg>
+          <div className="chat-bubble-inner">
+            <svg viewBox="0 0 24 24" className="chat-icon">
+              <path fill="currentColor" d="M12,2A10,10 0 0,0 2,12C2,14.63 3.03,17.03 4.71,18.83L3,23L7.47,21.82C8.84,22.58 10.37,23 12,23A10,10 0 0,0 22,13A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20C10.66,20 9.42,19.67 8.33,19.09L8.06,18.94L5.16,19.7L5.94,17.8L5.78,17.55C5.28,16.75 5,15.82 5,14.83A8,8 0 0,1 12,4M12,6A6,6 0 0,0 6,12A6,6 0 0,0 12,18A6,6 0 0,0 18,12a6,6 0 0,0-6-6z" />
+            </svg>
+            <span className="bubble-ping" />
+          </div>
         )}
       </motion.button>
 
@@ -339,177 +365,173 @@ export const WixChatWidget = () => {
         {isOpen && (
           <motion.div
             className="wix-chat-window"
-            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            initial={{ opacity: 0, y: 40, scale: 0.94 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 50, scale: 0.9 }}
-            transition={{ duration: 0.3, ease: 'easeOut' }}
+            exit={{ opacity: 0, y: 40, scale: 0.94 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 220 }}
           >
-            {/* Header */}
+            {/* Premium Header */}
             <div className="chat-header">
               <div className="header-info">
-                <div className="avatar">K</div>
+                <div className="avatar-group">
+                  <div className="avatar">K</div>
+                  <span className="online-badge" />
+                </div>
                 <div className="info-text">
-                  <h3>{t('chat.title')}</h3>
+                  <h3>{t('chat.title') || 'Kamibi Store'}</h3>
                   <div className="status-indicator">
-                    <span className={`status-dot ${status === 'online' ? 'online' : status === 'fallback' ? 'fallback' : 'connecting'}`} />
-                    <span>
-                      {status === 'online' && t('chat.statusOnline')}
-                      {status === 'fallback' && t('chat.statusOffline')}
-                      {(status === 'connecting' || status === 'setup') && t('chat.statusConnecting')}
-                    </span>
+                    <span>{locale === 'es' ? 'Soporte Activo ⚡' : 'Active Support ⚡'}</span>
+                    <span className="dot-divider">•</span>
+                    <span>{locale === 'es' ? 'En línea' : 'Online'}</span>
                   </div>
                 </div>
               </div>
               <button className="close-btn" onClick={() => setIsOpen(false)}>
-                &times;
+                <svg viewBox="0 0 24 24" width="20" height="20">
+                  <path fill="currentColor" d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
+                </svg>
               </button>
             </div>
 
             {/* Body */}
             <div className="chat-body">
               {status === 'connecting' && (
-                <div className="empty-chat">
-                  <p>{t('chat.statusConnecting')}</p>
+                <div className="chat-loading-screen">
+                  <div className="premium-spinner" />
+                  <p>{t('chat.statusConnecting') || 'Conectando soporte...'}</p>
                 </div>
               )}
 
               {status === 'setup' && (
                 /* Registration screen before chat starts */
-                <div className="fallback-form-container">
-                  <h4>{locale === 'es' ? 'Iniciar Chat' : 'Start Chat'}</h4>
-                  <p className="fallback-desc">
+                <motion.div 
+                  className="setup-form-container"
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                >
+                  <h4>{locale === 'es' ? 'Iniciar Chat de Soporte' : 'Start Support Chat'}</h4>
+                  <p className="setup-desc">
                     {locale === 'es' 
-                      ? 'Por favor, ingresa tu correo para iniciar el chat de soporte.' 
-                      : 'Please enter your email to start the support chat.'}
+                      ? 'Ingresa tus datos para conectarte en tiempo real con un asesor de Kamibi.' 
+                      : 'Enter your details to connect in real time with a Kamibi agent.'}
                   </p>
-                  <form onSubmit={handleInitSubmit} className="fallback-form">
-                    <div className="form-group">
-                      <label>{t('chat.nameLabel')}</label>
+                  <form onSubmit={handleInitSubmit} className="premium-form">
+                    <div className="form-group-premium">
                       <input
                         type="text"
+                        required
                         value={initForm.name}
                         onChange={(e) => setInitForm(prev => ({ ...prev, name: e.target.value }))}
-                        placeholder={t('contact.form.placeholderName')}
+                        placeholder=" "
+                        id="init_name"
                       />
+                      <label htmlFor="init_name">{t('chat.nameLabel') || 'NombreCompleto'}</label>
                     </div>
-                    <div className="form-group">
-                      <label>{t('chat.emailLabel')} *</label>
+                    <div className="form-group-premium">
                       <input
                         type="email"
                         required
                         value={initForm.email}
                         onChange={(e) => setInitForm(prev => ({ ...prev, email: e.target.value }))}
-                        placeholder={t('contact.form.placeholderEmail')}
+                        placeholder=" "
+                        id="init_email"
                       />
+                      <label htmlFor="init_email">{t('chat.emailLabel') || 'Email'}</label>
                     </div>
-                     {initError && (
-                       <div className="init-error-container">
-                         <p className="fallback-error" style={{ marginBottom: '8px' }}>{initError}</p>
-                         <button
-                           type="button"
-                           onClick={runDiagnostics}
-                           className="diag-btn"
-                           disabled={runningDiag}
-                           style={{
-                             background: 'rgba(255, 255, 255, 0.1)',
-                             border: '1px solid rgba(255, 0, 0, 0.3)',
-                             borderRadius: '4px',
-                             color: '#ff4d4d',
-                             fontSize: '0.72rem',
-                             padding: '4px 8px',
-                             cursor: 'pointer',
-                             marginBottom: '8px',
-                             width: '100%'
-                           }}
-                         >
-                           {runningDiag ? 'Running diagnostics...' : '🔍 Run Wix Integration Diagnostics'}
-                         </button>
-                         {diagInfo && (
-                           <pre style={{
-                             background: '#1a1a1a',
-                             color: '#39ff14',
-                             fontSize: '0.65rem',
-                             padding: '8px',
-                             borderRadius: '4px',
-                             overflowX: 'auto',
-                             maxHeight: '120px',
-                             textAlign: 'left',
-                             border: '1px solid #333'
-                           }}>
-                             {JSON.stringify(diagInfo, null, 2)}
-                           </pre>
-                         )}
-                       </div>
-                     )}
-                     <button type="submit" className="submit-btn" disabled={loading}>
-                       {loading ? t('chat.statusConnecting') : (locale === 'es' ? 'Comenzar' : 'Start')}
-                     </button>
-                   </form>
-                </div>
+
+                    {initError && (
+                      <div className="diag-error-card">
+                        <p className="diag-error-text">{initError}</p>
+                        <button
+                          type="button"
+                          onClick={runDiagnostics}
+                          className="diag-run-btn"
+                          disabled={runningDiag}
+                        >
+                          {runningDiag ? 'Analizando...' : '🔍 Diagnosticar conexión'}
+                        </button>
+                        {diagInfo && (
+                          <pre className="diag-json-output">
+                            {JSON.stringify(diagInfo, null, 2)}
+                          </pre>
+                        )}
+                      </div>
+                    )}
+
+                    <button type="submit" className="premium-submit-btn" disabled={loading}>
+                      {loading ? (
+                        <div className="btn-loader-spinner" />
+                      ) : (
+                        locale === 'es' ? 'Comenzar Chat' : 'Start Chat'
+                      )}
+                    </button>
+                  </form>
+                </motion.div>
               )}
 
               {status === 'fallback' && (
                 /* Fallback Contact Form */
-                <div className="fallback-form-container">
-                  <h4>{t('chat.fallbackTitle')}</h4>
-                  <p className="fallback-desc">{t('chat.fallbackDesc')}</p>
+                <div className="setup-form-container">
+                  <h4>{t('chat.fallbackTitle') || 'Dejar un mensaje'}</h4>
+                  <p className="setup-desc">{t('chat.fallbackDesc') || 'Envíanos tu consulta e iniciamos seguimiento por email.'}</p>
 
                   {fallbackSubmitted ? (
                     <motion.div
-                      className="fallback-success"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
+                      className="fallback-success-card"
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
                     >
-                      <svg viewBox="0 0 24 24" className="success-icon">
-                        <path fill="currentColor" d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M10,17L5,12L6.41,10.59L10,14.17L17.59,6.58L19,8L10,17Z" />
-                      </svg>
-                      <p>{t('chat.fallbackSuccess')}</p>
+                      <div className="success-icon-wrapper">
+                        <svg viewBox="0 0 24 24" className="success-svg">
+                          <path fill="currentColor" d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M10,17L5,12L6.41,10.59L10,14.17L17.59,6.58L19,8L10,17Z" />
+                        </svg>
+                      </div>
+                      <p>{t('chat.fallbackSuccess') || 'Mensaje enviado. Te responderemos a la brevedad.'}</p>
                       <button
-                        className="btn-retry"
+                        className="btn-premium-retry"
                         onClick={() => setFallbackSubmitted(false)}
                       >
-                        {t('chat.tryChatBtn')}
+                        {t('chat.tryChatBtn') || 'Volver a intentar'}
                       </button>
                     </motion.div>
                   ) : (
-                    <form onSubmit={handleFallbackSubmit} className="fallback-form">
-                      <div className="form-group">
-                        <label>{t('chat.nameLabel')}</label>
+                    <form onSubmit={handleFallbackSubmit} className="premium-form">
+                      <div className="form-group-premium">
                         <input
                           type="text"
                           required
                           value={fallbackForm.name}
                           onChange={(e) => setFallbackForm(prev => ({ ...prev, name: e.target.value }))}
-                          placeholder={t('contact.form.placeholderName')}
+                          placeholder=" "
+                          id="fb_name"
                         />
+                        <label htmlFor="fb_name">{t('chat.nameLabel')}</label>
                       </div>
-                      <div className="form-group">
-                        <label>{t('chat.emailLabel')} *</label>
+                      <div className="form-group-premium">
                         <input
                           type="email"
                           required
                           value={fallbackForm.email}
                           onChange={(e) => setFallbackForm(prev => ({ ...prev, email: e.target.value }))}
-                          placeholder={t('contact.form.placeholderEmail')}
+                          placeholder=" "
+                          id="fb_email"
                         />
+                        <label htmlFor="fb_email">{t('chat.emailLabel')}</label>
                       </div>
-                      <div className="form-group">
-                        <label>{t('chat.messageLabel')} *</label>
+                      <div className="form-group-premium textarea-group">
                         <textarea
                           required
                           rows={3}
                           value={fallbackForm.message}
                           onChange={(e) => setFallbackForm(prev => ({ ...prev, message: e.target.value }))}
-                          placeholder={t('contact.form.placeholderMessage')}
+                          placeholder=" "
+                          id="fb_message"
                         />
+                        <label htmlFor="fb_message">{t('chat.messageLabel')}</label>
                       </div>
-                      {fallbackError && (
-                        <p className="fallback-error" style={{ fontSize: '0.72rem' }}>
-                          {fallbackError}
-                        </p>
-                      )}
-                      <button type="submit" className="submit-btn" disabled={fallbackSubmitting}>
-                        {fallbackSubmitting ? t('contact.form.sending') : t('chat.submitBtn')}
+                      {fallbackError && <p className="fallback-error-text">{fallbackError}</p>}
+                      <button type="submit" className="premium-submit-btn" disabled={fallbackSubmitting}>
+                        {fallbackSubmitting ? <div className="btn-loader-spinner" /> : t('chat.submitBtn')}
                       </button>
                     </form>
                   )}
@@ -520,34 +542,76 @@ export const WixChatWidget = () => {
                 /* Chat Messages History */
                 <div className="messages-history">
                   {messages.length === 0 ? (
-                    <div className="empty-chat">
-                      <p>{locale === 'es' ? '¡Hola! ¿En qué podemos ayudarte hoy?' : 'Hello! How can we help you today?'}</p>
+                    <div className="chat-welcome-container">
+                      <div className="welcome-logo">K</div>
+                      <h4>{locale === 'es' ? '¡Bienvenido a Kamibi!' : 'Welcome to Kamibi!'}</h4>
+                      <p>{locale === 'es' ? '¿En qué podemos ayudarte hoy? Haz clic en alguna consulta frecuente o escríbenos directamente.' : 'How can we help you today? Choose a quick question below or write us.'}</p>
                     </div>
                   ) : (
-                    messages.map((msg) => {
-                      const isVisitor = isMessageFromVisitor(msg);
-                      const text = getMessageText(msg);
-                      if (!text) return null;
+                    <div className="chat-scroll-wrapper">
+                      {messages.map((msg, index) => {
+                        const isVisitor = isMessageFromVisitor(msg);
+                        const text = getMessageText(msg);
+                        if (!text) return null;
 
-                      return (
-                        <div
-                          key={msg.id}
-                          className={`message-bubble-wrapper ${isVisitor ? 'visitor' : 'business'}`}
+                        return (
+                          <motion.div
+                            key={msg.id || index}
+                            className={`message-bubble-wrapper ${isVisitor ? 'visitor' : 'business'}`}
+                            initial={{ opacity: 0, y: 10, scale: 0.98 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            transition={{ duration: 0.22 }}
+                          >
+                            <div className="message-bubble">
+                              <p>{text}</p>
+                            </div>
+                            <span className="timestamp">
+                              {new Date(msg.createdDate || msg.createdAt || msg._createdDate).toLocaleTimeString(locale, {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                              })}
+                            </span>
+                          </motion.div>
+                        );
+                      })}
+
+                      {/* Visual Mock Typing Indicator */}
+                      {isTyping && (
+                        <motion.div 
+                          className="message-bubble-wrapper business typing-wrapper"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
                         >
-                          <div className="message-bubble">
-                            <p>{text}</p>
+                          <div className="message-bubble typing-bubble">
+                            <span className="typing-dot" />
+                            <span className="typing-dot" />
+                            <span className="typing-dot" />
                           </div>
-                          <span className="timestamp">
-                            {new Date(msg.createdDate || msg.createdAt || msg._createdDate).toLocaleTimeString(locale, {
-                              hour: '2-digit',
-                              minute: '2-digit',
-                            })}
-                          </span>
-                        </div>
-                      );
-                    })
+                        </motion.div>
+                      )}
+                      <div ref={messagesEndRef} />
+                    </div>
                   )}
-                  <div ref={messagesEndRef} />
+
+                  {/* Predefined Quick Prompts / FAQ Buttons */}
+                  {messages.length === 0 && (
+                    <div className="quick-prompts-container">
+                      {quickPrompts.map((prompt, idx) => (
+                        <motion.button
+                          key={idx}
+                          className="quick-prompt-btn"
+                          onClick={() => handleQuickPromptClick(prompt)}
+                          whileHover={{ scale: 1.03, y: -2 }}
+                          whileTap={{ scale: 0.97 }}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.1 * idx }}
+                        >
+                          {prompt.text}
+                        </motion.button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -556,10 +620,12 @@ export const WixChatWidget = () => {
             {status === 'online' && (
               <form onSubmit={handleSendMessage} className="chat-footer">
                 <input
+                  ref={inputRef}
                   type="text"
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
-                  placeholder={t('chat.inputPlaceholder')}
+                  placeholder={t('chat.inputPlaceholder') || 'Escribe tu mensaje...'}
+                  disabled={isSending}
                 />
                 <button
                   type="submit"

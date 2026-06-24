@@ -51,7 +51,7 @@ export default async function handler(req, res) {
       // 1. Query CRM contacts to see if contact exists
       try {
         const queryRes = await wixClient.contacts.queryContacts()
-          .eq('info.emails.address', cleanEmail)
+          .eq('primaryInfo.email', cleanEmail)
           .limit(1)
           .find();
 
@@ -66,18 +66,14 @@ export default async function handler(req, res) {
       if (!contactId) {
         try {
           const createRes = await wixClient.contacts.createContact({
-            contact: {
-              info: {
-                name: { first: cleanName },
-                emails: [
-                  {
-                    tag: 'MAIN',
-                    address: cleanEmail,
-                    primary: true,
-                  },
-                ],
+            name: { first: cleanName },
+            emails: [
+              {
+                tag: 'MAIN',
+                address: cleanEmail,
+                primary: true,
               },
-            },
+            ],
           });
           contactId = createRes.contact?._id || createRes.contact?.id;
         } catch (err) {

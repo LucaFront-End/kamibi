@@ -19,6 +19,8 @@ export const WixChatWidget = () => {
   // Initial user info form for chat setup
   const [initForm, setInitForm] = useState({ name: '', email: '' });
   const [initError, setInitError] = useState('');
+  const [diagInfo, setDiagInfo] = useState(null);
+  const [runningDiag, setRunningDiag] = useState(false);
 
   // Fallback form states (for CMS fallback if WIX env keys are missing)
   const [fallbackForm, setFallbackForm] = useState({ name: '', email: '', message: '' });
@@ -267,6 +269,25 @@ export const WixChatWidget = () => {
     }
   };
 
+  const runDiagnostics = async () => {
+    setRunningDiag(true);
+    setDiagInfo(null);
+    try {
+      const res = await fetch('/api/chat?action=diagnostic');
+      if (res.ok) {
+        const data = await res.json();
+        setDiagInfo(data);
+      } else {
+        const text = await res.text();
+        setDiagInfo({ error: `Backend returned ${res.status}: ${text}` });
+      }
+    } catch (err) {
+      setDiagInfo({ error: err.message });
+    } finally {
+      setRunningDiag(false);
+    }
+  };
+
   // Setup form submission
   const handleInitSubmit = (e) => {
     e.preventDefault();
@@ -381,11 +402,49 @@ export const WixChatWidget = () => {
                         placeholder={t('contact.form.placeholderEmail')}
                       />
                     </div>
-                    {initError && <p className="fallback-error">{initError}</p>}
-                    <button type="submit" className="submit-btn" disabled={loading}>
-                      {loading ? t('chat.statusConnecting') : (locale === 'es' ? 'Comenzar' : 'Start')}
-                    </button>
-                  </form>
+                     {initError && (
+                       <div className="init-error-container">
+                         <p className="fallback-error" style={{ marginBottom: '8px' }}>{initError}</p>
+                         <button
+                           type="button"
+                           onClick={runDiagnostics}
+                           className="diag-btn"
+                           disabled={runningDiag}
+                           style={{
+                             background: 'rgba(255, 255, 255, 0.1)',
+                             border: '1px solid rgba(255, 0, 0, 0.3)',
+                             borderRadius: '4px',
+                             color: '#ff4d4d',
+                             fontSize: '0.72rem',
+                             padding: '4px 8px',
+                             cursor: 'pointer',
+                             marginBottom: '8px',
+                             width: '100%'
+                           }}
+                         >
+                           {runningDiag ? 'Running diagnostics...' : '🔍 Run Wix Integration Diagnostics'}
+                         </button>
+                         {diagInfo && (
+                           <pre style={{
+                             background: '#1a1a1a',
+                             color: '#39ff14',
+                             fontSize: '0.65rem',
+                             padding: '8px',
+                             borderRadius: '4px',
+                             overflowX: 'auto',
+                             maxHeight: '120px',
+                             textAlign: 'left',
+                             border: '1px solid #333'
+                           }}>
+                             {JSON.stringify(diagInfo, null, 2)}
+                           </pre>
+                         )}
+                       </div>
+                     )}
+                     <button type="submit" className="submit-btn" disabled={loading}>
+                       {loading ? t('chat.statusConnecting') : (locale === 'es' ? 'Comenzar' : 'Start')}
+                     </button>
+                   </form>
                 </div>
               )}
 

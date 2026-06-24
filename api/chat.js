@@ -67,6 +67,37 @@ export default async function handler(req, res) {
   }
 
   try {
+    // ─── DIAGNOSTIC ──────────────────────────────────────────────────────────
+    if (action === 'diagnostic') {
+      const apiKey = process.env.WIX_API_KEY || '';
+      const siteId = process.env.WIX_SITE_ID || '';
+
+      const diag = {
+        siteIdLength: siteId.length,
+        siteIdStart: siteId.slice(0, 8) + '...',
+        siteIdIsGuid: /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(siteId.trim()),
+        apiKeyLength: apiKey.length,
+        apiKeyStart: apiKey.slice(0, 10) + '...',
+        apiKeyPrefix: apiKey.slice(0, 4),
+        apiKeyLooksValid: apiKey.trim().startsWith('IST.') && apiKey.trim().length > 50,
+      };
+
+      let testResult = null;
+      try {
+        const testRes = await wixFetch('/contacts/v4/contacts/query', {
+          method: 'POST',
+          body: JSON.stringify({
+            query: { paging: { limit: 1 } }
+          })
+        });
+        testResult = { success: true, count: testRes.contacts?.length || 0 };
+      } catch (err) {
+        testResult = { success: false, error: err.message, status: err.status, wixData: err.data };
+      }
+
+      return res.status(200).json({ diagnostic: diag, testResult });
+    }
+
     // ─── INIT ────────────────────────────────────────────────────────────────
     if (action === 'init') {
       const { name, email } = req.body || {};

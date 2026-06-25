@@ -100,7 +100,7 @@ export default async function handler(req, res) {
 
     // ─── INIT ────────────────────────────────────────────────────────────────
     if (action === 'init') {
-      const { name, email } = req.body || {};
+      const { name, email, phone } = req.body || {};
       if (!email) {
         return res.status(400).json({ error: 'Email is required for chat initialization' });
       }
@@ -139,15 +139,23 @@ export default async function handler(req, res) {
           const nameObj = { first: firstName };
           if (lastName) nameObj.last = lastName;
 
+          const contactInfo = {
+            name: nameObj,
+            emails: {
+              items: [{ tag: 'MAIN', email: cleanEmail }],
+            }
+          };
+
+          if (phone && phone.trim()) {
+            contactInfo.phones = {
+              items: [{ tag: 'MOBILE', phone: phone.trim() }]
+            };
+          }
+
           const createRes = await wixFetch('/contacts/v4/contacts', {
             method: 'POST',
             body: JSON.stringify({
-              info: {
-                name: nameObj,
-                emails: {
-                  items: [{ tag: 'MAIN', email: cleanEmail }], // Fixed: tag and email (not address)
-                },
-              },
+              info: contactInfo,
               allowDuplicates: true,
             }),
           });

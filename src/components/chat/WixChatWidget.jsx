@@ -18,7 +18,7 @@ export const WixChatWidget = () => {
   const [isTyping, setIsTyping] = useState(false); // Visual typing indicator state
 
   // Initial user info form for chat setup
-  const [initForm, setInitForm] = useState({ name: '', email: '' });
+  const [initForm, setInitForm] = useState({ name: '', email: '', phone: '' });
   const [initError, setInitError] = useState('');
   const [diagInfo, setDiagInfo] = useState(null);
   const [runningDiag, setRunningDiag] = useState(false);
@@ -103,14 +103,14 @@ export const WixChatWidget = () => {
   }, [isReady, wixClient]);
 
   // Call serverless API to initialize conversation
-  const initializeConversation = async (name, email) => {
+  const initializeConversation = async (name, email, phone) => {
     setLoading(true);
     setInitError('');
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'init', name, email }),
+        body: JSON.stringify({ action: 'init', name, email, phone }),
       });
 
       const contentType = res.headers.get('content-type');
@@ -316,8 +316,8 @@ export const WixChatWidget = () => {
 
   const handleInitSubmit = (e) => {
     e.preventDefault();
-    if (initForm.email.trim()) {
-      initializeConversation(initForm.name, initForm.email);
+    if (initForm.email.trim() && initForm.phone.trim()) {
+      initializeConversation(initForm.name, initForm.email, initForm.phone);
     }
   };
 
@@ -437,6 +437,17 @@ export const WixChatWidget = () => {
                         id="init_email"
                       />
                       <label htmlFor="init_email">{t('chat.emailLabel') || 'Email'}</label>
+                    </div>
+                    <div className="form-group-premium">
+                      <input
+                        type="tel"
+                        required
+                        value={initForm.phone}
+                        onChange={(e) => setInitForm(prev => ({ ...prev, phone: e.target.value }))}
+                        placeholder=" "
+                        id="init_phone"
+                      />
+                      <label htmlFor="init_phone">{locale === 'es' ? 'Teléfono / WhatsApp *' : 'Phone / WhatsApp *'}</label>
                     </div>
 
                     {initError && (

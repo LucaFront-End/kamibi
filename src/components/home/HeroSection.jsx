@@ -23,6 +23,19 @@ export const HeroSection = ({ overrideTitle, overrideSubtitle }) => {
     }
   }, []);
 
+  // Autoplay themes/slides rotation (rotates every 6 seconds, resets timer on user click)
+  useEffect(() => {
+    const themeIds = ['dawn', 'sunset', 'twilight'];
+    const timer = setInterval(() => {
+      setActiveTheme((current) => {
+        const nextIndex = (themeIds.indexOf(current) + 1) % themeIds.length;
+        return themeIds[nextIndex];
+      });
+    }, 6000);
+
+    return () => clearInterval(timer);
+  }, [activeTheme]);
+
   const handleScrollDown = () => {
     const nextSec = document.querySelector('.philosophy-section');
     if (nextSec) {

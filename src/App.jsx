@@ -9,6 +9,7 @@ import { Footer } from './components/layout/Footer';
 import { CartDrawer } from './components/layout/CartDrawer';
 import { WixChatWidget } from './components/chat/WixChatWidget';
 import { HomePage } from './pages/HomePage';
+import { HomePageTest } from './pages/HomePageTest';
 import { StorePage } from './pages/StorePage';
 import { ProductPage } from './pages/ProductPage';
 import { BlogPage } from './pages/BlogPage';
@@ -36,6 +37,7 @@ function App() {
                 <main className="main-content">
                   <Routes>
                     <Route path="/" element={<HomePage />} />
+                    <Route path="/home-test" element={<HomePageTest />} />
                     <Route path="/store" element={<StorePage />} />
                     <Route path="/product/:slug" element={<ProductPage />} />
                     <Route path="/blog" element={<BlogPage />} />

@@ -375,3 +375,33 @@
   box-shadow: 0 0 6px #8A7B9B;
 }
 
+/* Alternate Hero Variant: Ultra-transparent Glassmorphism */
+.hero-content-card.hero-variant-transparent {
+  background: rgba(26, 26, 26, 0.25) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3) !important;
+}
+
+.hero-variant-transparent .hero-title {
+  color: var(--color-warm-white) !important;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5) !important;
+}
+
+.hero-variant-transparent .hero-subtitle {
+  color: rgba(255, 255, 255, 0.85) !important;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.6) !important;
+}
+
+.hero-variant-transparent .hero-card-badge {
+  color: var(--color-gold) !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4) !important;
+}
+
+.hero-variant-transparent .hero-card-badge::before {
+  background-color: var(--color-gold) !important;
+  box-shadow: 0 0 8px var(--color-gold);
+}
+
+

@@ -6,7 +6,7 @@ import { ScrollReveal } from '../ui/ScrollReveal';
 import { useNavigate } from 'react-router-dom';
 import './HeroSection.css';
 
-export const HeroSection = ({ overrideTitle, overrideSubtitle }) => {
+export const HeroSection = ({ overrideTitle, overrideSubtitle, variant }) => {
   const { t, locale } = useTranslation();
   const navigate = useNavigate();
   const [activeTheme, setActiveTheme] = useState('dawn'); // 'dawn' | 'sunset' | 'twilight'
@@ -74,7 +74,7 @@ export const HeroSection = ({ overrideTitle, overrideSubtitle }) => {
       {/* Content */}
       <div className="container hero-container">
         <div className="hero-card-wrapper">
-          <div className={`hero-content-card card-theme-${activeTheme}`}>
+          <div className={`hero-content-card card-theme-${activeTheme} ${variant ? `hero-variant-${variant}` : ''}`}>
             <div className="hero-card-badge text-label">Kamibi Memorials</div>
             
             <SplitText className="hero-title heading-display">

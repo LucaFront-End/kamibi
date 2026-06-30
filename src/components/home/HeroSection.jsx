@@ -50,7 +50,7 @@ export const HeroSection = ({ overrideTitle, overrideSubtitle, variant }) => {
   ];
 
   return (
-    <section className={`hero-section hero-theme-${activeTheme}`}>
+    <section className={`hero-section hero-theme-${activeTheme} ${variant ? `hero-sec-variant-${variant}` : ''}`}>
       {/* Background Crossfading Images */}
       <div className="hero-bg-wrapper">
         <img

@@ -10,6 +10,7 @@ import { CartDrawer } from './components/layout/CartDrawer';
 import { WixChatWidget } from './components/chat/WixChatWidget';
 import { HomePage } from './pages/HomePage';
 import { HomePageTest } from './pages/HomePageTest';
+import { HomePageVideoTest } from './pages/HomePageVideoTest';
 import { StorePage } from './pages/StorePage';
 import { ProductPage } from './pages/ProductPage';
 import { BlogPage } from './pages/BlogPage';
@@ -38,6 +39,7 @@ function App() {
                   <Routes>
                     <Route path="/" element={<HomePage />} />
                     <Route path="/home-test" element={<HomePageTest />} />
+                    <Route path="/home-video" element={<HomePageVideoTest />} />
                     <Route path="/store" element={<StorePage />} />
                     <Route path="/product/:slug" element={<ProductPage />} />
                     <Route path="/blog" element={<BlogPage />} />

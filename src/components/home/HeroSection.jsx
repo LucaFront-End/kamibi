@@ -6,25 +6,23 @@ import { ScrollReveal } from '../ui/ScrollReveal';
 import { useNavigate } from 'react-router-dom';
 import './HeroSection.css';
 
-export const HeroSection = ({ overrideTitle, overrideSubtitle, variant }) => {
+export const HeroSection = ({ overrideTitle, overrideSubtitle, variant, bgVideo }) => {
   const { t, locale } = useTranslation();
   const navigate = useNavigate();
-  const [activeTheme, setActiveTheme] = useState('dawn'); // 'dawn' | 'sunset' | 'twilight'
-
-  // Auto-detect local time to match ambient theme initially
-  useEffect(() => {
+  
+  // If video is provided, default to twilight theme for maximum readability of white text, otherwise detect hour
+  const [activeTheme, setActiveTheme] = useState(() => {
+    if (bgVideo) return 'twilight';
     const hours = new Date().getHours();
-    if (hours >= 6 && hours < 16) {
-      setActiveTheme('dawn');
-    } else if (hours >= 16 && hours < 20) {
-      setActiveTheme('sunset');
-    } else {
-      setActiveTheme('twilight');
-    }
-  }, []);
+    if (hours >= 6 && hours < 16) return 'dawn';
+    if (hours >= 16 && hours < 20) return 'sunset';
+    return 'twilight';
+  });
 
-  // Autoplay themes/slides rotation (rotates every 6 seconds, resets timer on user click)
+  // Autoplay themes/slides rotation (only when no video bg is present, rotates every 6 seconds)
   useEffect(() => {
+    if (bgVideo) return; // Disable automatic slide rotation if there is a video background
+    
     const themeIds = ['dawn', 'sunset', 'twilight'];
     const timer = setInterval(() => {
       setActiveTheme((current) => {
@@ -34,7 +32,7 @@ export const HeroSection = ({ overrideTitle, overrideSubtitle, variant }) => {
     }, 6000);
 
     return () => clearInterval(timer);
-  }, [activeTheme]);
+  }, [activeTheme, bgVideo]);
 
   const handleScrollDown = () => {
     const nextSec = document.querySelector('.philosophy-section');
@@ -51,23 +49,36 @@ export const HeroSection = ({ overrideTitle, overrideSubtitle, variant }) => {
 
   return (
     <section className={`hero-section hero-theme-${activeTheme} ${variant ? `hero-sec-variant-${variant}` : ''}`}>
-      {/* Background Crossfading Images */}
+      {/* Background Crossfading Images or Video */}
       <div className="hero-bg-wrapper">
-        <img
-          src="/lake-dawn.png"
-          alt="Dawn Mist"
-          className={`hero-bg-img ${activeTheme === 'dawn' ? 'active' : ''}`}
-        />
-        <img
-          src="/lake-sunset.png"
-          alt="Golden Sunset"
-          className={`hero-bg-img ${activeTheme === 'sunset' ? 'active' : ''}`}
-        />
-        <img
-          src="/lake-twilight.png"
-          alt="Serene Twilight"
-          className={`hero-bg-img ${activeTheme === 'twilight' ? 'active' : ''}`}
-        />
+        {bgVideo ? (
+          <video
+            src={bgVideo}
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="hero-bg-video"
+          />
+        ) : (
+          <>
+            <img
+              src="/lake-dawn.png"
+              alt="Dawn Mist"
+              className={`hero-bg-img ${activeTheme === 'dawn' ? 'active' : ''}`}
+            />
+            <img
+              src="/lake-sunset.png"
+              alt="Golden Sunset"
+              className={`hero-bg-img ${activeTheme === 'sunset' ? 'active' : ''}`}
+            />
+            <img
+              src="/lake-twilight.png"
+              alt="Serene Twilight"
+              className={`hero-bg-img ${activeTheme === 'twilight' ? 'active' : ''}`}
+            />
+          </>
+        )}
         <div className="hero-bg-overlay"></div>
       </div>
 
@@ -80,13 +91,13 @@ export const HeroSection = ({ overrideTitle, overrideSubtitle, variant }) => {
             <SplitText className="hero-title heading-display">
               {overrideTitle || t('home.hero.title')}
             </SplitText>
-
+ 
             <ScrollReveal direction="up" delay={0.4} className="hero-subtitle-wrapper">
               <p className="hero-subtitle text-body">
                 {overrideSubtitle || t('home.hero.subtitle')}
               </p>
             </ScrollReveal>
-
+ 
             <ScrollReveal direction="up" delay={0.7} className="hero-cta-wrapper">
               <MagneticButton
                 variant="primary"
@@ -98,25 +109,27 @@ export const HeroSection = ({ overrideTitle, overrideSubtitle, variant }) => {
             </ScrollReveal>
           </div>
         </div>
-
-        {/* Ambient controls */}
-        <div className="hero-ambient-controls">
-          <span className="ambient-label text-label">
-            {locale === 'en' ? 'Atmosphere:' : 'Atmósfera:'}
-          </span>
-          <div className="ambient-buttons-group">
-            {themes.map((theme) => (
-              <button
-                key={theme.id}
-                onClick={() => setActiveTheme(theme.id)}
-                className={`ambient-btn ${activeTheme === theme.id ? 'active' : ''}`}
-              >
-                <span className={`ambient-dot dot-${theme.id}`}></span>
-                {locale === 'en' ? theme.labelEn : theme.labelEs}
-              </button>
-            ))}
+ 
+        {/* Ambient controls (only visible if no video background is active) */}
+        {!bgVideo && (
+          <div className="hero-ambient-controls">
+            <span className="ambient-label text-label">
+              {locale === 'en' ? 'Atmosphere:' : 'Atmósfera:'}
+            </span>
+            <div className="ambient-buttons-group">
+              {themes.map((theme) => (
+                <button
+                  key={theme.id}
+                  onClick={() => setActiveTheme(theme.id)}
+                  className={`ambient-btn ${activeTheme === theme.id ? 'active' : ''}`}
+                >
+                  <span className={`ambient-dot dot-${theme.id}`}></span>
+                  {locale === 'en' ? theme.labelEn : theme.labelEs}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Scroll Indicator */}
         <div className="hero-scroll-indicator" onClick={handleScrollDown}>

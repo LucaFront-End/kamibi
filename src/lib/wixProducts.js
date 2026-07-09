@@ -37,6 +37,7 @@ const COLLECTION_CATEGORY_MAP = {
   'f84954f0-2bce-3f7a-2c98-203577ac2a14': 'urns',   // Agua → Urnas Biodegradables
   '82f0b8b7-6684-6b61-4c58-89a6d4265429': 'urns',   // Tierra → Urnas Biodegradables
   'e730e772-0355-ef09-12aa-a6fd3a61a6d5': 'minis',   // Mini
+  'c437f73c-1862-3280-5936-ad533e1b6beb': 'bags',    // Burial Bags
 };
 
 export function normalizeProduct(wixProduct) {
@@ -85,6 +86,7 @@ export function normalizeProduct(wixProduct) {
   }
   // Primary category for legacy usage (most specific wins)
   const primaryCategory = categories.includes('minis') ? 'minis'
+    : categories.includes('bags') ? 'bags'
     : categories.includes('urns') ? 'urns'
     : 'urns';
 

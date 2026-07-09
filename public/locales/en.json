@@ -103,7 +103,8 @@
     "filters": {
       "all": "All products",
       "urns": "Biodegradable Urns",
-      "minis": "Biodegradable Mini Urns"
+      "minis": "Biodegradable Mini Urns",
+      "bags": "Burial Bags"
     },
     "quickView": "Quick View",
     "addToCart": "Add to Cart",

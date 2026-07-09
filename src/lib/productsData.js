@@ -180,5 +180,65 @@ export const products = [
       "/products/mini-urns.png"
     ],
     variants: ["Assorted Earth Tones", "All White Set"]
+  },
+  {
+    id: "ash-burial-bags-pack-of-2",
+    slug: "ash-burial-bags-pack-of-2",
+    name: "ASH BURIAL BAGS - Pack of 2",
+    tagline: "Water-soluble bags for respectful water ceremony.",
+    price: 39.00,
+    category: "bags",
+    colorName: "Natural Soluble",
+    colorHex: "#FFFFFF",
+    shortDescription: "Bolsas hidrosolubles para cenizas diseñadas para una ceremonia en el mar o lago de forma segura y respetuosa.",
+    shortDescriptionEn: "Water-soluble bags for ashes designed for a safe and respectful water ceremony.",
+    description: "Nuestras bolsas hidrosolubles para cenizas están diseñadas para disolverse completamente en agua en pocos minutos sin dejar residuos químicos. Son seguras para el medio ambiente marino y compatibles con nuestras urnas de agua.",
+    descriptionEn: "Our water-soluble bags for ashes are designed to dissolve completely in water in a few minutes without leaving chemical residues. Safe for the marine environment and compatible with our water urns.",
+    features: [
+      "Disolución rápida y completa en agua",
+      "Material 100% biodegradable de origen vegetal",
+      "Seguro para la flora y fauna marina",
+      "Pack de 2 unidades"
+    ],
+    featuresEn: [
+      "Fast and complete dissolution in water",
+      "100% plant-based biodegradable material",
+      "Safe for marine life and vegetation",
+      "Pack of 2 bags"
+    ],
+    images: [
+      "/products/placeholder.png"
+    ],
+    variants: ["Standard Pack"]
+  },
+  {
+    id: "cremation-burial-bags-tree-of-life-design-pack-of-2",
+    slug: "cremation-burial-bags-tree-of-life-design-pack-of-2",
+    name: "CREMATION BURIAL BAGS TREE OF LIFE DESIGN - Pack of 2",
+    tagline: "Elegant design for a natural return.",
+    price: 45.00,
+    category: "bags",
+    colorName: "Tree of Life Design",
+    colorHex: "#D8C7B2",
+    shortDescription: "Bolsas biodegradables con diseño del Árbol de la Vida, ideales para ceremonias de esparcimiento en agua o tierra.",
+    shortDescriptionEn: "Biodegradable bags with Tree of Life design, ideal for water or ground scattering ceremonies.",
+    description: "Estas bolsas biodegradables decoradas con el Árbol de la Vida ofrecen una presentación elegante y respetuosa para las cenizas antes del esparcimiento. Hechas de papel ecológico de alta calidad.",
+    descriptionEn: "These biodegradable bags decorated with the Tree of Life design offer an elegant and respectful presentation for ashes before scattering. Made of high quality ecological paper.",
+    features: [
+      "Diseño elegante del Árbol de la Vida",
+      "Materiales ecológicos 100% compostables",
+      "Ideal para ceremonias de homenaje",
+      "Pack de 2 unidades"
+    ],
+    featuresEn: [
+      "Elegant Tree of Life design",
+      "100% compostable eco-friendly materials",
+      "Ideal for memorial ceremonies",
+      "Pack of 2 bags"
+    ],
+    images: [
+      "/products/placeholder.png"
+    ],
+    variants: ["Tree of Life Pack"]
   }
 ];

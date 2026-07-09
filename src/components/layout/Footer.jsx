@@ -155,6 +155,9 @@ export const Footer = () => {
               <li>
                 <Link to="/store?cat=minis">{t('store.filters.minis')}</Link>
               </li>
+              <li>
+                <Link to="/store?cat=bags">{t('store.filters.bags')}</Link>
+              </li>
             </ul>
           </ScrollReveal>
 

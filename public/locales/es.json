@@ -103,7 +103,8 @@
     "filters": {
       "all": "Todos los productos",
       "urns": "Urnas Biodegradables",
-      "minis": "Urnas Biodegradables Minis"
+      "minis": "Urnas Biodegradables Minis",
+      "bags": "Bolsas de Entierro"
     },
     "quickView": "Vista Rápida",
     "addToCart": "Agregar al Carrito",

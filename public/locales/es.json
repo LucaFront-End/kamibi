@@ -270,14 +270,14 @@
     "materials": {
       "tag": "LOS MATERIALES",
       "title": "Solo lo que la naturaleza puede reconocer",
-      "m1Title": "Fibra de Celulosa",
-      "m1Desc": "Estructura ligera y resistente de origen vegetal, 100% compostable.",
-      "m2Title": "Arcilla Natural",
-      "m2Desc": "Sello y estructura minerales de origen puro, sin aditivos químicos.",
-      "m3Title": "Semillas Silvestres",
-      "m3Desc": "Cada urna de tierra contiene semillas que florecen como memorial vivo.",
-      "m4Title": "Sin Plastificantes",
-      "m4Desc": "Pegamentos orgánicos y tintas naturales que se disuelven sin dejar rastro."
+      "m1Title": "Fibras Vegetales Naturales",
+      "m1Desc": "Fibras naturales de origen vegetal que brindan resistencia durante la ceremonia y se biodegradan de forma natural con el tiempo.",
+      "m2Title": "Cordón Hidrosoluble",
+      "m2Desc": "Cierra de forma segura la bolsa para cenizas y se disuelve naturalmente durante las ceremonias de entierro en agua.",
+      "m3Title": "Materiales Biodegradables",
+      "m3Desc": "Cada componente está diseñado para regresar de forma natural al entorno sin dejar residuos dañinos.",
+      "m4Title": "Tintas de Soya",
+      "m4Desc": "Impresas con tintas ecológicas a base de soya y elaboradas sin plastificantes ni recubrimientos sintéticos."
     },
     "testimonial": {
       "quote": "«La muerte no es la extinción de la luz; es solo apagar la lámpara porque ha llegado el amanecer.»",

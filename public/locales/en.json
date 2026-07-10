@@ -270,14 +270,14 @@
     "materials": {
       "tag": "THE MATERIALS",
       "title": "Only what the earth recognizes",
-      "m1Title": "Cellulose Fiber",
-      "m1Desc": "Lightweight, strong plant-based structure, 100% compostable.",
-      "m2Title": "Natural Clay",
-      "m2Desc": "Pure mineral seal and structure, no chemical additives.",
-      "m3Title": "Wild Seeds",
-      "m3Desc": "Each earth urn contains seeds that bloom as a living memorial in the soil.",
-      "m4Title": "Plasticizer-Free",
-      "m4Desc": "Organic glues and natural inks that dissolve without a trace."
+      "m1Title": "Natural Plant Fibers",
+      "m1Desc": "Strong natural fibers that provide durability during the ceremony while biodegrading naturally over time.",
+      "m2Title": "Water-Soluble Drawstring",
+      "m2Desc": "Securely closes the ash bag and naturally dissolves during water burial ceremonies.",
+      "m3Title": "Biodegradable Materials",
+      "m3Desc": "Every component is designed to return naturally to the environment without leaving harmful residue.",
+      "m4Title": "Soy-Based Inks",
+      "m4Desc": "Printed with eco-friendly soy-based inks and made without plastic laminates or synthetic coatings."
     },
     "testimonial": {
       "quote": "“Death is not extinguishing the light; it is only putting out the lamp because the dawn has come.”",

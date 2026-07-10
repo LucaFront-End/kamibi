@@ -118,17 +118,17 @@ export const AboutPage = () => {
       desc: t('about.materials.m1Desc'),
     },
     {
-      icon: '🪨',
+      icon: '🪢',
       title: t('about.materials.m2Title'),
       desc: t('about.materials.m2Desc'),
     },
     {
-      icon: '🌸',
+      icon: '🌎',
       title: t('about.materials.m3Title'),
       desc: t('about.materials.m3Desc'),
     },
     {
-      icon: '💧',
+      icon: '🌱',
       title: t('about.materials.m4Title'),
       desc: t('about.materials.m4Desc'),
     },

@@ -15,10 +15,10 @@ export const HomePageImagesTest = () => {
   const { locale } = useTranslation();
 
   useSEO({
-    titleEn: 'Kamibi Store Test | Alternate Ceremony Images Design',
-    titleEs: 'Kamibi Store Test | Diseño Alternativo de Imágenes de Ceremonia',
-    descEn:  'A visual comparison test page evaluating alternate images for water and earth ceremonies.',
-    descEs:  'Página de prueba comparativa evaluando imágenes alternativas para ceremonias de agua y tierra.',
+    titleEn: 'Kamibi Store Test | Alternate Hero Images Design',
+    titleEs: 'Kamibi Store Test | Diseño Alternativo de Imágenes de Hero',
+    descEn:  'A visual comparison test page evaluating alternate background images for the main hero section.',
+    descEs:  'Página de prueba comparativa evaluando imágenes de fondo alternativas para la sección de hero principal.',
     locale,
   });
 
@@ -30,14 +30,16 @@ export const HomePageImagesTest = () => {
   return (
     <PageTransition>
       <div className="home-page-images-test">
-        <HeroSection variant="transparent" />
+        <HeroSection 
+          variant="transparent" 
+          customSlides={[
+            { id: 'water', labelEn: 'Water Ceremony', labelEs: 'Ceremonia en Agua', image: '/images/home-test-water.png' },
+            { id: 'earth', labelEn: 'Earth Burial', labelEs: 'Ceremonia en Tierra', image: '/images/home-test-earth.png' }
+          ]}
+        />
         <PhilosophySection />
         <FeaturedProducts />
-        {/* Pass the two custom ChatGPT images to visualizer */}
-        <CeremonyVisualizer 
-          overrideWaterImage="/images/home-test-water.png" 
-          overrideEarthImage="/images/home-test-earth.png" 
-        />
+        <CeremonyVisualizer />
         <RitualSection />
         <EcologyTimeline />
         <TestimonialsSection />

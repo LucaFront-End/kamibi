@@ -6,13 +6,14 @@ import { ScrollReveal } from '../ui/ScrollReveal';
 import { useNavigate } from 'react-router-dom';
 import './HeroSection.css';
 
-export const HeroSection = ({ overrideTitle, overrideSubtitle, variant, bgVideo }) => {
+export const HeroSection = ({ overrideTitle, overrideSubtitle, variant, bgVideo, customSlides }) => {
   const { t, locale } = useTranslation();
   const navigate = useNavigate();
   
-  // If video is provided, default to twilight theme for maximum readability of white text, otherwise detect hour
+  // If video is provided, default to twilight theme. If customSlides is provided, default to first slide ID. Otherwise detect hour.
   const [activeTheme, setActiveTheme] = useState(() => {
     if (bgVideo) return 'twilight';
+    if (customSlides && customSlides.length > 0) return customSlides[0].id;
     const hours = new Date().getHours();
     if (hours >= 6 && hours < 16) return 'dawn';
     if (hours >= 16 && hours < 20) return 'sunset';
@@ -23,7 +24,10 @@ export const HeroSection = ({ overrideTitle, overrideSubtitle, variant, bgVideo 
   useEffect(() => {
     if (bgVideo) return; // Disable automatic slide rotation if there is a video background
     
-    const themeIds = ['dawn', 'sunset', 'twilight'];
+    const themeIds = customSlides && customSlides.length > 0
+      ? customSlides.map(s => s.id)
+      : ['dawn', 'sunset', 'twilight'];
+      
     const timer = setInterval(() => {
       setActiveTheme((current) => {
         const nextIndex = (themeIds.indexOf(current) + 1) % themeIds.length;
@@ -32,7 +36,7 @@ export const HeroSection = ({ overrideTitle, overrideSubtitle, variant, bgVideo 
     }, 6000);
 
     return () => clearInterval(timer);
-  }, [activeTheme, bgVideo]);
+  }, [activeTheme, bgVideo, customSlides]);
 
   const handleScrollDown = () => {
     const nextSec = document.querySelector('.philosophy-section');
@@ -41,11 +45,13 @@ export const HeroSection = ({ overrideTitle, overrideSubtitle, variant, bgVideo 
     }
   };
 
-  const themes = [
-    { id: 'dawn', labelEn: 'Dawn Mist', labelEs: 'Amanecer' },
-    { id: 'sunset', labelEn: 'Golden Sunset', labelEs: 'Atardecer' },
-    { id: 'twilight', labelEn: 'Serene Twilight', labelEs: 'Crepúsculo' }
-  ];
+  const themes = customSlides && customSlides.length > 0
+    ? customSlides
+    : [
+        { id: 'dawn', labelEn: 'Dawn Mist', labelEs: 'Amanecer' },
+        { id: 'sunset', labelEn: 'Golden Sunset', labelEs: 'Atardecer' },
+        { id: 'twilight', labelEn: 'Serene Twilight', labelEs: 'Crepúsculo' }
+      ];
 
   return (
     <section className={`hero-section hero-theme-${activeTheme} ${variant ? `hero-sec-variant-${variant}` : ''}`}>
@@ -60,6 +66,15 @@ export const HeroSection = ({ overrideTitle, overrideSubtitle, variant, bgVideo 
             playsInline
             className="hero-bg-video"
           />
+        ) : customSlides && customSlides.length > 0 ? (
+          customSlides.map((slide) => (
+            <img
+              key={slide.id}
+              src={slide.image}
+              alt={locale === 'en' ? slide.labelEn : slide.labelEs}
+              className={`hero-bg-img ${activeTheme === slide.id ? 'active' : ''}`}
+            />
+          ))
         ) : (
           <>
             <img

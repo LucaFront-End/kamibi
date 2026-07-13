@@ -73,6 +73,24 @@
   );
 }
 
+.hero-theme-water .hero-bg-overlay {
+  background: linear-gradient(
+    to bottom,
+    rgba(44, 53, 64, 0.4) 0%,
+    rgba(26, 26, 26, 0.15) 60%,
+    rgba(26, 26, 26, 0.65) 100%
+  );
+}
+
+.hero-theme-earth .hero-bg-overlay {
+  background: linear-gradient(
+    to bottom,
+    rgba(196, 133, 106, 0.3) 0%,
+    rgba(26, 26, 26, 0.15) 60%,
+    rgba(26, 26, 26, 0.65) 100%
+  );
+}
+
 .hero-container {
   position: relative;
   z-index: 3;
@@ -127,17 +145,31 @@
   box-shadow: var(--shadow-xl), 0 0 35px rgba(138, 123, 155, 0.2);
 }
 
-/* Children color overrides for twilight theme */
-.card-theme-twilight .hero-title {
+.card-theme-water {
+  background: rgba(22, 24, 34, 0.76);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--color-warm-white);
+  box-shadow: var(--shadow-xl), 0 0 35px rgba(138, 123, 155, 0.2);
+}
+
+.card-theme-earth {
+  background: rgba(22, 24, 34, 0.76);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--color-warm-white);
+  box-shadow: var(--shadow-xl), 0 0 35px rgba(196, 133, 106, 0.2);
+}
+
+/* Children color overrides for twilight, water, and earth themes */
+.card-theme-twilight .hero-title,
+.card-theme-water .hero-title,
+.card-theme-earth .hero-title {
   color: var(--color-warm-white) !important;
 }
 
-.card-theme-twilight .hero-subtitle {
+.card-theme-twilight .hero-subtitle,
+.card-theme-water .hero-subtitle,
+.card-theme-earth .hero-subtitle {
   color: rgba(255, 255, 255, 0.75) !important;
-}
-
-.card-theme-twilight .hero-card-badge {
-  color: var(--color-gold) !important;
 }
 
 .hero-content-card:hover {
@@ -373,6 +405,16 @@
 .dot-twilight {
   background-color: #8A7B9B;
   box-shadow: 0 0 6px #8A7B9B;
+}
+
+.dot-water {
+  background-color: #B8C5C5;
+  box-shadow: 0 0 6px #B8C5C5;
+}
+
+.dot-earth {
+  background-color: #C4856A;
+  box-shadow: 0 0 6px #C4856A;
 }
 
 /* Alternate Hero Variant: Ultra-transparent Glassmorphism with Enhanced Readability */

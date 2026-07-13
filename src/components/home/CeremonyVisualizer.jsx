@@ -5,7 +5,7 @@ import { ScrollReveal } from '../ui/ScrollReveal';
 import { motion, AnimatePresence } from 'framer-motion';
 import './CeremonyVisualizer.css';
 
-export const CeremonyVisualizer = ({ overrideWaterImage, overrideEarthImage }) => {
+export const CeremonyVisualizer = () => {
   const { t, locale } = useTranslation();
   const [activeTab, setActiveTab] = useState('water'); // 'water' | 'earth'
   const isPaused = useRef(false);
@@ -38,7 +38,7 @@ export const CeremonyVisualizer = ({ overrideWaterImage, overrideEarthImage }) =
         { name: 'KAMIBI® Aqua Urn', slug: 'aqua-urn', color: '#B8C5C5' },
         { name: 'KAMIBI® Angel Urn', slug: 'angel-urn', color: '#FFFFFF' }
       ],
-      image: overrideWaterImage || 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop',
+      image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop',
       themeClass: 'visualizer-water-theme'
     },
     earth: {
@@ -59,7 +59,7 @@ export const CeremonyVisualizer = ({ overrideWaterImage, overrideEarthImage }) =
         { name: 'KAMIBI® Flore Urn', slug: 'flore-urn', color: '#8B9E8B' },
         { name: 'KAMIBI® Iris Urn', slug: 'iris-urn', color: '#D4A5A5' }
       ],
-      image: overrideEarthImage || 'https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=800&auto=format&fit=crop',
+      image: 'https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=800&auto=format&fit=crop',
       themeClass: 'visualizer-earth-theme'
     }
   };

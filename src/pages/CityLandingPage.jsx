@@ -106,6 +106,11 @@ export const CityLandingPage = () => {
         <HeroSection
           overrideTitle={landing.pageTitle || landing.title}
           overrideSubtitle={landing.excerpt}
+          variant="transparent"
+          customSlides={[
+            { id: 'water', labelEn: 'Water Ceremony', labelEs: 'Ceremonia en Agua', image: '/images/home-test-water.png' },
+            { id: 'earth', labelEn: 'Earth Burial', labelEs: 'Ceremonia en Tierra', image: '/images/home-test-earth.png' }
+          ]}
         />
         <PhilosophySection />
         <FeaturedProducts />

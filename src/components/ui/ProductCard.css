@@ -94,16 +94,19 @@
   top: var(--space-sm);
   right: var(--space-sm);
   z-index: 3;
-  background-color: #C4856A;
+  background: linear-gradient(135deg, #C47558 0%, #A55537 100%);
   color: #FFFFFF;
-  padding: 0.28rem 0.65rem;
+  padding: 0.3rem 0.7rem;
   border-radius: var(--radius-full);
   font-size: 9px;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   white-space: nowrap;
   font-weight: 700;
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 2px 8px rgba(165, 85, 55, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 
 /* Info */

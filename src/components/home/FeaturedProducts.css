@@ -161,15 +161,18 @@
   position: absolute;
   top: var(--space-md);
   right: var(--space-md);
-  background-color: #C4856A;
+  background: linear-gradient(135deg, #C47558 0%, #A55537 100%);
   color: #FFFFFF;
-  padding: 0.35rem 0.75rem;
+  padding: 0.32rem 0.75rem;
   border-radius: var(--radius-full);
   font-size: 9px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  box-shadow: var(--shadow-sm);
+  letter-spacing: 0.1em;
+  box-shadow: 0 2px 8px rgba(165, 85, 55, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   z-index: 3;
 }
 

@@ -85,14 +85,18 @@
 }
 
 .product-purchase-discount-tag {
-  background-color: #C4856A;
+  background: linear-gradient(135deg, #C47558 0%, #A55537 100%);
   color: #FFFFFF;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
-  padding: 0.2rem 0.6rem;
+  padding: 0.25rem 0.65rem;
   border-radius: var(--radius-full);
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
+  box-shadow: 0 2px 6px rgba(165, 85, 55, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  display: inline-flex;
+  align-items: center;
 }
 
 .product-purchase-desc {

@@ -170,7 +170,17 @@ export const ProductPage = () => {
               
               <h1 className="heading-display product-purchase-title">{product.name}</h1>
               
-              <span className="product-purchase-price">${product.price.toFixed(2)}</span>
+              <div className="product-purchase-price-wrapper">
+                <span className="product-purchase-price">${product.price.toFixed(2)}</span>
+                {product.originalPrice && product.originalPrice > product.price && (
+                  <>
+                    <span className="product-purchase-original-price">${product.originalPrice.toFixed(2)}</span>
+                    <span className="product-purchase-discount-tag">
+                      {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}% {locale === 'es' ? 'de ahorro' : 'OFF'}
+                    </span>
+                  </>
+                )}
+              </div>
               
               <div
                 className="product-purchase-desc text-body product-description-html"
@@ -385,7 +395,12 @@ export const ProductPage = () => {
           <div className="sticky-bar-container">
             <div className="sticky-bar-info">
               <span className="sticky-product-name">{product.name}</span>
-              <span className="sticky-product-price">${product.price.toFixed(2)}</span>
+              <div className="sticky-price-wrapper">
+                <span className="sticky-product-price">${product.price.toFixed(2)}</span>
+                {product.originalPrice && product.originalPrice > product.price && (
+                  <span className="sticky-product-original-price">${product.originalPrice.toFixed(2)}</span>
+                )}
+              </div>
             </div>
             
             <button

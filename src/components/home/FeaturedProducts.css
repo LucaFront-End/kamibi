@@ -157,6 +157,22 @@
   z-index: 3;
 }
 
+.featured-sale-badge {
+  position: absolute;
+  top: var(--space-md);
+  right: var(--space-md);
+  background-color: #C4856A;
+  color: #FFFFFF;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  box-shadow: var(--shadow-sm);
+  z-index: 3;
+}
+
 /* Info */
 .card-info {
   padding: var(--space-lg);
@@ -189,11 +205,25 @@
   padding-top: var(--space-md);
 }
 
+.card-price-block {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
 .card-price {
   font-family: var(--font-body);
-  font-weight: 600;
+  font-weight: 700;
   color: var(--color-charcoal);
   font-size: var(--text-base);
+}
+
+.card-original-price {
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  color: var(--color-stone);
+  text-decoration: line-through;
+  opacity: 0.75;
 }
 
 .card-link-arrow {

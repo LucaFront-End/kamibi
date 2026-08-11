@@ -150,6 +150,11 @@ export const FeaturedProducts = () => {
                       : [product.category]
                     ).map(cat => t(`store.filters.${cat}`)).join(' / ')}
                   </span>
+                  {product.originalPrice && product.originalPrice > product.price && (
+                    <span className="featured-sale-badge text-label">
+                      {locale === 'es' ? 'Oferta' : 'Sale'}
+                    </span>
+                  )}
                 </div>
 
                 <div className="card-info">
@@ -158,7 +163,12 @@ export const FeaturedProducts = () => {
                     {locale === 'en' ? product.tagline : product.shortDescription.substring(0, 70) + '...'}
                   </p>
                   <div className="card-footer">
-                    <span className="card-price">${product.price.toFixed(2)}</span>
+                    <div className="card-price-block">
+                      <span className="card-price">${product.price.toFixed(2)}</span>
+                      {product.originalPrice && product.originalPrice > product.price && (
+                        <span className="card-original-price">${product.originalPrice.toFixed(2)}</span>
+                      )}
+                    </div>
                     <span className="card-link-arrow">
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <line x1="5" y1="12" x2="19" y2="12" />

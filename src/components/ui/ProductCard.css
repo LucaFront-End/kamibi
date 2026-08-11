@@ -89,6 +89,23 @@
   border: 1px solid rgba(232, 222, 209, 0.6);
 }
 
+.product-card-sale-badge {
+  position: absolute;
+  top: var(--space-sm);
+  right: var(--space-sm);
+  z-index: 3;
+  background-color: #C4856A;
+  color: #FFFFFF;
+  padding: 0.28rem 0.65rem;
+  border-radius: var(--radius-full);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  font-weight: 700;
+  box-shadow: var(--shadow-sm);
+}
+
 /* Info */
 .product-card-info {
   padding: var(--space-lg);
@@ -121,11 +138,25 @@
   padding-top: var(--space-md);
 }
 
+.product-card-price-block {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
 .product-card-price {
   font-family: var(--font-body);
-  font-weight: 600;
+  font-weight: 700;
   color: var(--color-charcoal);
   font-size: var(--text-base);
+}
+
+.product-card-original-price {
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  color: var(--color-stone);
+  text-decoration: line-through;
+  opacity: 0.75;
 }
 
 .product-card-buy-btn {

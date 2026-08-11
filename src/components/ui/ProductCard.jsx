@@ -36,6 +36,11 @@ export const ProductCard = ({ product }) => {
             : [product.category]
           ).map(cat => t(`store.filters.${cat}`)).join(' / ')}
         </span>
+        {product.originalPrice && product.originalPrice > product.price && (
+          <span className="product-card-sale-badge text-label">
+            {locale === 'es' ? 'Oferta' : 'Sale'}
+          </span>
+        )}
         <div className="product-card-hover-actions">
           <button className="product-card-quickview text-label">
             {t('store.quickView')}
@@ -51,7 +56,12 @@ export const ProductCard = ({ product }) => {
         </p>
         
         <div className="product-card-footer">
-          <span className="product-card-price">${product.price.toFixed(2)}</span>
+          <div className="product-card-price-block">
+            <span className="product-card-price">${product.price.toFixed(2)}</span>
+            {product.originalPrice && product.originalPrice > product.price && (
+              <span className="product-card-original-price">${product.originalPrice.toFixed(2)}</span>
+            )}
+          </div>
           <button
             onClick={handleAddToCartClick}
             className="product-card-buy-btn"

@@ -57,8 +57,20 @@ export function normalizeProduct(wixProduct) {
     variants: wixVariants,
   } = wixProduct;
 
-  // Extract price
-  const price = priceData?.price ?? 0;
+  // Extract price & discount
+  const rawDiscountedPrice = priceData?.discountedPrice;
+  const rawOriginalPrice = priceData?.price;
+
+  let price = 0;
+  let originalPrice = null;
+
+  if (rawDiscountedPrice !== undefined && rawOriginalPrice !== undefined && rawOriginalPrice > rawDiscountedPrice) {
+    price = Number(rawDiscountedPrice);
+    originalPrice = Number(rawOriginalPrice);
+  } else {
+    price = Number(rawOriginalPrice ?? rawDiscountedPrice ?? 0);
+    originalPrice = null;
+  }
 
   // Extract images from Wix media
   const images = (media?.items || []).map((item) => {
@@ -181,7 +193,8 @@ export function normalizeProduct(wixProduct) {
     slug: slug || _id,
     name: name || 'Untitled Product',
     tagline,
-    price: Number(price),
+    price,
+    originalPrice,
     category: primaryCategory,   // Primary category (most specific)
     categories,                  // All matching categories
     colorName,

@@ -8,6 +8,7 @@ import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
 import { CartDrawer } from './components/layout/CartDrawer';
 import { WixChatWidget } from './components/chat/WixChatWidget';
+import { CouponPopup } from './components/common/CouponPopup';
 import { HomePage } from './pages/HomePage';
 import { HomePageTest } from './pages/HomePageTest';
 import { HomePageVideoTest } from './pages/HomePageVideoTest';
@@ -63,6 +64,7 @@ function App() {
                 <Footer />
                 <CartDrawer />
                 <WixChatWidget />
+                <CouponPopup />
               </div>
             </Router>
           </MembersProvider>

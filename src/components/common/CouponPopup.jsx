@@ -110,7 +110,7 @@ export const CouponPopup = () => {
         >
           <span className="floating-gift-icon">🎁</span>
           <span className="floating-gift-text">
-            {locale === 'es' ? 'Descuento 10%' : '10% Discount'}
+            {locale === 'es' ? 'Descuento' : 'Discount'}
           </span>
         </motion.button>
       )}

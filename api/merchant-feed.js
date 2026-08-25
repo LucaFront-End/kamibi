@@ -5,8 +5,8 @@
  * URL: https://kamibistore.com/api/merchant-feed
  */
 
-const { createClient, OAuthStrategy } = require('@wix/sdk');
-const { products } = require('@wix/stores');
+import { createClient, OAuthStrategy } from '@wix/sdk';
+import { products } from '@wix/stores';
 
 const SITE_URL = 'https://kamibistore.com';
 const WIX_CLIENT_ID = '296237fc-b597-4736-b888-367dd4fd1740';
@@ -94,6 +94,17 @@ function getProductMetadata(slug = '', name = '') {
 }
 
 export default async function handler(req, res) {
+  // CORS & headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Content-Type', 'text/tab-separated-values; charset=utf-8');
+  res.setHeader('Content-Disposition', 'inline; filename="merchant-feed.tsv"');
+  res.setHeader('Cache-Control', 's-maxage=1800, stale-while-revalidate=86400');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   try {
     const wixClient = createClient({
       modules: { products },
@@ -226,12 +237,9 @@ export default async function handler(req, res) {
       ...rows.map(row => row.map(cell => clean(cell)).join('\t')),
     ].join('\n');
 
-    res.setHeader('Content-Type', 'text/tab-separated-values; charset=utf-8');
-    res.setHeader('Content-Disposition', 'inline; filename="merchant-feed.tsv"');
-    res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate=86400');
     return res.status(200).send(tsvContent);
   } catch (error) {
     console.error('Merchant TSV API Error:', error);
-    return res.status(500).json({ error: 'Failed to generate Merchant TSV feed' });
+    return res.status(500).json({ error: error.message || 'Failed to generate Merchant TSV feed' });
   }
 }

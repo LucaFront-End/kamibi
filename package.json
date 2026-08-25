@@ -5,10 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/generate-merchant-tsv.cjs && tsc && vite build",
+    "build": "tsc && vite build",
     "sitemap": "node scripts/generate-sitemap.cjs",
     "merchant": "node scripts/generate-merchant-tsv.cjs",
-    "build:full": "node scripts/generate-merchant-tsv.cjs && tsc && vite build && node scripts/generate-sitemap.cjs",
+    "build:full": "tsc && vite build && node scripts/generate-sitemap.cjs",
     "preview": "vite preview"
   },
   "devDependencies": {

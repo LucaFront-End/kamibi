@@ -1,6 +1,15 @@
 {
   "rewrites": [
+    { "source": "/merchant-feed.tsv", "destination": "/api/merchant-feed" },
+    { "source": "/merchant-feed", "destination": "/api/merchant-feed" },
+    { "source": "/google-merchant.tsv", "destination": "/api/merchant-feed" },
     { "source": "/api/:path*", "destination": "/api/:path*" },
     { "source": "/(.*)", "destination": "/index.html" }
+  ],
+  "crons": [
+    {
+      "path": "/api/merchant-feed",
+      "schedule": "0 */6 * * *"
+    }
   ]
 }

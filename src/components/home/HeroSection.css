@@ -105,6 +105,7 @@
   width: 100%;
   max-width: 600px;
   perspective: 1000px;
+  box-sizing: border-box;
 }
 
 .hero-content-card {
@@ -117,6 +118,9 @@
   flex-direction: column;
   align-items: flex-start;
   gap: var(--space-md);
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
   transform: rotateY(-5deg) rotateX(2deg);
   transform-style: preserve-3d;
   transition: transform 0.6s var(--ease-out-expo),
@@ -264,16 +268,37 @@
 }
 
 @media (max-width: 768px) {
+  .hero-section {
+    height: auto;
+    min-height: 100vh;
+    min-height: 100svh;
+    padding-top: calc(var(--nav-height) + 16px);
+    padding-bottom: 24px;
+    box-sizing: border-box;
+  }
   .hero-container {
     justify-content: center;
+    align-items: center;
     flex-direction: column;
+    padding-left: var(--container-padding);
+    padding-right: var(--container-padding);
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    padding-top: 0;
   }
   .hero-card-wrapper {
     max-width: 100%;
-    margin-bottom: var(--space-2xl);
+    width: 100%;
+    margin: 0 auto var(--space-md);
+    perspective: none;
+    box-sizing: border-box;
   }
   .hero-content-card {
-    padding: var(--space-xl) var(--space-lg);
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    padding: var(--space-xl) var(--space-md);
     align-items: center;
     text-align: center;
     transform: none !important;
@@ -281,17 +306,51 @@
   .hero-card-badge {
     justify-content: center;
   }
+  .hero-title {
+    font-size: clamp(1.75rem, 6vw, 2.5rem);
+    word-break: break-word;
+  }
+  .hero-subtitle {
+    font-size: var(--text-sm);
+  }
   .hero-cta-wrapper {
     display: flex;
     justify-content: center;
+    width: 100%;
   }
   .hero-ambient-controls {
     position: relative !important;
     bottom: auto !important;
     right: auto !important;
-    margin-top: var(--space-md);
-    margin-bottom: var(--space-xl);
+    margin-top: var(--space-xs);
+    margin-bottom: var(--space-md);
     align-items: center !important;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .ambient-buttons-group {
+    max-width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+  .hero-scroll-indicator {
+    position: relative !important;
+    bottom: auto !important;
+    left: auto !important;
+    transform: none !important;
+    margin-top: var(--space-xs);
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-content-card {
+    padding: 24px 16px;
+    border-radius: var(--radius-lg);
+  }
+  .ambient-btn {
+    padding: 0.35rem 0.75rem;
+    font-size: 10px;
   }
 }
 

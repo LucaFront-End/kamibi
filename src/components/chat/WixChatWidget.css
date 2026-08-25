@@ -97,21 +97,27 @@
 }
 
 @media (max-width: 480px) {
-  .wix-chat-window {
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: 0;
-    border: none;
-  }
   .wix-chat-container {
-    bottom: 0;
-    right: 0;
+    bottom: 16px;
+    right: 16px;
   }
   .wix-chat-bubble {
-    display: none; /* Hide toggle when full screen opens */
+    width: 52px;
+    height: 52px;
+    display: flex !important;
+  }
+  .wix-chat-window {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    border-radius: 0;
+    border: none;
+    z-index: 1001;
   }
 }
 

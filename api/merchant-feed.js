@@ -26,6 +26,16 @@ function clean(str = '') {
     .trim();
 }
 
+function cleanImageUrl(url = '') {
+  if (!url) return '';
+  // Extract direct high-res media file without /v1/fit/ resize path that contains commas
+  const match = url.match(/(45119e_[a-zA-Z0-9~_-]+\.(png|jpg|jpeg|webp))/i);
+  if (match) {
+    return `https://static.wixstatic.com/media/${match[1]}`;
+  }
+  return url.split('/v1/fit/')[0].split('#')[0];
+}
+
 function formatPrice(amount, currency = 'USD') {
   if (amount === undefined || amount === null || amount === '') return '';
   const num = Number(amount);
@@ -156,8 +166,9 @@ export default async function handler(req, res) {
       const cleanDesc = clean(product.description || product.name);
       const meta = getProductMetadata(product.slug, product.name);
 
+      // Clean all image URLs to direct high-res Wix CDN paths without resizing commas
       const allImages = (product.media?.items || [])
-        .map(item => item.image?.url || item.thumbnail?.url)
+        .map(item => cleanImageUrl(item.image?.url || item.thumbnail?.url))
         .filter(Boolean);
 
       const defaultMainImage = allImages[0] || `${SITE_URL}/products/placeholder.png`;
@@ -175,10 +186,11 @@ export default async function handler(req, res) {
           const itemGroupId = `KAMIBI-${product.slug.toUpperCase()}`;
           const variantTitle = `${clean(product.name)} - ${choiceLabel} Sleeve`;
 
-          const choiceImage = choice.media?.mainMedia?.image?.url ||
+          const rawChoiceImage = choice.media?.mainMedia?.image?.url ||
             choice.media?.items?.[0]?.image?.url ||
-            choice.media?.mainMedia?.thumbnail?.url ||
-            defaultMainImage;
+            choice.media?.mainMedia?.thumbnail?.url;
+
+          const choiceImage = rawChoiceImage ? cleanImageUrl(rawChoiceImage) : defaultMainImage;
 
           const variantAdditionalImages = allImages
             .filter(img => img !== choiceImage)

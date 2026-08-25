@@ -17,23 +17,30 @@ const WIX_CLIENT_ID = '296237fc-b597-4736-b888-367dd4fd1740';
 const OUTPUT_DIR = path.resolve(__dirname, '..', 'public');
 const OUTPUT_FILE = path.join(OUTPUT_DIR, 'merchant-feed.tsv');
 
-// ── Clean string for TSV (removes tabs, newlines, raw HTML tags, and extra spaces) ───
 function clean(str = '') {
   if (!str) return '';
   return String(str)
-    .replace(/<[^>]*>/g, ' ')       // remove HTML tags
+    .replace(/<[^>]*>/g, ' ')
     .replace(/&nbsp;/gi, ' ')
     .replace(/&amp;/gi, '&')
     .replace(/&lt;/gi, '<')
     .replace(/&gt;/gi, '>')
     .replace(/&quot;/gi, '"')
     .replace(/&#39;/gi, "'")
-    .replace(/[\r\n\t]+/g, ' ')     // remove newlines & tabs
-    .replace(/\s+/g, ' ')           // collapse multiple spaces
+    .replace(/[\r\n\t]+/g, ' ')
+    .replace(/\s+/g, ' ')
     .trim();
 }
 
-// ── Format price string with currency (e.g. "90.00 USD") ───────────────────────────
+function cleanImageUrl(url = '') {
+  if (!url) return '';
+  const match = url.match(/(45119e_[a-zA-Z0-9~_-]+\.(png|jpg|jpeg|webp))/i);
+  if (match) {
+    return `https://static.wixstatic.com/media/${match[1]}`;
+  }
+  return url.split('/v1/fit/')[0].split('#')[0];
+}
+
 function formatPrice(amount, currency = 'USD') {
   if (amount === undefined || amount === null || amount === '') return '';
   const num = Number(amount);
@@ -41,10 +48,8 @@ function formatPrice(amount, currency = 'USD') {
   return `${num.toFixed(2)} ${currency}`;
 }
 
-// ── Map product slug to appropriate product type & material ────────────────────────
 function getProductMetadata(slug = '', name = '') {
   const s = slug.toLowerCase();
-  const n = name.toLowerCase();
 
   if (s.includes('terra')) {
     return {
@@ -115,7 +120,6 @@ async function main() {
   const items = result.items || [];
   console.log(`📦 Found ${items.length} base products in catalog.`);
 
-  // ── Define Google Merchant Center TSV Header Columns ──────────────────────────────
   const headers = [
     'id',
     'item_group_id',
@@ -157,36 +161,31 @@ async function main() {
     const cleanDesc = clean(product.description || product.name);
     const meta = getProductMetadata(product.slug, product.name);
 
-    // Extract all media image URLs
     const allImages = (product.media?.items || [])
-      .map(item => item.image?.url || item.thumbnail?.url)
+      .map(item => cleanImageUrl(item.image?.url || item.thumbnail?.url))
       .filter(Boolean);
 
     const defaultMainImage = allImages[0] || `${SITE_URL}/products/placeholder.png`;
     const defaultAdditionalImages = allImages.slice(1, 11).join(',');
 
-    // Check for Sleeve / Band variants in productOptions
     const variantOption = (product.productOptions || []).find(
       opt => opt.name && (opt.name.toLowerCase().includes('selec') || opt.name.toLowerCase().includes('sleeve') || opt.name.toLowerCase().includes('band') || opt.name.toLowerCase().includes('diseño') || opt.name.toLowerCase().includes('color'))
     ) || (product.productOptions && product.productOptions[0]);
 
     if (variantOption && variantOption.choices && variantOption.choices.length > 0) {
-      // Create a row for each variant / sleeve option
       for (const choice of variantOption.choices) {
         const choiceLabel = choice.description || choice.value || 'Standard';
         const choiceSlug = choiceLabel.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
         const variantId = `KAMIBI-${product.slug.toUpperCase()}-${choiceSlug.toUpperCase()}`;
         const itemGroupId = `KAMIBI-${product.slug.toUpperCase()}`;
-
         const variantTitle = `${clean(product.name)} - ${choiceLabel} Sleeve`;
 
-        // Variant-specific image if mapped in Wix
-        const choiceImage = choice.media?.mainMedia?.image?.url ||
+        const rawChoiceImage = choice.media?.mainMedia?.image?.url ||
           choice.media?.items?.[0]?.image?.url ||
-          choice.media?.mainMedia?.thumbnail?.url ||
-          defaultMainImage;
+          choice.media?.mainMedia?.thumbnail?.url;
 
-        // Additional images excluding the main one
+        const choiceImage = rawChoiceImage ? cleanImageUrl(rawChoiceImage) : defaultMainImage;
+
         const variantAdditionalImages = allImages
           .filter(img => img !== choiceImage)
           .slice(0, 10)
@@ -214,7 +213,6 @@ async function main() {
         ]);
       }
     } else {
-      // Standalone product without options (e.g. Mini Sets or Burial Bags)
       const productId = `KAMIBI-${product.slug.toUpperCase()}`;
 
       rows.push([
@@ -240,14 +238,12 @@ async function main() {
     }
   }
 
-  // ── Construct Tab-Separated Values (TSV) String ──────────────────────────────────
   const tsvLines = [
     headers.join('\t'),
     ...rows.map(row => row.map(cell => clean(cell)).join('\t')),
   ];
   const tsvContent = tsvLines.join('\n');
 
-  // Ensure public directory exists
   if (!fs.existsSync(OUTPUT_DIR)) {
     fs.mkdirSync(OUTPUT_DIR, { recursive: true });
   }

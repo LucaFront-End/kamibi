@@ -188,6 +188,43 @@ export function normalizeProduct(wixProduct) {
     shortDescriptionEn = shortDescription;
   }
 
+  // Extract SEO settings from Wix product if configured
+  let seoTitle = '';
+  let seoDescription = '';
+  let seoKeywords = '';
+
+  if (wixProduct.seoData) {
+    const tags = Array.isArray(wixProduct.seoData.tags) ? wixProduct.seoData.tags : [];
+    const titleTag = tags.find(t => t.type === 'title' && !t.disabled && t.children);
+    if (titleTag) {
+      seoTitle = titleTag.children;
+    }
+
+    const descTag = tags.find(
+      t => t.type === 'meta' && !t.disabled &&
+      (t.props?.name === 'description' || t.props?.property === 'og:description')
+    );
+    if (descTag) {
+      seoDescription = descTag.props?.content || '';
+    }
+
+    const kwTag = tags.find(
+      t => t.type === 'meta' && !t.disabled && t.props?.name === 'keywords'
+    );
+    if (kwTag) {
+      seoKeywords = kwTag.props?.content || '';
+    }
+
+    if (!seoKeywords && Array.isArray(wixProduct.seoData.settings?.keywords)) {
+      seoKeywords = wixProduct.seoData.settings.keywords.map(k => k.term).filter(Boolean).join(', ');
+    }
+  }
+
+  // Fallback to top-level seo properties if exposed directly by Wix
+  if (!seoTitle && wixProduct.seoTitle) seoTitle = wixProduct.seoTitle;
+  if (!seoDescription && wixProduct.seoDescription) seoDescription = wixProduct.seoDescription;
+  if (!seoKeywords && wixProduct.seoKeywords) seoKeywords = wixProduct.seoKeywords;
+
   return {
     id: _id,
     slug: slug || _id,
@@ -211,6 +248,13 @@ export function normalizeProduct(wixProduct) {
     variants,                               // Text labels for UI swatches (backward-compat)
     variantObjects,                         // [{label, image}] — with per-variant Wix images
     wixVariants: wixVariants || [],         // Raw Wix variant objects with real UUIDs
+    numericId: numericId || '',
+    stock: wixProduct.stock || { inStock: true, inventoryStatus: 'IN_STOCK' },
+    seoData: wixProduct.seoData || null,
+    seoTitle: seoTitle || null,
+    seoDescription: seoDescription || null,
+    seoKeywords: seoKeywords || null,
+    productPageUrl: wixProduct.productPageUrl || null,
     // Keep original Wix ID for cart operations
     _wixId: _id,
   };

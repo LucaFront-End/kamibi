@@ -2,6 +2,7 @@ import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useTranslation } from '../context/LanguageContext';
 import { useWixPost } from '../hooks/useWixBlog';
+import { useSEO } from '../hooks/useSEO';
 import { PageTransition } from '../components/layout/PageTransition';
 import { ScrollReveal } from '../components/ui/ScrollReveal';
 import { RicosRenderer } from '../components/blog/RicosRenderer';
@@ -30,6 +31,21 @@ export const BlogPostPage = () => {
   const { slug } = useParams();
   const { locale } = useTranslation();
   const { post, loading, error } = useWixPost(slug);
+
+  const postTitle = post?.title || '';
+  const postDesc = post?.excerpt || (post?.contentText ? post.contentText.slice(0, 160) : '') || '';
+  const postImage = wixImageUrl(post?.media?.wixMedia?.image, 1200, 630);
+
+  useSEO({
+    titleEn: postTitle ? `${postTitle} | Kamibi Journal` : 'Blog | Kamibi Store',
+    titleEs: postTitle ? `${postTitle} | Kamibi Diario` : 'Blog | Kamibi Store',
+    descEn: postDesc || 'Read articles about eco-friendly urns, green funerals, and water burials.',
+    descEs: postDesc || 'Lee artículos sobre urnas ecológicas, funerales verdes y entierros en agua.',
+    locale,
+    image: postImage,
+    type: 'article',
+    canonical: `https://kamibistore.com/blog/${slug}`,
+  });
 
   if (loading) {
     return (

@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useTranslation } from '../context/LanguageContext';
 import { useCart } from '../context/CartContext';
 import { useWixProduct } from '../hooks/useWixProducts';
+import { useSEO } from '../hooks/useSEO';
 import { ProductGallery } from '../components/product/ProductGallery';
 import { UsageGuide } from '../components/product/UsageGuide';
 import { BenefitsSection } from '../components/product/BenefitsSection';
@@ -20,6 +21,63 @@ export const ProductPage = () => {
   const { t, locale } = useTranslation();
   const { addToCart, isLoading: cartLoading } = useCart();
   const { product, loading, error } = useWixProduct(slug);
+
+  // Dynamic SEO linked to Wix product data
+  const cleanTitle = product?.name || '';
+  const seoTitleEn = product?.seoTitle || (cleanTitle ? `${cleanTitle} | Kamibi Store` : 'Biodegradable Urns | Kamibi Store');
+  const seoTitleEs = product?.seoTitle || (cleanTitle ? `${cleanTitle} | Urna Biodegradable | Kamibi Store` : 'Urnas Biodegradables | Kamibi Store');
+
+  const defaultDescEn = cleanTitle
+    ? `Buy ${cleanTitle} at Kamibi Store. Premium eco-friendly biodegradable urn for water and earth burial. 100% natural, plastic-free. Free shipping across USA & Canada.`
+    : 'Discover premium biodegradable urns for human ashes at Kamibi Store. Eco friendly urns with free shipping across USA and Canada.';
+  const defaultDescEs = cleanTitle
+    ? `Compra ${cleanTitle} en Kamibi Store. Urna biodegradable ecológica para entierro en agua y tierra. 100% natural, libre de plástico. Envío gratis en USA y Canadá.`
+    : 'Descubre urnas biodegradables ecológicas para cenizas humanas en Kamibi Store. Envío gratis en USA y Canadá.';
+
+  const seoDescEn = product?.seoDescription || product?.shortDescription || product?.tagline || defaultDescEn;
+  const seoDescEs = product?.seoDescription || product?.shortDescription || product?.tagline || defaultDescEs;
+  const seoImage = product?.images?.[0] || 'https://kamibistore.com/images/kamibi-logo-dark.png';
+
+  const productSchema = product ? {
+    '@context': 'https://schema.org/',
+    '@type': 'Product',
+    name: product.name,
+    image: product.images || [],
+    description: product.description ? product.description.slice(0, 300) : product.name,
+    sku: product.numericId || product.id,
+    brand: {
+      '@type': 'Brand',
+      name: 'Kamibi',
+    },
+    offers: {
+      '@type': 'Offer',
+      url: `https://kamibistore.com/product/${product.slug || slug}`,
+      priceCurrency: 'USD',
+      price: product.price || 0,
+      priceValidUntil: '2027-12-31',
+      itemCondition: 'https://schema.org/NewCondition',
+      availability: product.stock?.inStock !== false
+        ? 'https://schema.org/InStock'
+        : 'https://schema.org/OutOfStock',
+      seller: {
+        '@type': 'Organization',
+        name: 'Kamibi Store',
+      },
+    },
+  } : null;
+
+  useSEO({
+    titleEn: seoTitleEn,
+    titleEs: seoTitleEs,
+    descEn: seoDescEn,
+    descEs: seoDescEs,
+    locale,
+    image: seoImage,
+    type: 'product',
+    keywords: product?.seoKeywords || 'biodegradable urns, eco friendly urns, water burial urns, natural burial urns, kamibi',
+    canonical: `https://kamibistore.com/product/${slug}`,
+    schema: productSchema,
+  });
 
   // Fetch the mini-urns product for the sharing set option
   const MINI_URNS_SLUG = 'mini-biodegradables-urn-set';

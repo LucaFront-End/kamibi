@@ -24,8 +24,8 @@ export const ProductPage = () => {
 
   // Dynamic SEO linked to Wix product data
   const cleanTitle = product?.name || '';
-  const seoTitleEn = product?.seoTitle || (cleanTitle ? `${cleanTitle} | Kamibi Store` : 'Biodegradable Urns | Kamibi Store');
-  const seoTitleEs = product?.seoTitle || (cleanTitle ? `${cleanTitle} | Urna Biodegradable | Kamibi Store` : 'Urnas Biodegradables | Kamibi Store');
+  const seoTitleEn = product?.seoTitle || (cleanTitle ? `${cleanTitle} | Kamibi Store Urn of Ashes` : 'Kamibi Store Urn of Ashes');
+  const seoTitleEs = product?.seoTitle || (cleanTitle ? `${cleanTitle} | Kamibi Store Urn of Ashes` : 'Kamibi Store Urn of Ashes');
 
   const defaultDescEn = cleanTitle
     ? `Buy ${cleanTitle} at Kamibi Store. Premium eco-friendly biodegradable urn for water and earth burial. 100% natural, plastic-free. Free shipping across USA & Canada.`

@@ -3,6 +3,12 @@
     { "source": "/merchant-feed.tsv", "destination": "/api/merchant-feed" },
     { "source": "/merchant-feed", "destination": "/api/merchant-feed" },
     { "source": "/google-merchant.tsv", "destination": "/api/merchant-feed" },
+    { "source": "/sitemap.xml", "destination": "/api/sitemap?type=index" },
+    { "source": "/sitemap-pages.xml", "destination": "/api/sitemap?type=pages" },
+    { "source": "/sitemap-productos.xml", "destination": "/api/sitemap?type=productos" },
+    { "source": "/sitemap-landings.xml", "destination": "/api/sitemap?type=landings" },
+    { "source": "/sitemap-tiendas.xml", "destination": "/api/sitemap?type=tiendas" },
+    { "source": "/sitemap-blog.xml", "destination": "/api/sitemap?type=blog" },
     { "source": "/api/:path*", "destination": "/api/:path*" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],

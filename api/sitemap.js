@@ -1,31 +1,26 @@
 /**
- * Sitemap Generator for Kamibi
+ * Dynamic Sitemap XML Endpoint for Kamibi
  * 
- * Generates:
- *  - sitemap.xml            → Sitemap index referencing all sub-sitemaps
- *  - sitemap-pages.xml      → Static pages (home, store, etc.)
- *  - sitemap-productos.xml  → All product pages fetched from Wix Stores
- *  - sitemap-landings.xml   → Dynamic CMS landing pages (LandingsdeCiudad - fully paginated 2000+ items)
- *  - sitemap-tiendas.xml    → Dynamic CMS store pages (TiendasDinamicas)
- *  - sitemap-blog.xml       → Wix Blog articles
- *
- * Usage: node scripts/generate-sitemap.cjs
+ * Serves real-time XML sitemaps directly from Wix CMS, Wix Stores & Wix Blog.
+ * Includes Edge CDN caching (1 hour) with background revalidation.
+ * 
+ * Types supported:
+ *  - /api/sitemap?type=index     → Sitemap index
+ *  - /api/sitemap?type=pages     → Static pages
+ *  - /api/sitemap?type=productos → Products from Wix Stores
+ *  - /api/sitemap?type=landings  → Dynamic CMS LandingsdeCiudad (2000+ items)
+ *  - /api/sitemap?type=tiendas   → Dynamic CMS TiendasDinamicas
+ *  - /api/sitemap?type=blog      → Wix Blog posts
  */
 
-const { createClient, OAuthStrategy } = require('@wix/sdk');
-const { products } = require('@wix/stores');
-const { items } = require('@wix/data');
-const { posts } = require('@wix/blog');
-const fs = require('fs');
-const path = require('path');
+import { createClient, OAuthStrategy } from '@wix/sdk';
+import { products } from '@wix/stores';
+import { items } from '@wix/data';
+import { posts } from '@wix/blog';
 
-// ─── Config ────────────────────────────────────────────────────────────────────
 const SITE_URL = 'https://kamibistore.com';
 const WIX_CLIENT_ID = '296237fc-b597-4736-b888-367dd4fd1740';
-const OUTPUT_DIR = path.resolve(__dirname, '..', 'public');
-const DIST_DIR = path.resolve(__dirname, '..', 'dist');
 
-// ─── Helpers ───────────────────────────────────────────────────────────────────
 function today() {
   return new Date().toISOString().split('T')[0];
 }
@@ -59,8 +54,7 @@ function generateSlug(text) {
     .replace(/^-|-$/g, '');
 }
 
-// ─── Create Wix Client (shared) ────────────────────────────────────────────────
-async function createWixClient() {
+async function getWixClient() {
   const wixClient = createClient({
     modules: { products, items, posts },
     auth: OAuthStrategy({ clientId: WIX_CLIENT_ID }),
@@ -69,7 +63,6 @@ async function createWixClient() {
   return wixClient;
 }
 
-// ─── Static Pages ──────────────────────────────────────────────────────────────
 function generatePagesSitemap() {
   const pages = [
     { path: '/',        changefreq: 'daily',   priority: '1.0' },
@@ -90,9 +83,7 @@ ${entries}
 </urlset>`;
 }
 
-// ─── Product Pages ─────────────────────────────────────────────────────────────
 async function generateProductsSitemap(wixClient) {
-  console.log('📦 Fetching products from Wix...');
   let productItems = [];
   let result = await wixClient.products.queryProducts().limit(100).find();
   productItems = productItems.concat(result.items || []);
@@ -100,7 +91,6 @@ async function generateProductsSitemap(wixClient) {
     result = await result.next();
     productItems = productItems.concat(result.items || []);
   }
-  console.log(`   Found ${productItems.length} products`);
 
   const entries = productItems
     .map(p => {
@@ -122,9 +112,7 @@ ${entries}
 </urlset>`;
 }
 
-// ─── Landing Pages (LandingsdeCiudad) ──────────────────────────────────────────
 async function generateLandingsSitemap(wixClient) {
-  console.log('📍 Fetching landings from CMS (paginated)...');
   let landingItems = [];
   let result = await wixClient.items
     .query('LandingsdeCiudad')
@@ -136,7 +124,6 @@ async function generateLandingsSitemap(wixClient) {
     result = await result.next();
     landingItems = landingItems.concat(result.items || []);
   }
-  console.log(`   Found ${landingItems.length} landings`);
 
   const entries = landingItems
     .map(item => {
@@ -157,9 +144,7 @@ ${entries}
 </urlset>`;
 }
 
-// ─── Store Pages (TiendasDinamicas) ────────────────────────────────────────────
 async function generateTiendasSitemap(wixClient) {
-  console.log('🏪 Fetching tiendas from CMS (paginated)...');
   let storeItems = [];
   let result = await wixClient.items
     .query('TiendasDinamicas')
@@ -171,7 +156,6 @@ async function generateTiendasSitemap(wixClient) {
     result = await result.next();
     storeItems = storeItems.concat(result.items || []);
   }
-  console.log(`   Found ${storeItems.length} tiendas`);
 
   const entries = storeItems
     .map(item => {
@@ -193,9 +177,7 @@ ${entries}
 </urlset>`;
 }
 
-// ─── Blog Posts ────────────────────────────────────────────────────────────────
 async function generateBlogSitemap(wixClient) {
-  console.log('📝 Fetching blog articles from Wix...');
   let blogItems = [];
   let result = await wixClient.posts.queryPosts().limit(100).find();
   blogItems = blogItems.concat(result.items || []);
@@ -203,7 +185,6 @@ async function generateBlogSitemap(wixClient) {
     result = await result.next();
     blogItems = blogItems.concat(result.items || []);
   }
-  console.log(`   Found ${blogItems.length} blog articles`);
 
   const entries = blogItems
     .map(post => {
@@ -223,7 +204,6 @@ ${entries}
 </urlset>`;
 }
 
-// ─── Sitemap Index ─────────────────────────────────────────────────────────────
 function generateSitemapIndex() {
   const sitemaps = [
     'sitemap-pages.xml',
@@ -246,53 +226,46 @@ ${entries}
 </sitemapindex>`;
 }
 
-function saveFile(filename, content) {
-  fs.writeFileSync(path.join(OUTPUT_DIR, filename), content, 'utf-8');
-  if (fs.existsSync(DIST_DIR)) {
-    fs.writeFileSync(path.join(DIST_DIR, filename), content, 'utf-8');
+export default async function handler(req, res) {
+  // CORS & headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+  // Cache for 1 hour at edge, serve stale while revalidating
+  res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
+
+  const type = req.query?.type || 'index';
+
+  try {
+    let xml = '';
+
+    if (type === 'pages') {
+      xml = generatePagesSitemap();
+    } else {
+      const wixClient = await getWixClient();
+
+      switch (type) {
+        case 'productos':
+          xml = await generateProductsSitemap(wixClient);
+          break;
+        case 'landings':
+          xml = await generateLandingsSitemap(wixClient);
+          break;
+        case 'tiendas':
+          xml = await generateTiendasSitemap(wixClient);
+          break;
+        case 'blog':
+          xml = await generateBlogSitemap(wixClient);
+          break;
+        case 'index':
+        default:
+          xml = generateSitemapIndex();
+          break;
+      }
+    }
+
+    return res.status(200).send(xml);
+  } catch (error) {
+    console.error('Sitemap API Error:', error);
+    return res.status(500).send(`<?xml version="1.0" encoding="UTF-8"?><error>${xmlEscape(error.message || 'Failed to generate sitemap')}</error>`);
   }
 }
-
-// ─── Main ──────────────────────────────────────────────────────────────────────
-async function main() {
-  console.log('🗺️  Generating sitemaps with full pagination...\n');
-
-  const wixClient = await createWixClient();
-
-  // 1. Static pages
-  const pagesSitemap = generatePagesSitemap();
-  saveFile('sitemap-pages.xml', pagesSitemap);
-  console.log('✅ sitemap-pages.xml');
-
-  // 2. Products
-  const productsSitemap = await generateProductsSitemap(wixClient);
-  saveFile('sitemap-productos.xml', productsSitemap);
-  console.log('✅ sitemap-productos.xml');
-
-  // 3. Landings (dynamic from CMS, 2000+ items)
-  const landingsSitemap = await generateLandingsSitemap(wixClient);
-  saveFile('sitemap-landings.xml', landingsSitemap);
-  console.log('✅ sitemap-landings.xml');
-
-  // 4. Tiendas (dynamic from CMS)
-  const tiendasSitemap = await generateTiendasSitemap(wixClient);
-  saveFile('sitemap-tiendas.xml', tiendasSitemap);
-  console.log('✅ sitemap-tiendas.xml');
-
-  // 5. Blog articles
-  const blogSitemap = await generateBlogSitemap(wixClient);
-  saveFile('sitemap-blog.xml', blogSitemap);
-  console.log('✅ sitemap-blog.xml');
-
-  // 6. Sitemap index
-  const sitemapIndex = generateSitemapIndex();
-  saveFile('sitemap.xml', sitemapIndex);
-  console.log('✅ sitemap.xml (index)\n');
-
-  console.log('🎉 All sitemaps successfully generated in /public/ and /dist/!');
-}
-
-main().catch(err => {
-  console.error('❌ Sitemap generation failed:', err);
-  process.exit(1);
-});

@@ -53,8 +53,14 @@ export function useWixLandings() {
       setLoading(true);
       setError(null);
       try {
-        const res = await wixClient.items.query(LANDINGS_COLLECTION).limit(100).find();
-        if (!cancelled) setLandings((res.items || []).map(i => normalizeCMSItem(i)));
+        let allItems = [];
+        let res = await wixClient.items.query(LANDINGS_COLLECTION).limit(1000).find();
+        allItems = allItems.concat(res.items || []);
+        while (res.hasNext && res.hasNext()) {
+          res = await res.next();
+          allItems = allItems.concat(res.items || []);
+        }
+        if (!cancelled) setLandings(allItems.map(i => normalizeCMSItem(i)));
       } catch (err) {
         console.error('[CMS] Error fetching landings:', err);
         if (!cancelled) setError(err?.message || 'Could not load landings.');
@@ -130,8 +136,14 @@ export function useWixStores() {
       setLoading(true);
       setError(null);
       try {
-        const res = await wixClient.items.query(STORES_COLLECTION).limit(100).find();
-        if (!cancelled) setStores((res.items || []).map(i => normalizeCMSItem(i, true)));
+        let allItems = [];
+        let res = await wixClient.items.query(STORES_COLLECTION).limit(1000).find();
+        allItems = allItems.concat(res.items || []);
+        while (res.hasNext && res.hasNext()) {
+          res = await res.next();
+          allItems = allItems.concat(res.items || []);
+        }
+        if (!cancelled) setStores(allItems.map(i => normalizeCMSItem(i, true)));
       } catch (err) {
         console.error('[CMS] Error fetching stores:', err);
         if (!cancelled) setError(err?.message || 'Could not load stores.');
@@ -165,8 +177,14 @@ export function useWixStoreBySlug(slug) {
       setLoading(true);
       setError(null);
       try {
-        const res = await wixClient.items.query(STORES_COLLECTION).limit(100).find();
-        const allStores = (res.items || []).map(i => normalizeCMSItem(i, true));
+        let allItems = [];
+        let res = await wixClient.items.query(STORES_COLLECTION).limit(1000).find();
+        allItems = allItems.concat(res.items || []);
+        while (res.hasNext && res.hasNext()) {
+          res = await res.next();
+          allItems = allItems.concat(res.items || []);
+        }
+        const allStores = allItems.map(i => normalizeCMSItem(i, true));
         const match = allStores.find(s => s.slug === slug);
 
         if (!cancelled) {

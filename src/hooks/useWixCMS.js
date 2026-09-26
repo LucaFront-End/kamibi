@@ -39,13 +39,21 @@ function normalizeCMSItem(item, useGeneratedSlug = false) {
 // ═══════════════════════════════════════════════════════════════════════════
 // Landings de Ciudad — has native slug field
 // ═══════════════════════════════════════════════════════════════════════════
+let allLandingsCache = null;
+
 export function useWixLandings() {
   const { wixClient, isReady } = useWixClient();
-  const [landings, setLandings] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [landings, setLandings] = useState(allLandingsCache || []);
+  const [loading, setLoading] = useState(allLandingsCache ? false : true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    if (allLandingsCache && allLandingsCache.length > 0) {
+      setLandings(allLandingsCache);
+      setLoading(false);
+      return;
+    }
+
     if (!isReady) return;
     let cancelled = false;
 
@@ -53,14 +61,30 @@ export function useWixLandings() {
       setLoading(true);
       setError(null);
       try {
-        let allItems = [];
-        let res = await wixClient.items.query(LANDINGS_COLLECTION).limit(1000).find();
-        allItems = allItems.concat(res.items || []);
-        while (res.hasNext && res.hasNext()) {
-          res = await res.next();
-          allItems = allItems.concat(res.items || []);
+        // Step 1: Fetch first 100 items immediately so UI renders in <300ms
+        let res = await wixClient.items.query(LANDINGS_COLLECTION).limit(100).find();
+        let items = (res.items || []).map(i => normalizeCMSItem(i));
+        if (!cancelled) {
+          setLandings(items);
+          setLoading(false);
         }
-        if (!cancelled) setLandings(allItems.map(i => normalizeCMSItem(i)));
+
+        // Step 2: Fetch remaining items in background without freezing UI
+        if (res.hasNext && res.hasNext()) {
+          let fullList = [...items];
+          let nextRes = await wixClient.items.query(LANDINGS_COLLECTION).skip(100).limit(1000).find();
+          fullList = fullList.concat((nextRes.items || []).map(i => normalizeCMSItem(i)));
+          while (nextRes.hasNext && nextRes.hasNext()) {
+            nextRes = await nextRes.next();
+            fullList = fullList.concat((nextRes.items || []).map(i => normalizeCMSItem(i)));
+          }
+          allLandingsCache = fullList;
+          if (!cancelled) {
+            setLandings(fullList);
+          }
+        } else {
+          allLandingsCache = items;
+        }
       } catch (err) {
         console.error('[CMS] Error fetching landings:', err);
         if (!cancelled) setError(err?.message || 'Could not load landings.');

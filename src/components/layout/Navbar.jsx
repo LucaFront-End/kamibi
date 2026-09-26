@@ -47,7 +47,12 @@ export const Navbar = () => {
     { name: locale === 'es' ? 'Contacto' : 'Contact', path: '/contact' },
   ];
 
-  const isTransparentDark = (location.pathname === '/' || location.pathname === '/about' || location.pathname === '/contact') && !isScrolled;
+  // Pages with a light cream background; all other pages (home, /zonas, /about, /contact, /:slug landings) have a dark hero
+  const lightPrefixes = ['/store', '/product', '/blog', '/tienda', '/mi-cuenta', '/thank-you'];
+  const isLightPage = lightPrefixes.some(prefix =>
+    location.pathname === prefix || location.pathname.startsWith(prefix + '/')
+  );
+  const isTransparentDark = !isLightPage && !isScrolled;
 
   return (
     <>

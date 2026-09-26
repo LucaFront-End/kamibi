@@ -305,49 +305,65 @@
 }
 
 /* Transparent navbar over dark background themes */
+.navbar.transparent-dark-bg {
+  background: linear-gradient(
+    to bottom,
+    rgba(10, 14, 20, 0.65) 0%,
+    rgba(10, 14, 20, 0.35) 60%,
+    rgba(10, 14, 20, 0) 100%
+  );
+}
+
 .navbar.transparent-dark-bg .nav-link {
-  color: rgba(255, 255, 255, 0.85);
+  color: #FFFFFF !important;
+  font-weight: 500;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
 }
 
 .navbar.transparent-dark-bg .nav-link:hover {
-  color: var(--color-gold);
+  color: var(--color-gold) !important;
 }
 
 .navbar.transparent-dark-bg .navbar-logo-img {
-  filter: invert(1) brightness(2);
+  filter: invert(1) brightness(2.5) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.6));
 }
 
 .navbar.transparent-dark-bg .lang-switcher {
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.9) !important;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
 }
 
 .navbar.transparent-dark-bg .lang-switcher:hover {
-  color: var(--color-warm-white);
+  color: #FFFFFF !important;
 }
 
 .navbar.transparent-dark-bg .active-lang {
-  color: var(--color-warm-white);
+  color: #FFFFFF !important;
+  font-weight: 700;
 }
 
 .navbar.transparent-dark-bg .cart-toggle {
-  color: var(--color-warm-white);
+  color: #FFFFFF !important;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.7));
 }
 
 .navbar.transparent-dark-bg .cart-toggle:hover {
-  color: var(--color-gold);
-  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--color-gold) !important;
+  background-color: rgba(255, 255, 255, 0.15) !important;
 }
 
 .navbar.transparent-dark-bg .user-toggle {
-  color: var(--color-warm-white);
+  color: #FFFFFF !important;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.7));
 }
 
 .navbar.transparent-dark-bg .user-toggle:hover {
-  color: var(--color-gold);
-  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--color-gold) !important;
+  background-color: rgba(255, 255, 255, 0.15) !important;
 }
 
 .navbar.transparent-dark-bg .hamburger-line {
-  background-color: var(--color-warm-white);
+  background-color: #FFFFFF !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
 }
 

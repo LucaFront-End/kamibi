@@ -76,14 +76,25 @@ export function useWixLandings() {
   return { landings, loading, error };
 }
 
+const landingCache = new Map();
+
 export function useWixLandingBySlug(slug) {
   const { wixClient, isReady } = useWixClient();
-  const [landing, setLanding] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const cached = slug ? landingCache.get(slug) : null;
+  const [landing, setLanding] = useState(cached || null);
+  const [loading, setLoading] = useState(cached ? false : true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!isReady || !slug) return;
+    if (!slug) return;
+
+    if (landingCache.has(slug)) {
+      setLanding(landingCache.get(slug));
+      setLoading(false);
+      return;
+    }
+
+    if (!isReady) return;
     let cancelled = false;
 
     async function fetch() {
@@ -98,7 +109,9 @@ export function useWixLandingBySlug(slug) {
 
         if (!cancelled) {
           if (res.items?.length > 0) {
-            setLanding(normalizeCMSItem(res.items[0]));
+            const normalized = normalizeCMSItem(res.items[0]);
+            landingCache.set(slug, normalized);
+            setLanding(normalized);
           } else {
             setLanding(null);
             setError('Landing not found');

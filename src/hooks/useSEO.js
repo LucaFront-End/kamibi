@@ -27,11 +27,21 @@ export const useSEO = ({
   keywords,
   canonical,
   schema,
+  noindex = false,
 }) => {
   useEffect(() => {
     const title = locale === 'es' ? (titleEs || titleEn) : (titleEn || titleEs);
     const desc  = locale === 'es' ? (descEs  || descEn)  : (descEn  || descEs);
     const lang  = locale === 'es' ? 'es' : 'en';
+
+    // Robots: soft 404 protection
+    let robotsEl = document.querySelector('meta[name="robots"]');
+    if (!robotsEl) {
+      robotsEl = document.createElement('meta');
+      robotsEl.setAttribute('name', 'robots');
+      document.head.appendChild(robotsEl);
+    }
+    robotsEl.content = noindex ? 'noindex, nofollow' : 'index, follow';
 
     // Title
     if (title) {
@@ -109,5 +119,5 @@ export const useSEO = ({
       const s = document.getElementById('dynamic-json-ld');
       if (s) s.remove();
     };
-  }, [titleEn, titleEs, descEn, descEs, locale, image, type, keywords, canonical, schema]);
+  }, [titleEn, titleEs, descEn, descEs, locale, image, type, keywords, canonical, schema, noindex]);
 };

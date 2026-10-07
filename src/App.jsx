@@ -24,6 +24,7 @@ import { CityLandingPage } from './pages/CityLandingPage';
 import { DynamicStorePage } from './pages/DynamicStorePage';
 import { ZonasPage } from './pages/ZonasPage';
 import { ThankYouPage } from './pages/ThankYouPage';
+import { LegalPage } from './pages/LegalPage';
 import './App.css';
 
 function App() {
@@ -54,6 +55,18 @@ function App() {
                     <Route path="/tienda/:slug" element={<DynamicStorePage />} />
                     {/* Hub page for all dynamic landings & stores */}
                     <Route path="/zonas" element={<ZonasPage />} />
+                    {/* Legal Policies (Dynamic Wix CMS) */}
+                    <Route path="/privacy-policy" element={<LegalPage policyKey="privacy" />} />
+                    <Route path="/aviso-de-privacidad" element={<LegalPage policyKey="privacy" />} />
+                    <Route path="/terms-of-service" element={<LegalPage policyKey="terms" />} />
+                    <Route path="/terminos-y-condiciones" element={<LegalPage policyKey="terms" />} />
+                    <Route path="/shipping-policy" element={<LegalPage policyKey="shipping" />} />
+                    <Route path="/politica-de-envios" element={<LegalPage policyKey="shipping" />} />
+                    <Route path="/refund-policy" element={<LegalPage policyKey="refund" />} />
+                    <Route path="/politica-de-reembolsos" element={<LegalPage policyKey="refund" />} />
+                    <Route path="/cookie-policy" element={<LegalPage policyKey="cookies" />} />
+                    <Route path="/politica-de-cookies" element={<LegalPage policyKey="cookies" />} />
+                    <Route path="/legal/:slug" element={<LegalPage />} />
                     {/* Thank You page after checkout */}
                     <Route path="/thank-you" element={<ThankYouPage />} />
                     {/* Catch-all: dynamic CMS landing pages */}

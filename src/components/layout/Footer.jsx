@@ -88,6 +88,13 @@ export const Footer = () => {
                 </svg>
                 +1 678 674 6128
               </a>
+              <a href="mailto:contact@kamibistore.com" className="footer-contact-link">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                  <polyline points="22,6 12,13 2,6" />
+                </svg>
+                contact@kamibistore.com
+              </a>
               <span className="footer-contact-link">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
@@ -168,29 +175,83 @@ export const Footer = () => {
             <ul className="footer-links">
               <li><Link to="/about">{locale === 'es' ? 'Nosotros' : 'About'}</Link></li>
               <li><Link to="/blog">{locale === 'es' ? 'Blog' : 'Blog'}</Link></li>
-              <li><Link to="/contact">{locale === 'es' ? 'Contacto' : 'Contact'}</Link></li>
               <li><Link to="/zonas">{locale === 'es' ? 'Zonas' : 'Locations'}</Link></li>
               <li><Link to="/mi-cuenta">{locale === 'es' ? 'Mi cuenta' : 'My account'}</Link></li>
+              <li><Link to="/contact">{locale === 'es' ? 'Contacto' : 'Contact'}</Link></li>
             </ul>
           </ScrollReveal>
 
-          <ScrollReveal direction="up" delay={0.25} className="footer-col">
+          <ScrollReveal direction="up" delay={0.2} className="footer-col">
             <span className="text-label footer-label">Legal</span>
             <ul className="footer-links">
-              <li><a href="#privacy">Privacy Policy</a></li>
-              <li><a href="#terms">Terms of Service</a></li>
-              <li><a href="#tsa">TSA Compliance Guide</a></li>
-              <li><a href="#shipping">Shipping &amp; Returns</a></li>
+              <li>
+                <Link to={locale === 'es' ? '/aviso-de-privacidad' : '/privacy-policy'}>
+                  {locale === 'es' ? 'Aviso de Privacidad' : 'Privacy Policy'}
+                </Link>
+              </li>
+              <li>
+                <Link to={locale === 'es' ? '/terminos-y-condiciones' : '/terms-of-service'}>
+                  {locale === 'es' ? 'Términos y Condiciones' : 'Terms and Conditions'}
+                </Link>
+              </li>
+              <li>
+                <Link to={locale === 'es' ? '/politica-de-envios' : '/shipping-policy'}>
+                  {locale === 'es' ? 'Políticas de Envíos y Compras' : 'Shipping Policy'}
+                </Link>
+              </li>
+              <li>
+                <Link to={locale === 'es' ? '/politica-de-reembolsos' : '/refund-policy'}>
+                  {locale === 'es' ? 'Políticas de Reembolsos' : 'Return & Refund Policy'}
+                </Link>
+              </li>
+              <li>
+                <Link to={locale === 'es' ? '/politica-de-cookies' : '/cookie-policy'}>
+                  {locale === 'es' ? 'Política de Cookies' : 'Cookie Policy'}
+                </Link>
+              </li>
             </ul>
           </ScrollReveal>
 
-          <ScrollReveal direction="up" delay={0.3} className="footer-col">
-            <span className="text-label footer-label">Social</span>
-            <ul className="footer-links">
-              <li><a href="#instagram">Instagram</a></li>
-              <li><a href="#facebook">Facebook</a></li>
-              <li><a href="#pinterest">Pinterest</a></li>
-            </ul>
+          <ScrollReveal direction="up" delay={0.3} className="footer-col footer-col-contact">
+            <span className="text-label footer-label">
+              {locale === 'es' ? 'Contacto' : 'Contact'}
+            </span>
+            <div className="footer-contact-list">
+              <a href="tel:+16786746128" className="footer-contact-item">
+                <svg className="footer-contact-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
+                </svg>
+                <span>+1 678 674 6128</span>
+              </a>
+
+              <a href="mailto:contact@kamibistore.com" className="footer-contact-item">
+                <svg className="footer-contact-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                  <polyline points="22,6 12,13 2,6" />
+                </svg>
+                <span>contact@kamibistore.com</span>
+              </a>
+
+              <span className="footer-contact-item">
+                <svg className="footer-contact-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                <span>Georgia, USA</span>
+              </span>
+
+              <span className="footer-contact-item footer-contact-hours">
+                <svg className="footer-contact-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+                <span>{locale === 'es' ? 'Lun - Vie: 9:00 - 18:00 EST' : 'Mon - Fri: 9:00 AM - 6:00 PM EST'}</span>
+              </span>
+
+              <Link to="/contact" className="footer-contact-cta">
+                {locale === 'es' ? 'Enviar mensaje directo →' : 'Send a direct message →'}
+              </Link>
+            </div>
           </ScrollReveal>
 
           <ScrollReveal direction="up" delay={0.4} className="footer-col footer-back-top-col">

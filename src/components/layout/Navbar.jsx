@@ -48,7 +48,15 @@ export const Navbar = () => {
   ];
 
   // Pages with a light cream background; all other pages (home, /zonas, /about, /contact, /:slug landings) have a dark hero
-  const lightPrefixes = ['/store', '/product', '/blog', '/tienda', '/mi-cuenta', '/thank-you'];
+  const lightPrefixes = [
+    '/store', '/product', '/blog', '/tienda', '/mi-cuenta', '/thank-you',
+    '/privacy-policy', '/aviso-de-privacidad',
+    '/terms-of-service', '/terminos-y-condiciones',
+    '/shipping-policy', '/politica-de-envios',
+    '/refund-policy', '/politica-de-reembolsos',
+    '/cookie-policy', '/politica-de-cookies',
+    '/legal'
+  ];
   const isLightPage = lightPrefixes.some(prefix =>
     location.pathname === prefix || location.pathname.startsWith(prefix + '/')
   );

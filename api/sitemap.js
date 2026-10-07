@@ -71,6 +71,16 @@ function generatePagesSitemap() {
     { path: '/about',   changefreq: 'monthly', priority: '0.6' },
     { path: '/contact', changefreq: 'monthly', priority: '0.6' },
     { path: '/zonas',   changefreq: 'weekly',  priority: '0.7' },
+    { path: '/privacy-policy',        changefreq: 'monthly', priority: '0.5' },
+    { path: '/aviso-de-privacidad',    changefreq: 'monthly', priority: '0.5' },
+    { path: '/terms-of-service',      changefreq: 'monthly', priority: '0.5' },
+    { path: '/terminos-y-condiciones', changefreq: 'monthly', priority: '0.5' },
+    { path: '/shipping-policy',       changefreq: 'monthly', priority: '0.5' },
+    { path: '/politica-de-envios',     changefreq: 'monthly', priority: '0.5' },
+    { path: '/refund-policy',         changefreq: 'monthly', priority: '0.5' },
+    { path: '/politica-de-reembolsos', changefreq: 'monthly', priority: '0.5' },
+    { path: '/cookie-policy',         changefreq: 'monthly', priority: '0.5' },
+    { path: '/politica-de-cookies',    changefreq: 'monthly', priority: '0.5' },
   ];
 
   const entries = pages

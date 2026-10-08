@@ -14,6 +14,9 @@ export const PageTransition = ({ children }) => {
         duration: 0.6,
         ease: [0.16, 1, 0.3, 1], // easeOutExpo
       },
+      transitionEnd: {
+        transform: 'none',
+      },
     },
     exit: {
       opacity: 0,

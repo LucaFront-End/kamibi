@@ -201,18 +201,20 @@ export const ProductPage = () => {
         {/* Core Product Presentation */}
         <section className="product-showcase-section container">
           <div className="product-showcase-grid">
-            {/* Gallery Column */}
-            <ScrollReveal direction="right" className="product-gallery-sticky">
-              <ProductGallery
-                images={product.images}
-                name={product.name}
-                activeIdx={galleryActiveIdx}
-                onActiveIdxChange={setGalleryActiveIdx}
-              />
-            </ScrollReveal>
+            {/* Gallery Column — Sticky throughout the entire showcase section */}
+            <div className="product-gallery-col">
+              <div className="product-gallery-sticky">
+                <ProductGallery
+                  images={product.images}
+                  name={product.name}
+                  activeIdx={galleryActiveIdx}
+                  onActiveIdxChange={setGalleryActiveIdx}
+                />
+              </div>
+            </div>
 
             {/* Product Details & Selection Column */}
-            <ScrollReveal direction="left" className="product-purchase-details">
+            <div className="product-purchase-details">
               <span className="text-label product-purchase-category">
                 {t(`store.filters.${product.category}`)}
               </span>
@@ -239,17 +241,8 @@ export const ProductPage = () => {
                   </>
                 )}
               </div>
-              
-              <div
-                className="product-purchase-desc text-body product-description-html"
-                dangerouslySetInnerHTML={{
-                  __html: locale === 'en'
-                    ? product.descriptionHtmlEn || product.descriptionEn
-                    : product.descriptionHtml || product.description
-                }}
-              />
 
-              {/* Personalization & Customizer Card */}
+              {/* 1. Elección de variable (Sleeves / Bands / Customizer) */}
               {product.variants && product.variants.length > 0 && (
                 <div className="product-customizer-card">
                   <div className="customizer-header">
@@ -301,12 +294,10 @@ export const ProductPage = () => {
                       })}
                     </div>
                   </div>
-
-
                 </div>
               )}
 
-              {/* Sharing Set Option — shown on all products except mini-urns itself */}
+              {/* 2. Upgrade: Set para Compartir — 4 Mini Urnas */}
               {product.slug !== MINI_URNS_SLUG && miniUrnsProduct && (
                 <div
                   className={`sharing-set-card ${addSharingSet ? 'active' : ''}`}
@@ -341,7 +332,7 @@ export const ProductPage = () => {
                 </div>
               )}
 
-              {/* Add actions row */}
+              {/* 3. Acciones de compra (Cantidad + Agregar al Carrito) */}
               <div className="product-purchase-actions">
                 <div className="quantity-adjuster">
                   <button
@@ -393,7 +384,17 @@ export const ProductPage = () => {
                   ))}
                 </ul>
               )}
-            </ScrollReveal>
+
+              {/* 4. Descripción detallada — ahora debajo de los elementos de compra */}
+              <div
+                className="product-purchase-desc text-body product-description-html"
+                dangerouslySetInnerHTML={{
+                  __html: locale === 'en'
+                    ? product.descriptionHtmlEn || product.descriptionEn
+                    : product.descriptionHtml || product.description
+                }}
+              />
+            </div>
           </div>
         </section>
 

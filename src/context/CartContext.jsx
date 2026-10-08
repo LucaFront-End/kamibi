@@ -189,7 +189,8 @@ export const CartProvider = ({ children }) => {
 
       console.log('[Cart] Checkout created:', checkout.checkoutId);
 
-      const WIX_BASE_DOMAIN = 'dilodigitalmx.wixsite.com/kamibi-store';
+      const CHECKOUT_BASE_DOMAIN = 'checkout.kamibistore.com';
+      const OLD_WIX_DOMAIN = 'dilodigitalmx.wixsite.com/kamibi-store';
       const BROKEN_DOMAIN = 'www.kamibistore.com';
 
       const { redirectSession } = await wixClient.redirects.createRedirectSession({
@@ -200,19 +201,33 @@ export const CartProvider = ({ children }) => {
         },
       });
 
-      // The Wix SDK generates URLs using the custom domain (kamibistore.com)
-      // which doesn't work. Replace it with the base Wix domain that does work.
+      // The Wix SDK generates redirect URLs that need to target the custom checkout subdomain (checkout.kamibistore.com).
       let checkoutUrl = redirectSession.fullUrl;
-      checkoutUrl = checkoutUrl.replaceAll(BROKEN_DOMAIN, WIX_BASE_DOMAIN);
-      // Also fix any URL-encoded versions of the broken domain
-      checkoutUrl = checkoutUrl.replaceAll(encodeURIComponent(BROKEN_DOMAIN), encodeURIComponent(WIX_BASE_DOMAIN));
-      checkoutUrl = checkoutUrl.replaceAll(
-        encodeURIComponent(`https://${BROKEN_DOMAIN}`),
-        encodeURIComponent(`https://${WIX_BASE_DOMAIN}`)
-      );
+
+      try {
+        const urlObj = new URL(checkoutUrl);
+
+        // Remove the /kamibi-store path prefix if present from earlier wixsite configurations
+        if (urlObj.pathname.startsWith('/kamibi-store')) {
+          urlObj.pathname = urlObj.pathname.replace('/kamibi-store', '') || '/';
+        }
+
+        // Point hostname to checkout.kamibistore.com
+        urlObj.host = CHECKOUT_BASE_DOMAIN;
+        urlObj.protocol = 'https:';
+
+        checkoutUrl = urlObj.toString();
+      } catch (e) {
+        console.warn('[Cart] Error parsing checkout URL, applying fallback string replacement:', e);
+        checkoutUrl = checkoutUrl.replaceAll(OLD_WIX_DOMAIN, CHECKOUT_BASE_DOMAIN);
+        checkoutUrl = checkoutUrl.replaceAll('dilodigitalmx.wixsite.com', CHECKOUT_BASE_DOMAIN);
+        checkoutUrl = checkoutUrl.replaceAll(BROKEN_DOMAIN, CHECKOUT_BASE_DOMAIN);
+        checkoutUrl = checkoutUrl.replaceAll(encodeURIComponent(BROKEN_DOMAIN), encodeURIComponent(CHECKOUT_BASE_DOMAIN));
+        checkoutUrl = checkoutUrl.replaceAll('https://kamibistore.com', `https://${CHECKOUT_BASE_DOMAIN}`);
+      }
 
       console.log('[Cart] Original URL:', redirectSession.fullUrl);
-      console.log('[Cart] Fixed URL:', checkoutUrl);
+      console.log('[Cart] Final Checkout URL:', checkoutUrl);
       window.location.href = checkoutUrl;
     } catch (err) {
       console.error('[Cart] Checkout error:', err);

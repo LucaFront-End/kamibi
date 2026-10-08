@@ -11,7 +11,7 @@ import './ContactPage.css';
 export const ContactPage = () => {
   const { t, locale } = useTranslation();
   const { submitToCMS } = useFormCMS();
-  const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [focusedField, setFocusedField] = useState('');
@@ -50,6 +50,7 @@ export const ContactPage = () => {
       body: JSON.stringify({
         name: formData.name,
         email: formData.email,
+        phone: formData.phone || '',
         message: formData.message,
         _captcha: "false",
         _template: "plain",
@@ -66,13 +67,14 @@ export const ContactPage = () => {
 
       setIsSubmitting(false);
       setIsSubmitted(true);
-      setFormData({ name: '', email: '', message: '' });
+      setFormData({ name: '', email: '', phone: '', message: '' });
 
       // Fire-and-forget: also save to Wix CMS
       submitToCMS({
         type: 'contact',
         name: submittedData.name,
         email: submittedData.email,
+        phone: submittedData.phone,
         message: submittedData.message,
         locale,
         source: 'contact-page',
@@ -233,6 +235,25 @@ export const ContactPage = () => {
                       onBlur={() => setFocusedField('')}
                       placeholder={t('contact.form.placeholderEmail')}
                       required
+                      className="form-input"
+                    />
+                    <div className="form-border-focus"></div>
+                  </div>
+
+                  {/* Phone Input Group */}
+                  <div className={`form-group ${focusedField === 'phone' ? 'focused' : ''} ${formData.phone ? 'has-value' : ''}`}>
+                    <label htmlFor="phone" className="form-label">
+                      {t('contact.form.phone')}
+                    </label>
+                    <input
+                      type="tel"
+                      id="phone"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      onFocus={() => setFocusedField('phone')}
+                      onBlur={() => setFocusedField('')}
+                      placeholder={t('contact.form.placeholderPhone')}
                       className="form-input"
                     />
                     <div className="form-border-focus"></div>

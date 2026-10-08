@@ -5,6 +5,7 @@
  *   type        — 'contact' | 'newsletter' | 'review'
  *   name        — submitter's name (optional for newsletter)
  *   email       — submitter's email
+ *   phone       — submitter's phone (optional)
  *   message     — message or comment body (optional for newsletter)
  *   locale      — 'en' | 'es'
  *   source      — which form/page triggered this (e.g. 'contact-page', 'footer', 'product-review')
@@ -21,12 +22,12 @@ const COLLECTION_ID = 'KamibiFormSubmissions';
  * Fire-and-forget — does NOT block the form's own success flow.
  *
  * @returns {Function} submitToCMS(payload)
- *   payload: { type, name?, email, message?, locale, source }
+ *   payload: { type, name?, email, phone?, message?, locale, source }
  */
 export function useFormCMS() {
   const { wixClient, isReady } = useWixClient();
 
-  async function submitToCMS({ type, name = '', email, message = '', locale = 'en', source }) {
+  async function submitToCMS({ type, name = '', email, phone = '', message = '', locale = 'en', source }) {
     if (!isReady || !wixClient) {
       console.warn('[FormCMS] Wix client not ready, skipping CMS submission.');
       return;
@@ -36,6 +37,8 @@ export function useFormCMS() {
       type,
       name,
       email,
+      phone,
+      telefono: phone,
       message,
       locale,
       source,

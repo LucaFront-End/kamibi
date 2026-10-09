@@ -189,7 +189,7 @@ export const CartProvider = ({ children }) => {
 
       console.log('[Cart] Checkout created:', checkout.checkoutId);
 
-      const CHECKOUT_BASE_DOMAIN = 'checkout.kamibistore.com';
+      const CHECKOUT_BASE_DOMAIN = 'chekout.kamibistore.com';
       const OLD_WIX_DOMAIN = 'dilodigitalmx.wixsite.com/kamibi-store';
       const BROKEN_DOMAIN = 'www.kamibistore.com';
 
@@ -201,7 +201,7 @@ export const CartProvider = ({ children }) => {
         },
       });
 
-      // The Wix SDK generates redirect URLs that need to target the custom checkout subdomain (checkout.kamibistore.com).
+      // The Wix SDK generates redirect URLs that need to target the custom checkout subdomain (chekout.kamibistore.com).
       let checkoutUrl = redirectSession.fullUrl;
 
       try {
@@ -212,13 +212,14 @@ export const CartProvider = ({ children }) => {
           urlObj.pathname = urlObj.pathname.replace('/kamibi-store', '') || '/';
         }
 
-        // Point hostname to checkout.kamibistore.com
+        // Point hostname to chekout.kamibistore.com
         urlObj.host = CHECKOUT_BASE_DOMAIN;
         urlObj.protocol = 'https:';
 
         checkoutUrl = urlObj.toString();
       } catch (e) {
         console.warn('[Cart] Error parsing checkout URL, applying fallback string replacement:', e);
+        checkoutUrl = checkoutUrl.replaceAll('checkout.kamibistore.com', CHECKOUT_BASE_DOMAIN);
         checkoutUrl = checkoutUrl.replaceAll(OLD_WIX_DOMAIN, CHECKOUT_BASE_DOMAIN);
         checkoutUrl = checkoutUrl.replaceAll('dilodigitalmx.wixsite.com', CHECKOUT_BASE_DOMAIN);
         checkoutUrl = checkoutUrl.replaceAll(BROKEN_DOMAIN, CHECKOUT_BASE_DOMAIN);

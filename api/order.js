@@ -198,5 +198,18 @@ export default async function handler(req, res) {
     currency: rawOrder.currency || 'USD',
     paymentStatus: rawOrder.paymentStatus || 'PAID',
     createdDate: rawOrder.createdDate || rawOrder._createdDate,
+    _debug: {
+      priceSummary: rawOrder.priceSummary,
+      appliedDiscounts: rawOrder.appliedDiscounts,
+      totals: rawOrder.totals,
+      balanceSummary: rawOrder.balanceSummary,
+      lineItemsPrices: (rawOrder.lineItems || []).map(li => ({
+        name: li.productName,
+        price: li.price,
+        totalPrice: li.totalPrice,
+        priceDescription: li.priceDescription,
+        totalDiscount: li.totalDiscount,
+      })),
+    },
   });
 }

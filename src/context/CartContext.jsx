@@ -229,6 +229,40 @@ export const CartProvider = ({ children }) => {
 
       console.log('[Cart] Original URL:', redirectSession.fullUrl);
       console.log('[Cart] Final Checkout URL:', checkoutUrl);
+
+      // Save checkout snapshot for instant display on /thank-you page
+      try {
+        sessionStorage.setItem('kamibi_last_checkout', JSON.stringify({
+          checkoutId: checkout.checkoutId,
+          items: (cart.lineItems || []).map((item) => {
+            const rawImg = item.image?.url || item.image || item.media?.mainMedia?.image?.url || '';
+            let imgUrl = rawImg;
+            if (imgUrl && !imgUrl.startsWith('http')) {
+              const match = imgUrl.match(/(45119e_[a-zA-Z0-9~_-]+\.(png|jpg|jpeg|webp))/i);
+              if (match) {
+                imgUrl = `https://static.wixstatic.com/media/${match[1]}`;
+              }
+            }
+            return {
+              id: item._id,
+              name: item.productName?.translated || item.productName?.original || item.name || 'Kamibi Urn',
+              quantity: item.quantity || 1,
+              price: item.price?.formattedAmount || `$${Number(item.price?.amount || item.price || 0).toFixed(2)}`,
+              totalPrice: `$${(Number(item.price?.amount || item.price || 0) * (item.quantity || 1)).toFixed(2)}`,
+              image: imgUrl,
+              options: (item.descriptionLines || []).map(d => d.plainText?.value || d.name?.value).filter(Boolean),
+            };
+          }),
+          totalQuantity: (cart.lineItems || []).reduce((acc, curr) => acc + (curr.quantity || 1), 0),
+          subtotal: cart.subtotal?.formattedAmount || `$${Number(cart.subtotal?.amount || 0).toFixed(2)}`,
+          total: cart.subtotal?.formattedAmount || `$${Number(cart.subtotal?.amount || 0).toFixed(2)}`,
+          currency: cart.currency || 'USD',
+          timestamp: Date.now(),
+        }));
+      } catch (storageErr) {
+        console.warn('[Cart] Failed to cache last checkout in sessionStorage:', storageErr);
+      }
+
       window.location.href = checkoutUrl;
     } catch (err) {
       console.error('[Cart] Checkout error:', err);

@@ -204,7 +204,7 @@ export const ZonasPage = () => {
                       </p>
                     </div>
                     <div className="zona-card-actions">
-                      <Link to={`/${landing.slug}`} className="zona-card-btn primary">
+                      <Link to={`/ciudades/${landing.slug}`} className="zona-card-btn primary">
                         {locale === 'es' ? 'Ver Landing' : 'View Landing'}
                         <span className="btn-arrow">→</span>
                       </Link>

@@ -319,6 +319,11 @@ export const ThankYouPage = () => {
                               <span className="summary-item-total-price">
                                 {item.totalPrice || item.price}
                               </span>
+                              {item.isFree && (
+                                <div>
+                                  <span className="summary-item-free-badge">100% OFF</span>
+                                </div>
+                              )}
                             </div>
                           </div>
                         ))}
@@ -338,21 +343,26 @@ export const ThankYouPage = () => {
                     <div className="summary-totals-row">
                       <span className="summary-totals-label">{t('thankYou.shippingLabel')}</span>
                       <span className="summary-totals-val summary-free-tag">
-                        {orderDetails?.shipping || t('thankYou.freeShipping')}
+                        {orderDetails?.isFreeShipping ? t('thankYou.freeShipping') : (orderDetails?.shipping || t('thankYou.freeShipping'))}
                       </span>
                     </div>
 
-                    {orderDetails?.tax && (
-                      <div className="summary-totals-row">
-                        <span className="summary-totals-label">{t('thankYou.taxLabel')}</span>
-                        <span className="summary-totals-val">{orderDetails.tax}</span>
-                      </div>
-                    )}
+                    <div className="summary-totals-row">
+                      <span className="summary-totals-label">{t('thankYou.taxLabel')}</span>
+                      <span className="summary-totals-val">{orderDetails?.tax || '$0.00'}</span>
+                    </div>
 
-                    {orderDetails?.discount && (
+                    {orderDetails?.discount && orderDetails.discount !== '$0.00' && orderDetails.discount !== '-$0.00' && (
                       <div className="summary-totals-row summary-discount-row">
-                        <span className="summary-totals-label">{t('thankYou.discountLabel')}</span>
-                        <span className="summary-totals-val">-{orderDetails.discount}</span>
+                        <span className="summary-totals-label">
+                          {t('thankYou.discountLabel')}
+                          {orderDetails.couponCode && (
+                            <span className="summary-coupon-badge">{orderDetails.couponCode}</span>
+                          )}
+                        </span>
+                        <span className="summary-totals-val">
+                          {orderDetails.discount.startsWith('-') ? orderDetails.discount : `-${orderDetails.discount}`}
+                        </span>
                       </div>
                     )}
 

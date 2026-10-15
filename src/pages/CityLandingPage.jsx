@@ -42,20 +42,28 @@ export const CityLandingPage = () => {
 
   const isNotFound = !loading && (error || !landing);
 
-  // Dynamic SEO from CMS data or fallback title; if not found, emit noindex to prevent Google Soft 404
+  // Dynamic SEO from CMS data or fallback title; canonical URL with /ciudades/ prefix
   useSEO({
     titleEn: isNotFound ? 'Page Not Found | Kamibi Store' : (landing?.seoTitle || landing?.pageTitle || `${fallbackTitle} | Kamibi Store`),
     titleEs: isNotFound ? 'Página No Encontrada | Kamibi Store' : (landing?.seoTitle || landing?.pageTitle || `${fallbackTitle} | Kamibi Store`),
     descEn: isNotFound ? 'The requested page was not found.' : (landing?.seoDescription || landing?.excerpt || defaultExcerpt),
     descEs: isNotFound ? 'La página solicitada no fue encontrada.' : (landing?.seoDescription || landing?.excerpt || defaultExcerpt),
+    canonical: `https://kamibistore.com/ciudades/${slug}`,
     locale,
     noindex: isNotFound,
   });
 
-  // Scroll to top on load
+  // Scroll to top on load and redirect legacy root URL to /ciudades/:slug
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [slug]);
+
+    if (typeof window !== 'undefined' && slug) {
+      const pathname = window.location.pathname;
+      if (!pathname.toLowerCase().startsWith('/ciudades/')) {
+        navigate(`/ciudades/${slug}`, { replace: true });
+      }
+    }
+  }, [slug, navigate]);
 
   // If genuinely not found after CMS check completed
   if (isNotFound) {

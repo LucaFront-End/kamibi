@@ -156,7 +156,7 @@ async function generateLandingsSitemap(wixClient) {
       const lastmod = data._updatedDate
         ? new Date(data._updatedDate).toISOString().split('T')[0]
         : today();
-      return buildUrlEntry(`${SITE_URL}/${slug}`, lastmod, 'weekly', '0.7');
+      return buildUrlEntry(`${SITE_URL}/ciudades/${slug}`, lastmod, 'weekly', '0.7');
     })
     .filter(Boolean)
     .join('\n');

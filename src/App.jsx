@@ -69,7 +69,10 @@ function App() {
                     <Route path="/legal/:slug" element={<LegalPage />} />
                     {/* Thank You page after checkout */}
                     <Route path="/thank-you" element={<ThankYouPage />} />
-                    {/* Catch-all: dynamic CMS landing pages */}
+                    {/* Dynamic CMS city landing pages with /ciudades and /Ciudades prefix */}
+                    <Route path="/ciudades/:slug" element={<CityLandingPage />} />
+                    <Route path="/Ciudades/:slug" element={<CityLandingPage />} />
+                    {/* Catch-all: legacy dynamic CMS landing pages redirect */}
                     <Route path="/:slug" element={<CityLandingPage />} />
                   </Routes>
                 </main>

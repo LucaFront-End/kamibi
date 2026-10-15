@@ -103,7 +103,35 @@ export default async function handler(req, res) {
 
   const buyerEmail = rawOrder.buyerInfo?.email || billingContact.email || shippingContact.email || '';
 
-  // Extract line items
+  // Extract coupon details & total discounts from appliedDiscounts
+  let totalDiscountAmount = 0;
+  let couponCode = '';
+  let couponName = '';
+
+  if (Array.isArray(rawOrder.appliedDiscounts)) {
+    for (const d of rawOrder.appliedDiscounts) {
+      if (d.coupon?.code) couponCode = d.coupon.code;
+      if (d.coupon?.name) couponName = d.coupon.name;
+
+      if (d.coupon?.amount?.amount) {
+        totalDiscountAmount += Number(d.coupon.amount.amount) || 0;
+      } else if (d.merchantDiscount?.amount?.amount) {
+        totalDiscountAmount += Number(d.merchantDiscount.amount.amount) || 0;
+      } else if (Array.isArray(d.lineItemDiscounts)) {
+        for (const lid of d.lineItemDiscounts) {
+          totalDiscountAmount += Number(lid.totalDiscount?.amount) || 0;
+        }
+      }
+    }
+  }
+
+  const summary = rawOrder.priceSummary || rawOrder.totals || {};
+  const summaryDiscountNum = Number(summary.discount?.amount) || 0;
+  if (summaryDiscountNum > totalDiscountAmount) {
+    totalDiscountAmount = summaryDiscountNum;
+  }
+
+  // Extract line items with original prices
   const rawItems = rawOrder.lineItems || [];
   const items = rawItems.map((item) => {
     // Media image URL extraction
@@ -125,32 +153,57 @@ export default async function handler(req, res) {
       }
     }
 
-    // Options / Cenefa details
+    // Options / Cenefa details — filter out empty or incomplete labels (prevents "Selec:: ")
     const options = (item.descriptionLines || []).map((line) => {
-      if (line.plainText?.value) return line.plainText.value;
-      if (line.name?.translated || line.name?.original) {
-        const val = line.plainText?.value || line.colorInfo?.original || '';
-        return `${line.name.translated || line.name.original}: ${val}`;
+      const plainVal = line.plainText?.value?.trim?.() || '';
+      const colorVal = line.colorInfo?.original?.trim?.() || '';
+      const val = plainVal || colorVal;
+      const labelName = (line.name?.translated || line.name?.original || '').replace(/:+$/, '').trim();
+      if (val) {
+        return labelName ? `${labelName}: ${val}` : val;
       }
       return '';
     }).filter(Boolean);
 
-    const unitPrice =
-      item.price?.formattedAmount ||
-      (item.price?.amount ? `$${Number(item.price.amount).toFixed(2)}` : '') ||
-      (item.price ? `$${Number(item.price).toFixed(2)}` : '');
+    // Calculate line item discount
+    let itemDiscount = 0;
+    if (Array.isArray(rawOrder.appliedDiscounts)) {
+      for (const d of rawOrder.appliedDiscounts) {
+        if (Array.isArray(d.lineItemDiscounts)) {
+          const match = d.lineItemDiscounts.find(lid => lid.id === item._id || lid.id === item.id);
+          if (match?.totalDiscount?.amount) {
+            itemDiscount += Number(match.totalDiscount.amount) || 0;
+          }
+        }
+      }
+    }
+    if (!itemDiscount && item.totalDiscount?.amount) {
+      itemDiscount = Number(item.totalDiscount.amount) || 0;
+    }
 
-    const itemTotal =
-      item.totalPrice?.formattedAmount ||
-      (item.totalPrice?.amount ? `$${Number(item.totalPrice.amount).toFixed(2)}` : '') ||
-      unitPrice;
+    const qty = item.quantity || 1;
+    const unitNetPrice = Number(item.price?.amount ?? item.price ?? 0);
+    const unitDiscount = qty > 0 ? (itemDiscount / qty) : itemDiscount;
+    const unitOriginalPrice = unitNetPrice + unitDiscount;
+
+    const unitPriceFormatted = unitOriginalPrice > 0
+      ? `$${unitOriginalPrice.toFixed(2)}`
+      : (item.price?.formattedAmount || '$0.00');
+
+    const itemTotalFormatted = unitOriginalPrice > 0
+      ? `$${(unitOriginalPrice * qty).toFixed(2)}`
+      : (item.totalPrice?.formattedAmount || unitPriceFormatted);
 
     return {
       id: item._id || item.id,
       name: item.productName?.translated || item.productName?.original || item.name || 'Kamibi Urn',
-      quantity: item.quantity || 1,
-      price: unitPrice,
-      totalPrice: itemTotal,
+      quantity: qty,
+      price: unitPriceFormatted,
+      totalPrice: itemTotalFormatted,
+      originalPriceNum: unitOriginalPrice,
+      netPriceNum: unitNetPrice,
+      discountAmount: itemDiscount,
+      isFree: unitNetPrice === 0 && unitOriginalPrice > 0,
       image: imageUrl,
       options,
     };
@@ -159,29 +212,35 @@ export default async function handler(req, res) {
   // Calculate total quantity
   const totalQuantity = items.reduce((acc, curr) => acc + (curr.quantity || 1), 0);
 
-  // Price summary
-  const summary = rawOrder.priceSummary || rawOrder.totals || {};
+  // Calculate subtotal from original prices
+  let calculatedSubtotal = 0;
+  items.forEach((it) => {
+    calculatedSubtotal += (it.originalPriceNum || 0) * (it.quantity || 1);
+  });
+
+  const rawSubtotalNum = Number(summary.subtotal?.amount) || 0;
+  const finalSubtotalNum = calculatedSubtotal > rawSubtotalNum ? calculatedSubtotal : rawSubtotalNum;
+  const subtotalFormatted = `$${finalSubtotalNum.toFixed(2)}`;
+
+  // Shipping
+  const rawShippingNum = Number(summary.shipping?.amount) || 0;
+  const shippingFormatted = summary.shipping?.formattedAmount || `$${rawShippingNum.toFixed(2)}`;
+  const isFreeShipping = rawShippingNum === 0;
+
+  // Taxes
+  const rawTaxNum = Number(summary.tax?.amount) || 0;
+  const taxFormatted = summary.tax?.formattedAmount || `$${rawTaxNum.toFixed(2)}`;
+
+  // Discount
+  const discountFormatted = totalDiscountAmount > 0
+    ? `-$${totalDiscountAmount.toFixed(2)}`
+    : (summary.discount?.formattedAmount && summary.discount.formattedAmount !== '$0.00' ? `-${summary.discount.formattedAmount}` : null);
+
+  // Total
   const totalFormatted =
     summary.total?.formattedAmount ||
     summary.totalPrice?.formattedAmount ||
-    (summary.total?.amount ? `$${Number(summary.total.amount).toFixed(2)}` : '') ||
-    (summary.total ? `$${Number(summary.total).toFixed(2)}` : '');
-
-  const subtotalFormatted =
-    summary.subtotal?.formattedAmount ||
-    (summary.subtotal?.amount ? `$${Number(summary.subtotal.amount).toFixed(2)}` : '');
-
-  const shippingFormatted =
-    summary.shipping?.formattedAmount ||
-    (summary.shipping?.amount ? `$${Number(summary.shipping.amount).toFixed(2)}` : '');
-
-  const taxFormatted =
-    summary.tax?.formattedAmount ||
-    (summary.tax?.amount ? `$${Number(summary.tax.amount).toFixed(2)}` : '');
-
-  const discountFormatted =
-    summary.discount?.formattedAmount ||
-    (summary.discount?.amount ? `$${Number(summary.discount.amount).toFixed(2)}` : '');
+    `$${Number(summary.total?.amount ?? summary.total ?? 0).toFixed(2)}`;
 
   return res.status(200).json({
     orderId,
@@ -193,8 +252,12 @@ export default async function handler(req, res) {
     total: totalFormatted,
     subtotal: subtotalFormatted,
     shipping: shippingFormatted,
+    isFreeShipping,
     tax: taxFormatted,
+    taxAmount: rawTaxNum,
     discount: discountFormatted,
+    discountAmount: totalDiscountAmount,
+    couponCode: couponCode || couponName || '',
     currency: rawOrder.currency || 'USD',
     paymentStatus: rawOrder.paymentStatus || 'PAID',
     createdDate: rawOrder.createdDate || rawOrder._createdDate,

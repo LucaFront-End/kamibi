@@ -196,6 +196,13 @@
   opacity: 0.8;
 }
 
+.summary-address-value {
+  font-weight: 500;
+  color: var(--color-charcoal);
+  line-height: 1.4;
+  word-break: break-word;
+}
+
 /* Items Section */
 .summary-items-section {
   margin-bottom: var(--space-lg);

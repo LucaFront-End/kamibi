@@ -2,11 +2,25 @@
  * Wix eCommerce Order Details API Endpoint
  * URL: /api/order?orderId=...
  * 
- * Securely retrieves order details using server-side Wix credentials
- * and normalizes the response for the Thank You page.
+ * Securely retrieves live order details using server-side Wix credentials
+ * and normalizes the response 100% dynamically for the Thank You page.
  */
 
 const WIX_API_BASE = 'https://www.wixapis.com';
+
+function formatCurrency(amount, currency = 'USD') {
+  const num = typeof amount === 'number' ? amount : (Number(amount) || 0);
+  try {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: currency || 'USD',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(num);
+  } catch {
+    return `$${num.toFixed(2)}`;
+  }
+}
 
 async function wixFetch(path, options = {}) {
   const apiKey = process.env.WIX_API_KEY || '';
@@ -91,19 +105,41 @@ export default async function handler(req, res) {
     });
   }
 
-  // Extract customer name
+  const currency = rawOrder.currency || 'USD';
+
+  // Extract customer contact details dynamically
   const billingContact = rawOrder.billingInfo?.contactDetails || rawOrder.billingInfo?.address?.contactDetails || {};
   const shippingContact = rawOrder.shippingInfo?.logistics?.shippingDestination?.contactDetails || rawOrder.shippingInfo?.shipmentDetails?.address?.contactDetails || {};
   const buyerName =
     [billingContact.firstName, billingContact.lastName].filter(Boolean).join(' ') ||
     [shippingContact.firstName, shippingContact.lastName].filter(Boolean).join(' ') ||
     billingContact.fullName ||
+    shippingContact.fullName ||
     rawOrder.buyerInfo?.email ||
     '';
 
   const buyerEmail = rawOrder.buyerInfo?.email || billingContact.email || shippingContact.email || '';
+  const buyerPhone = billingContact.phone || shippingContact.phone || '';
 
-  // Extract coupon details & total discounts from appliedDiscounts
+  // Extract shipping destination address dynamically
+  const shippingDest =
+    rawOrder.shippingInfo?.logistics?.shippingDestination?.address ||
+    rawOrder.shippingInfo?.shipmentDetails?.address ||
+    rawOrder.billingInfo?.address ||
+    {};
+
+  const street = [shippingDest.addressLine1 || shippingDest.addressLine, shippingDest.addressLine2]
+    .filter(Boolean)
+    .join(' ');
+  const cityStateZip = [
+    shippingDest.city,
+    shippingDest.subdivision || shippingDest.subdivisionName,
+    shippingDest.postalCode,
+  ].filter(Boolean).join(', ');
+  const country = shippingDest.country || '';
+  const formattedAddress = [street, cityStateZip, country].filter(Boolean).join(' • ');
+
+  // Extract coupon details & total discounts dynamically
   let totalDiscountAmount = 0;
   let couponCode = '';
   let couponName = '';
@@ -117,29 +153,35 @@ export default async function handler(req, res) {
         totalDiscountAmount += Number(d.coupon.amount.amount) || 0;
       } else if (d.merchantDiscount?.amount?.amount) {
         totalDiscountAmount += Number(d.merchantDiscount.amount.amount) || 0;
+      } else if (d.discount?.amount?.amount) {
+        totalDiscountAmount += Number(d.discount.amount.amount) || 0;
       } else if (Array.isArray(d.lineItemDiscounts)) {
         for (const lid of d.lineItemDiscounts) {
-          totalDiscountAmount += Number(lid.totalDiscount?.amount) || 0;
+          totalDiscountAmount += Number(lid.totalDiscount?.amount ?? lid.amount?.amount ?? 0) || 0;
         }
       }
     }
   }
 
   const summary = rawOrder.priceSummary || rawOrder.totals || {};
-  const summaryDiscountNum = Number(summary.discount?.amount) || 0;
+  const summaryDiscountNum = Number(summary.discount?.amount ?? summary.discount ?? 0) || 0;
   if (summaryDiscountNum > totalDiscountAmount) {
     totalDiscountAmount = summaryDiscountNum;
   }
 
-  // Extract line items with original prices
+  // Extract line items with original and discounted values
   const rawItems = rawOrder.lineItems || [];
   const items = rawItems.map((item) => {
     // Media image URL extraction
     let imageUrl = '';
     if (item.image?.url) {
       imageUrl = item.image.url;
+    } else if (item.image?.src) {
+      imageUrl = item.image.src;
     } else if (item.mediaItem?.url) {
       imageUrl = item.mediaItem.url;
+    } else if (item.mediaItem?.src) {
+      imageUrl = item.mediaItem.src;
     } else if (typeof item.image === 'string') {
       imageUrl = item.image;
     }
@@ -156,7 +198,7 @@ export default async function handler(req, res) {
     // Options / Cenefa details — filter out empty or incomplete labels (prevents "Selec:: ")
     const options = (item.descriptionLines || []).map((line) => {
       const plainVal = line.plainText?.value?.trim?.() || '';
-      const colorVal = line.colorInfo?.original?.trim?.() || '';
+      const colorVal = line.colorInfo?.original?.trim?.() || line.colorInfo?.name?.trim?.() || '';
       const val = plainVal || colorVal;
       const labelName = (line.name?.translated || line.name?.original || '').replace(/:+$/, '').trim();
       if (val) {
@@ -165,20 +207,36 @@ export default async function handler(req, res) {
       return '';
     }).filter(Boolean);
 
+    if (options.length === 0 && Array.isArray(item.options)) {
+      item.options.forEach((opt) => {
+        const name = (opt.option || opt.name || '').replace(/:+$/, '').trim();
+        const val = (opt.selection || opt.value || '').trim();
+        if (val) {
+          options.push(name ? `${name}: ${val}` : val);
+        }
+      });
+    }
+
     // Calculate line item discount
     let itemDiscount = 0;
     if (Array.isArray(rawOrder.appliedDiscounts)) {
       for (const d of rawOrder.appliedDiscounts) {
         if (Array.isArray(d.lineItemDiscounts)) {
-          const match = d.lineItemDiscounts.find(lid => lid.id === item._id || lid.id === item.id);
-          if (match?.totalDiscount?.amount) {
-            itemDiscount += Number(match.totalDiscount.amount) || 0;
+          const match = d.lineItemDiscounts.find(
+            (lid) => lid.id === item._id || lid.id === item.id || lid.lineItemId === item._id || lid.lineItemId === item.id
+          );
+          if (match) {
+            itemDiscount += Number(match.totalDiscount?.amount ?? match.amount?.amount ?? 0) || 0;
           }
         }
       }
     }
     if (!itemDiscount && item.totalDiscount?.amount) {
       itemDiscount = Number(item.totalDiscount.amount) || 0;
+    } else if (!itemDiscount && item.discount?.amount) {
+      itemDiscount = Number(item.discount.amount) || 0;
+    } else if (!itemDiscount && totalDiscountAmount > 0 && rawItems.length === 1) {
+      itemDiscount = totalDiscountAmount;
     }
 
     const qty = item.quantity || 1;
@@ -187,16 +245,16 @@ export default async function handler(req, res) {
     const unitOriginalPrice = unitNetPrice + unitDiscount;
 
     const unitPriceFormatted = unitOriginalPrice > 0
-      ? `$${unitOriginalPrice.toFixed(2)}`
-      : (item.price?.formattedAmount || '$0.00');
+      ? formatCurrency(unitOriginalPrice, currency)
+      : (item.price?.formattedAmount || formatCurrency(0, currency));
 
     const itemTotalFormatted = unitOriginalPrice > 0
-      ? `$${(unitOriginalPrice * qty).toFixed(2)}`
+      ? formatCurrency(unitOriginalPrice * qty, currency)
       : (item.totalPrice?.formattedAmount || unitPriceFormatted);
 
     return {
       id: item._id || item.id,
-      name: item.productName?.translated || item.productName?.original || item.name || 'Kamibi Urn',
+      name: item.productName?.translated || item.productName?.original || item.name || item.itemName || '',
       quantity: qty,
       price: unitPriceFormatted,
       totalPrice: itemTotalFormatted,
@@ -218,48 +276,68 @@ export default async function handler(req, res) {
     calculatedSubtotal += (it.originalPriceNum || 0) * (it.quantity || 1);
   });
 
-  const rawSubtotalNum = Number(summary.subtotal?.amount) || 0;
+  const rawSubtotalNum = Number(summary.subtotal?.amount ?? summary.subtotal ?? 0) || 0;
   const finalSubtotalNum = calculatedSubtotal > rawSubtotalNum ? calculatedSubtotal : rawSubtotalNum;
-  const subtotalFormatted = `$${finalSubtotalNum.toFixed(2)}`;
+  const subtotalFormatted = formatCurrency(finalSubtotalNum, currency);
 
   // Shipping
-  const rawShippingNum = Number(summary.shipping?.amount) || 0;
-  const shippingFormatted = summary.shipping?.formattedAmount || `$${rawShippingNum.toFixed(2)}`;
+  const rawShippingNum =
+    Number(summary.shipping?.amount) ||
+    Number(rawOrder.shippingInfo?.logistics?.deliveryCost?.amount) ||
+    Number(summary.shipping) ||
+    0;
   const isFreeShipping = rawShippingNum === 0;
+  const shippingFormatted =
+    summary.shipping?.formattedAmount ||
+    formatCurrency(rawShippingNum, currency);
 
   // Taxes
-  const rawTaxNum = Number(summary.tax?.amount) || 0;
-  const taxFormatted = summary.tax?.formattedAmount || `$${rawTaxNum.toFixed(2)}`;
+  const rawTaxNum =
+    Number(summary.tax?.amount) ||
+    Number(summary.taxSummary?.taxAmount?.amount) ||
+    Number(rawOrder.taxSummary?.totalTax?.amount) ||
+    Number(summary.tax) ||
+    0;
+  const taxFormatted =
+    summary.tax?.formattedAmount ||
+    formatCurrency(rawTaxNum, currency);
 
   // Discount
   const discountFormatted = totalDiscountAmount > 0
-    ? `-$${totalDiscountAmount.toFixed(2)}`
+    ? `-${formatCurrency(totalDiscountAmount, currency)}`
     : (summary.discount?.formattedAmount && summary.discount.formattedAmount !== '$0.00' ? `-${summary.discount.formattedAmount}` : null);
 
-  // Total
+  // Grand Total
+  const rawTotalNum = Number(summary.total?.amount ?? summary.totalPrice?.amount ?? summary.total ?? 0);
   const totalFormatted =
     summary.total?.formattedAmount ||
     summary.totalPrice?.formattedAmount ||
-    `$${Number(summary.total?.amount ?? summary.total ?? 0).toFixed(2)}`;
+    formatCurrency(rawTotalNum, currency);
 
   return res.status(200).json({
     orderId,
-    orderNumber: rawOrder.number ? `#${rawOrder.number}` : orderId.substring(0, 8).toUpperCase(),
+    orderNumber: rawOrder.number ? `#${rawOrder.number}` : `#${orderId.substring(0, 8).toUpperCase()}`,
     customerName: buyerName,
     customerEmail: buyerEmail,
+    customerPhone: buyerPhone,
+    shippingAddress: formattedAddress || null,
     items,
     totalQuantity,
     total: totalFormatted,
+    totalAmount: rawTotalNum,
     subtotal: subtotalFormatted,
+    subtotalAmount: finalSubtotalNum,
     shipping: shippingFormatted,
+    shippingAmount: rawShippingNum,
     isFreeShipping,
     tax: taxFormatted,
     taxAmount: rawTaxNum,
     discount: discountFormatted,
     discountAmount: totalDiscountAmount,
     couponCode: couponCode || couponName || '',
-    currency: rawOrder.currency || 'USD',
+    currency,
     paymentStatus: rawOrder.paymentStatus || 'PAID',
     createdDate: rawOrder.createdDate || rawOrder._createdDate,
   });
 }
+

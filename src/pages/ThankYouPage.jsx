@@ -111,7 +111,7 @@ export const ThankYouPage = () => {
 
               return {
                 id: it._id || it.id,
-                name: it.productName?.translated || it.productName?.original || it.name || 'Kamibi Urn',
+                name: it.productName?.translated || it.productName?.original || it.name || '',
                 quantity: it.quantity || 1,
                 price: unitPrice,
                 totalPrice: itemTotal,
@@ -255,13 +255,20 @@ export const ThankYouPage = () => {
                           )}
                         </div>
                       )}
+
+                      {orderDetails?.shippingAddress && (
+                        <div className="summary-customer-line">
+                          <span className="summary-customer-label">{t('thankYou.shippingLabel')}:</span>
+                          <span className="summary-customer-value summary-address-value">{orderDetails.shippingAddress}</span>
+                        </div>
+                      )}
                     </div>
                   </div>
 
                   {/* Items List */}
                   <div className="summary-items-section">
                     <h3 className="summary-items-heading text-label">
-                      {t('thankYou.itemsTitle')} ({displayTotalQuantity || 1})
+                      {t('thankYou.itemsTitle')} ({displayTotalQuantity})
                     </h3>
 
                     {isLoading && !orderDetails?.items?.length ? (
@@ -271,20 +278,13 @@ export const ThankYouPage = () => {
                       </div>
                     ) : (
                       <div className="summary-items-list">
-                        {(orderDetails?.items || [
-                          {
-                            name: 'Terra Biodegradable Urn',
-                            quantity: 1,
-                            price: orderDetails?.total || '$90.00',
-                            totalPrice: orderDetails?.total || '$90.00',
-                          },
-                        ]).map((item, idx) => (
+                        {(orderDetails?.items || []).map((item, idx) => (
                           <div key={item.id || idx} className="summary-item-card">
                             <div className="summary-item-left">
                               {item.image ? (
                                 <img
                                   src={item.image}
-                                  alt={item.name}
+                                  alt={item.name || 'Product'}
                                   className="summary-item-img"
                                 />
                               ) : (
@@ -342,8 +342,10 @@ export const ThankYouPage = () => {
 
                     <div className="summary-totals-row">
                       <span className="summary-totals-label">{t('thankYou.shippingLabel')}</span>
-                      <span className="summary-totals-val summary-free-tag">
-                        {orderDetails?.isFreeShipping ? t('thankYou.freeShipping') : (orderDetails?.shipping || t('thankYou.freeShipping'))}
+                      <span className={`summary-totals-val ${orderDetails?.isFreeShipping ? 'summary-free-tag' : ''}`}>
+                        {orderDetails?.isFreeShipping
+                          ? t('thankYou.freeShipping')
+                          : (orderDetails?.shipping || t('thankYou.freeShipping'))}
                       </span>
                     </div>
 
@@ -378,7 +380,7 @@ export const ThankYouPage = () => {
                         )}
                       </div>
                       <span className="summary-grand-amount">
-                        {orderDetails?.total || '$90.00'}
+                        {orderDetails?.total || (isLoading ? '...' : '')}
                       </span>
                     </div>
                   </div>

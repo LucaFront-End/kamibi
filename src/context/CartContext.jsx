@@ -245,7 +245,7 @@ export const CartProvider = ({ children }) => {
             }
             return {
               id: item._id,
-              name: item.productName?.translated || item.productName?.original || item.name || 'Kamibi Urn',
+              name: item.productName?.translated || item.productName?.original || item.name || '',
               quantity: item.quantity || 1,
               price: item.price?.formattedAmount || `$${Number(item.price?.amount || item.price || 0).toFixed(2)}`,
               totalPrice: `$${(Number(item.price?.amount || item.price || 0) * (item.quantity || 1)).toFixed(2)}`,

@@ -80,10 +80,11 @@ export const ProductPage = () => {
   });
 
   // Fetch the mini-urns product for the sharing set option
-  const MINI_URNS_SLUG = 'mini-biodegradables-urn-set';
-  const { product: miniUrnsProduct } = useWixProduct(
-    slug !== MINI_URNS_SLUG ? MINI_URNS_SLUG : null
-  );
+  const isMiniUrn = slug === 'mini-biodegradables-urn-set' || slug === 'mini-urn-set-ocean-biodegradables' || slug === 'mini-urns';
+  const miniSlug = (slug?.includes('aqua') || slug?.includes('water') || slug?.includes('ocean'))
+    ? 'mini-urn-set-ocean-biodegradables'
+    : 'mini-biodegradables-urn-set';
+  const { product: miniUrnsProduct } = useWixProduct(!isMiniUrn ? miniSlug : null);
 
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [quantity, setQuantity] = useState(1);
@@ -298,7 +299,7 @@ export const ProductPage = () => {
               )}
 
               {/* 2. Upgrade: Set para Compartir — 4 Mini Urnas */}
-              {product.slug !== MINI_URNS_SLUG && miniUrnsProduct && (
+              {!isMiniUrn && miniUrnsProduct && (
                 <div
                   className={`sharing-set-card ${addSharingSet ? 'active' : ''}`}
                   onClick={() => setAddSharingSet(!addSharingSet)}
@@ -438,9 +439,9 @@ export const ProductPage = () => {
         </section>
 
         {/* Sharing Set Showcase */}
-        {product.slug !== MINI_URNS_SLUG && (
+        {!isMiniUrn && (
           <section className="product-complements-container container">
-            <ComplementsSection />
+            <ComplementsSection complementProduct={miniUrnsProduct} />
           </section>
         )}
 

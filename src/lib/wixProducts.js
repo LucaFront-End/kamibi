@@ -40,6 +40,28 @@ const COLLECTION_CATEGORY_MAP = {
   'c437f73c-1862-3280-5936-ad533e1b6beb': 'bags',    // Burial Bags
 };
 
+// Priority for ordering products in store/collection:
+// 1. Urnas Biodegradables (main full-size urns)
+// 2. Mini Urns (sharing memorial sets)
+// 3. Ash Burial Bags & accessories
+const CATEGORY_PRIORITY = {
+  urns: 1,
+  minis: 2,
+  bags: 3,
+};
+
+export function sortProducts(items) {
+  if (!Array.isArray(items)) return [];
+  return [...items].sort((a, b) => {
+    const prioA = CATEGORY_PRIORITY[a.category] ?? 99;
+    const prioB = CATEGORY_PRIORITY[b.category] ?? 99;
+    if (prioA !== prioB) {
+      return prioA - prioB;
+    }
+    return 0;
+  });
+}
+
 export function normalizeProduct(wixProduct) {
   const {
     _id,
@@ -96,6 +118,19 @@ export function normalizeProduct(wixProduct) {
       }
     }
   }
+
+  // Safety fallback if no collectionIds match: detect by slug/name
+  if (categories.length === 0) {
+    const s = ((slug || '') + ' ' + (name || '')).toLowerCase();
+    if (s.includes('mini')) {
+      categories.push('minis');
+    } else if (s.includes('bag')) {
+      categories.push('bags');
+    } else {
+      categories.push('urns');
+    }
+  }
+
   // Primary category for legacy usage (most specific wins)
   const primaryCategory = categories.includes('minis') ? 'minis'
     : categories.includes('bags') ? 'bags'
@@ -267,7 +302,8 @@ export function normalizeProduct(wixProduct) {
 export async function fetchAllProducts(wixClient) {
   try {
     const result = await wixClient.products.queryProducts().find();
-    return (result.items || []).map(normalizeProduct);
+    const normalized = (result.items || []).map(normalizeProduct);
+    return sortProducts(normalized);
   } catch (error) {
     console.error('[Wix] Failed to fetch products:', error);
     const msg = error?.message

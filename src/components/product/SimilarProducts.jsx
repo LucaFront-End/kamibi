@@ -9,9 +9,9 @@ export const SimilarProducts = ({ currentId }) => {
   const { t } = useTranslation();
   const { products } = useWixProducts();
 
-  // Find 3 products that are similar and not the current one, excluding mini-urns
+  // Find 3 products that are similar and not the current one, excluding mini-urns and bags
   const similarList = products
-    .filter((p) => p.id !== currentId && p.slug !== 'mini-urns')
+    .filter((p) => p.id !== currentId && !p.slug?.includes('mini') && !p.slug?.includes('bag'))
     .slice(0, 3);
 
   if (similarList.length === 0) return null;

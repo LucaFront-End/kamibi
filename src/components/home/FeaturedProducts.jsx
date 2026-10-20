@@ -11,8 +11,10 @@ export const FeaturedProducts = () => {
   const carouselRef = useRef(null);
   const { products, loading } = useWixProducts();
 
-  // Filter main urns for featured section (excluding mini-urns for clean visual balance)
-  const mainUrns = products.filter((p) => p.slug !== 'mini-urns');
+  // Filter main urns for featured section (only primary urns, excluding mini-urns and bags)
+  const mainUrns = products.filter(
+    (p) => (p.categories || [p.category]).includes('urns') && !p.slug?.includes('mini') && !p.slug?.includes('bag')
+  );
   const [activeSlide, setActiveSlide] = useState(0);
 
   const scrollLeft = () => {

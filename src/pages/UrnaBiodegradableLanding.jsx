@@ -1346,22 +1346,24 @@ export const UrnaBiodegradableLanding = () => {
               Arrastra la cuerda o pasa de una fotografía a otra para sentir las historias reales de familias que honraron a los suyos con Kamibi.
             </p>
           </div>
+        </div>
 
-          {/* 21st.dev Polaroid Line Carousel with Pendulum Physics */}
-          <div className="kmb-polaroid-stage-wrap">
-            <PolaroidLineCarousel
-              slides={polaroidReviews}
-              height={600}
-              cardWidth={270}
-              sag={46}
-              swing={1.35}
-              autoplay={5200}
-              string="#B59E7A"
-              background="radial-gradient(circle at 50% 35%, #FFFDF9 0%, #F3EDE2 100%)"
-              ink="#2D2D2D"
-            />
-          </div>
+        {/* Full-Width 21st.dev Polaroid Line Carousel with Pendulum Physics */}
+        <div className="kmb-polaroid-stage-wrap">
+          <PolaroidLineCarousel
+            slides={polaroidReviews}
+            height={610}
+            cardWidth={275}
+            sag={52}
+            swing={1.35}
+            autoplay={5200}
+            string="#B59E7A"
+            background="transparent"
+            ink="#2D2D2D"
+          />
+        </div>
 
+        <div className="kmb-container">
           {/* Final Conversion Banner */}
           <div className="kmb-final-cta-banner">
             <div className="kmb-final-cta-text">

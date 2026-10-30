@@ -183,7 +183,6 @@ const PL_CSS = `
   touch-action: pan-y;
   outline: none;
   cursor: grab;
-  border-radius: 32px;
 }
 .pl-root[data-drag='1'] {
   cursor: grabbing;
@@ -328,6 +327,8 @@ const PL_CSS = `
   left: clamp(20px, 4.5vw, 64px);
   right: clamp(20px, 4.5vw, 64px);
   bottom: clamp(22px, 4vh, 38px);
+  max-width: 1240px;
+  margin: 0 auto;
   display: flex;
   align-items: center;
   gap: clamp(14px, 2.5vw, 28px);
@@ -452,7 +453,7 @@ export function PolaroidLineCarousel({
   swing = 1.25,
   autoplay = 5200,
   string = '#B5A48B',
-  background = 'linear-gradient(180deg, #FAF7F2 0%, #F2ECE1 100%)',
+  background = 'transparent',
   ink = '#2D2D2D',
   onChange,
   className,
@@ -804,3 +805,4 @@ export function PolaroidLineCarousel({
 }
 
 export default PolaroidLineCarousel;
+

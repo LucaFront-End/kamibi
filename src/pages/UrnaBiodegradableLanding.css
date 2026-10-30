@@ -1224,57 +1224,61 @@
   filter: blur(3px);
 }
 
-/* Interactive Finish Selector Bar */
+/* Interactive Real Model Selector Bar */
 .kmb-triptych-finish-bar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0.75rem 1rem;
+  justify-content: center;
+  padding: 0.45rem;
   margin-top: 8px;
   background: var(--color-cream, #FAF7F2);
   border: 1px solid rgba(232, 222, 209, 0.85);
   border-radius: 16px;
 }
 
-.kmb-finish-active-label {
-  font-size: 0.74rem;
-  color: var(--color-stone, #6B6560);
-}
-
-.kmb-finish-active-label strong {
-  color: var(--color-charcoal, #2D2D2D);
-  font-weight: 600;
-}
-
-.kmb-finish-swatches {
+.kmb-finish-pills-group {
   display: flex;
-  align-items: center;
-  gap: 0.45rem;
-}
-
-.kmb-finish-swatch-btn {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  padding: 2px;
-  border: 1.5px solid transparent;
-  background: transparent;
-  cursor: pointer;
-  display: grid;
-  place-items: center;
-  transition: all 0.25s ease;
-}
-
-.kmb-finish-swatch-btn.active {
-  border-color: var(--color-charcoal, #2D2D2D);
-  transform: scale(1.1);
-}
-
-.kmb-finish-swatch-dot {
+  flex-wrap: wrap;
   width: 100%;
-  height: 100%;
+  gap: 0.35rem;
+}
+
+.kmb-model-switch-pill {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.48rem 0.65rem;
+  border-radius: 12px;
+  font-size: 0.74rem;
+  font-weight: 500;
+  color: var(--color-stone, #6B6560);
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.kmb-model-switch-pill:hover {
+  color: var(--color-charcoal, #2D2D2D);
+  background: rgba(255, 253, 249, 0.65);
+}
+
+.kmb-model-switch-pill.active {
+  background: var(--color-charcoal, #2D2D2D);
+  color: #FFFDF9;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(45, 45, 45, 0.14);
+}
+
+.kmb-model-switch-dot {
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  border: 1px solid rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  flex-shrink: 0;
 }
 
 /* Card Body */
@@ -1290,25 +1294,33 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 0.75rem;
-  margin-bottom: 0.55rem;
+  margin-bottom: 0.65rem;
 }
 
 .kmb-triptych-edition {
   display: block;
-  font-size: 0.68rem;
+  font-size: 0.66rem;
   font-weight: 600;
   letter-spacing: 0.13em;
   text-transform: uppercase;
   color: var(--color-deep-sage, #5A7A5A);
-  margin-bottom: 0.15rem;
+  margin-bottom: 0.2rem;
 }
 
 .kmb-triptych-title {
   font-family: var(--font-display, 'Cormorant Garamond', Georgia, serif);
-  font-size: 2.05rem;
+  font-size: 1.55rem;
   font-weight: 600;
-  line-height: 1.08;
+  line-height: 1.12;
   color: var(--color-charcoal, #2D2D2D);
+  margin-bottom: 0.2rem;
+}
+
+.kmb-triptych-bands-note {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--color-terracotta, #C4856A);
+  font-weight: 500;
 }
 
 .kmb-triptych-price-block {

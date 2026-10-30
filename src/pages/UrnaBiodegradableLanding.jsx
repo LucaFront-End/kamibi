@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   motion,
@@ -67,7 +67,7 @@ export const UrnaBiodegradableLanding = () => {
     titleEs: 'Urnas Biodegradables Kamibi® — Regresa a la Naturaleza. Nada Menos.',
     titleEn: 'Kamibi® Biodegradable Urns — Return to Nature. Nothing Less.',
     descEs:
-      'Una despedida ecológica, digna y eterna. Urnas biodegradables 100% orgánicas para ceremonias en tierra o mar.',
+      'Una despedida ecológica, digna y eterna. Urnas biodegradables 100% orgánicas para ceremonias en tierra o mar desde $49.99 y $76.50 USD.',
     descEn:
       'An eco-friendly, dignified and eternal farewell. 100% organic biodegradable urns for earth or water ceremonies.',
     locale,
@@ -86,12 +86,18 @@ export const UrnaBiodegradableLanding = () => {
   const [activeModal, setActiveModal] = useState(null);
   // Feedback when adding to cart
   const [addedProductId, setAddedProductId] = useState(null);
-  // Active finish variant per card in the 3-product comparison triptych
+  // Active real product variant per column in the 3-product comparison triptych
   const [selectedFinishes, setSelectedFinishes] = useState({
-    'terra-urn': 0,
-    'aqua-urn': 0,
-    'mini-urns': 0,
+    'col-earth': 0,
+    'col-water': 0,
+    'col-mini': 0,
   });
+
+  // Helper to lookup live Wix product by slug so prices/stock/IDs always match Wix Store
+  const getLiveProduct = useCallback(
+    (slug) => products.find((p) => p.slug === slug),
+    [products]
+  );
 
   // Hero scroll parallax
   const heroRef = useRef(null);
@@ -102,214 +108,327 @@ export const UrnaBiodegradableLanding = () => {
   const heroImgScale = useTransform(heroScroll, [0, 1], [1, 1.08]);
   const heroDockY = useTransform(heroScroll, [0, 1], [0, -18]);
 
-  // Hero Modes Data
-  const heroAtmospheres = {
-    earth: {
-      id: 'terra-urn',
-      slug: 'terra-urn',
-      num: '01',
-      label: 'Tierra & Bosque',
-      shortSub: 'Germinación en suelo',
-      tag: 'CEREMONIA EN TIERRA',
-      urnName: 'KAMIBI® Terra (Bios)',
-      urnCaption: 'Se integra con la tierra en 2 a 4 semanas nutriendo nuevas raíces.',
-      timeBadge: '2 a 4 semanas en tierra',
-      price: 189.0,
-      bgImage: '/images/hero-earth-ceremony.png',
-      urnImage: '/products/terra-urn.png',
-      secondaryUrnImage: '/products/flore-urn.png',
-      accentColor: '#C4856A',
-      badgeTop: '100% Compostable • Incluye Semillas Vivas',
-      locationHint: 'Bosques memoriales y jardines naturales',
-    },
-    water: {
-      id: 'aqua-urn',
-      slug: 'aqua-urn',
-      num: '02',
-      label: 'Océano & Calma',
-      shortSub: 'Disolución marina',
-      tag: 'CEREMONIA EN AGUA',
-      urnName: 'KAMIBI® Aqua (Ocean)',
-      urnCaption: 'Flota suavemente y se disuelve con pureza en el mar en ~30 minutos.',
-      timeBadge: '~30 minutos en agua',
-      price: 165.75,
-      originalPrice: 195.0,
-      bgImage: '/images/hero-water-ceremony.png',
-      urnImage: '/products/aqua-urn.png',
-      secondaryUrnImage: '/products/angel-urn.png',
-      accentColor: '#7A9A9A',
-      badgeTop: 'pH Neutro • Respetuosa con la Fauna Marina',
-      locationHint: 'Altamar, costas serenas, lagos y ríos',
-    },
-    mini: {
-      id: 'mini-urns',
-      slug: 'mini-biodegradables-urn-set',
-      num: '03',
-      label: 'Set Familiar (x4)',
-      shortSub: 'Tributo compartido',
-      tag: 'MEMORIAL COMPARTIDO',
-      urnName: 'KAMIBI® Mini Sharing Set',
-      urnCaption: 'Cuatro mini urnas orgánicas para compartir el homenaje entre familiares.',
-      timeBadge: 'Pack de 4 mini urnas',
-      price: 49.99,
-      bgImage: '/images/philosophy-hero.png',
-      urnImage: '/products/mini-urns.png',
-      secondaryUrnImage: '/products/iris-urn.png',
-      accentColor: '#8B9E8B',
-      badgeTop: 'Set de 4 Réplicas 100% Biodegradables',
-      locationHint: 'Múltiples rituales familiares o mascotas',
-    },
-  };
+  // Hero Modes Data — Mapped to REAL Wix Store Products & Prices
+  const heroAtmospheres = useMemo(() => {
+    const terraLive = getLiveProduct('terra-urn');
+    const aquaLive = getLiveProduct('aqua-urn');
+    const miniFloreLive = getLiveProduct('mini-biodegradables-urn-set');
+
+    return {
+      earth: {
+        id: terraLive?.id || 'b4fd86df-d446-0993-f324-d5d13eface16',
+        _wixId: terraLive?._wixId || 'b4fd86df-d446-0993-f324-d5d13eface16',
+        slug: 'terra-urn',
+        num: '01',
+        label: 'Tierra & Bosque',
+        shortSub: 'Terra / Flore / Iris',
+        tag: 'CEREMONIA EN TIERRA Y AGUA',
+        urnName: terraLive?.name || 'TERRA BIODEGRADABLE URN',
+        urnCaption:
+          'Elaborada con fibras 100% compostables (3" × 12" × 14"). Incluye kit de despedida con hojas biodegradables y lápiz compostable.',
+        timeBadge: 'Integración natural en tierra o agua',
+        price: terraLive?.price ?? 90.0,
+        originalPrice: terraLive?.originalPrice ?? null,
+        bgImage: '/images/hero-earth-ceremony.png',
+        urnImage:
+          terraLive?.images?.[0] ||
+          'https://static.wixstatic.com/media/45119e_8e4a1c81a2bd409e90cf795fe22bac2b~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png',
+        secondaryUrnImage:
+          'https://static.wixstatic.com/media/45119e_92232e8c88c94935befe3b0b088a83a7~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png',
+        accentColor: '#C4856A',
+        badgeTop: '100% Compostable • Incluye Kit de Despedida',
+        locationHint: 'Bosques memoriales, jardines naturales o mar',
+      },
+      water: {
+        id: aquaLive?.id || '4d71b043-1af4-8fa4-4a2c-c30289462282',
+        _wixId: aquaLive?._wixId || '4d71b043-1af4-8fa4-4a2c-c30289462282',
+        slug: 'aqua-urn',
+        num: '02',
+        label: 'Océano & Calma',
+        shortSub: 'Aqua / Angel Urn',
+        tag: 'EDICIÓN AGUA & TIERRA (15% OFF)',
+        urnName: aquaLive?.name || 'AQUA BIODEGRADABLE URN',
+        urnCaption:
+          'Diseño inspirado en la serenidad del océano. Se disuelve de forma limpia y segura sin plásticos, pegamentos ni tóxicos.',
+        timeBadge: 'Apta para mar, lago o tierra',
+        price: aquaLive?.price ?? 76.5,
+        originalPrice: aquaLive?.originalPrice ?? 90.0,
+        bgImage: '/images/hero-water-ceremony.png',
+        urnImage:
+          aquaLive?.images?.[0] ||
+          'https://static.wixstatic.com/media/45119e_812f09d2732e4e2db45a354383159ac9~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png',
+        secondaryUrnImage:
+          'https://static.wixstatic.com/media/45119e_da682a60bd214c8f9b3a100f545edd65~mv2.png/v1/fit/w_1000,h_1000,q_90/file.png',
+        accentColor: '#7A9A9A',
+        badgeTop: 'Libre de Tóxicos • Apta para Cabina TSA',
+        locationHint: 'Altamar, costas serenas, lagos y ríos',
+      },
+      mini: {
+        id: miniFloreLive?.id || 'f843aff9-c2d4-5a9f-a272-9fddf64c68e5',
+        _wixId: miniFloreLive?._wixId || 'f843aff9-c2d4-5a9f-a272-9fddf64c68e5',
+        slug: 'mini-biodegradables-urn-set',
+        num: '03',
+        label: 'Mini Urn Sets',
+        shortSub: 'Flore & Ocean Sets',
+        tag: 'HOMENAJE FAMILIAR COMPARTIDO',
+        urnName: miniFloreLive?.name || 'MINI URN SET FLORE BIODEGRADABLES',
+        urnCaption:
+          'Set exclusivo de mini urnas biodegradables pensado para compartir una porción simbólica de las cenizas entre hermanos e hijos.',
+        timeBadge: 'Set para compartir en familia',
+        price: miniFloreLive?.price ?? 49.99,
+        originalPrice: miniFloreLive?.originalPrice ?? null,
+        bgImage: '/images/philosophy-hero.png',
+        urnImage:
+          miniFloreLive?.images?.[0] ||
+          'https://static.wixstatic.com/media/45119e_d62bb5591c674265a6deee5eb3fa4985~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+        secondaryUrnImage:
+          'https://static.wixstatic.com/media/45119e_23cc9997f2b24ac7a9b277be1e904170~mv2.png/v1/fit/w_1024,h_1024,q_90/file.png',
+        accentColor: '#8B9E8B',
+        badgeTop: 'Ediciones Flore & Ocean Disponibles',
+        locationHint: 'Múltiples rituales familiares en agua o tierra',
+      },
+    };
+  }, [getLiveProduct]);
 
   const currentHero = heroAtmospheres[heroMode];
 
   // Botanical materials for Card 2
   const botanicalMaterials = [
     {
-      title: 'Celulosa Virgen Prensada',
-      subtitle: 'Fibras vegetales de bosques sostenibles',
+      title: 'Fibras Vegetales Compostables',
+      subtitle: 'Papel reciclado y celulosa sostenible',
       detail:
-        'Moldeada a mano sin cloros ni resinas sintéticas. Protege las cenizas de forma indefinida mientras se mantenga en un ambiente seco interior.',
+        'Elaboradas sin plásticos, sin pegamentos sintéticos y sin químicos tóxicos. Protegen las cenizas de forma segura hasta el momento de la ceremonia.',
       stat: '0% Plásticos',
     },
     {
-      title: 'Arcilla & Sal Mineral Pura',
-      subtitle: 'Equilibrio biológico para tierra y océano',
+      title: 'Integración en Agua y Tierra',
+      subtitle: 'Diseño versátil para mar, lago o jardín',
       detail:
-        'Compuestos minerales de pH neutro que se funden con el agua o el suelo sin alterar la microbiología ni la flora marina.',
-      stat: 'pH Neutro 7.0',
+        'Nuestras urnas principales (Terra, Aqua, Flore, Iris y Angel) están diseñadas tanto para entierros naturales en tierra como para ceremonias en el agua.',
+      stat: 'Agua & Tierra',
     },
     {
-      title: 'Cápsula de Semillas Nativas',
-      subtitle: 'Memoria que germina en nueva vida',
+      title: 'Kit de Despedida Incluido',
+      subtitle: 'Hojas biodegradables y lápiz compostable',
       detail:
-        'Incluye semillas seleccionadas de flores silvestres y especies arbóreas para transformar el lugar del descanso en un jardín vivo.',
-      stat: 'Vida Eterna',
+        'Cada urna incluye hojas biodegradables y un lápiz ecológico para que familiares y amigos escriban mensajes y palabras de despedida que acompañen el tributo.',
+      stat: 'Kit Ritual',
     },
     {
-      title: 'Pétalos Naturales & Almidón',
-      subtitle: 'Aglutinantes 100% botánicos',
+      title: 'Tintas de Soja & Bandas Botánicas',
+      subtitle: 'Acabados Ginkgo, Ocean, Turtle, Pink y Gold',
       detail:
-        'Unidos mediante extractos orgánicos de maíz y decorados con pétalos prensados reales y tintes de origen vegetal.',
+        'Bandas decorativas intercambiables impresas con tintas ecológicas a base de soja y detalles florales orgánicos que honran la vida.',
       stat: '100% Orgánico',
     },
   ];
 
-  // Comparison models definition (Interactive 3-Product Sanctuary Triptych)
-  const comparisonModels = [
-    {
-      id: 'terra-urn',
-      num: '01',
-      elementTag: 'TIERRA & BOSQUE',
-      name: 'Kamibi Bios',
-      edition: 'Edición Germinación en Tierra',
-      tagline:
-        'Creada para integrarse con el suelo y nutrir el nacimiento de un nuevo árbol o jardín memorial.',
-      envImage: '/images/hero-earth-ceremony.png',
-      timePill: '🌱 2 a 4 semanas',
-      price: 189.0,
-      originalPrice: null,
-      variants: [
-        {
-          name: 'Terracotta Natural',
-          hex: '#C4856A',
-          image: '/products/terra-urn.png',
-          slug: 'terra-urn',
-        },
-        {
-          name: 'Flore (Pétalos Reales)',
-          hex: '#8B9E8B',
-          image: '/products/flore-urn.png',
-          slug: 'flore-urn',
-        },
-        {
-          name: 'Iris (Rosa Botánico)',
-          hex: '#D4A5A5',
-          image: '/products/iris-urn.png',
-          slug: 'iris-urn',
-        },
-      ],
-      bentoSpecs: [
-        { label: 'Biodegradación', value: '2 a 4 semanas', sub: 'En tierra húmeda' },
-        { label: 'Capacidad', value: '3.5 Litros', sub: '100% Adulto' },
-        { label: 'Composición', value: 'Fibra & Arcilla', sub: '0% Químicos' },
-        { label: 'Vuelo Aéreo', value: 'Apta Cabina TSA', sub: 'Certificado incl.' },
-      ],
-      kitHighlight: 'Incluye cápsula con semillas nativas vivas + bolsa soluble',
-    },
-    {
-      id: 'aqua-urn',
-      num: '02',
-      elementTag: 'OCÉANO & CALMA',
-      name: 'Kamibi Ocean',
-      edition: 'Edición Ceremonia en Agua',
-      tagline:
-        'Diseñada para flotar serenamente unos minutos sobre el mar o lago antes de fundirse con pureza.',
-      envImage: '/images/hero-water-ceremony.png',
-      timePill: '🌊 ~30 minutos',
-      price: 165.75,
-      originalPrice: 195.0,
-      badge: 'Más Elegida',
-      variants: [
-        {
-          name: 'Aqua Marina',
-          hex: '#9BB4B6',
-          image: '/products/aqua-urn.png',
-          slug: 'aqua-urn',
-        },
-        {
-          name: 'Blanco Ángel',
-          hex: '#F4F1EA',
-          image: '/products/angel-urn.png',
-          slug: 'angel-urn',
-        },
-      ],
-      bentoSpecs: [
-        { label: 'Disolución', value: '~30 minutos', sub: 'Flota 5–10 min' },
-        { label: 'Capacidad', value: '3.2 Litros', sub: '100% Adulto' },
-        { label: 'Composición', value: 'Celulosa & Sal', sub: 'pH Neutro Marino' },
-        { label: 'Vuelo Aéreo', value: 'Apta Cabina TSA', sub: 'Certificado incl.' },
-      ],
-      kitHighlight: 'Incluye bolsa hidrosoluble de contención marina + guía ritual',
-    },
-    {
-      id: 'mini-urns',
-      num: '03',
-      elementTag: 'TRIBUTO COMPARTIDO',
-      name: 'Kamibi Mini',
-      edition: 'Set Familiar (x4) & Mascotas',
-      tagline:
-        'Cuatro mini urnas orgánicas para que distintos familiares compartan el homenaje o para mascotas.',
-      envImage: '/images/philosophy-hero.png',
-      timePill: '✨ Pack de 4 urnas',
-      price: 49.99,
-      originalPrice: null,
-      variants: [
-        {
-          name: 'Set 4 Mini Urnas',
-          hex: '#E2D5C3',
-          image: '/products/mini-urns.png',
-          slug: 'mini-biodegradables-urn-set',
-        },
-        {
-          name: 'Edición Iris Mini',
-          hex: '#C4856A',
-          image: '/products/iris-urn.png',
-          slug: 'mini-biodegradables-urn-set',
-        },
-      ],
-      bentoSpecs: [
-        { label: 'Integración', value: '1 a 3 semanas', sub: 'Tierra o agua' },
-        { label: 'Capacidad', value: '4 × 0.4 L', sub: 'Set de 4 piezas' },
-        { label: 'Composición', value: 'Fibra Botánica', sub: '100% Orgánica' },
-        { label: 'Vuelo Aéreo', value: 'Apta Cabina TSA', sub: 'Fácil traslado' },
-      ],
-      kitHighlight: 'Incluye 4 cajas individuales de presentación y bolsas solubles',
-    },
-  ];
+  // =========================================================================
+  // 3-COLUMN INTERACTIVE COMPARISON TRIPTYCH — 100% REAL WIX STORE PRODUCTS
+  // =========================================================================
+  const comparisonModels = useMemo(() => {
+    const floreLive = getLiveProduct('flore-urns');
+    const terraLive = getLiveProduct('terra-urn');
+    const irisLive = getLiveProduct('iris-urn');
+    const aquaLive = getLiveProduct('aqua-urn');
+    const angelLive = getLiveProduct('angel-urn');
+    const miniFloreLive = getLiveProduct('mini-biodegradables-urn-set');
+    const miniOceanLive = getLiveProduct('mini-urn-set-ocean-biodegradables');
+    const bagTreeLive = getLiveProduct(
+      'cremation-burial-bags-tree-of-life-design-pack-of-2'
+    );
+
+    return [
+      {
+        id: 'col-earth',
+        num: '01',
+        elementTag: 'COLECCIÓN TIERRA & FLORAL',
+        edition: 'Urnas Adulto • Agua & Tierra',
+        envImage: '/images/hero-earth-ceremony.png',
+        timePill: '🌱 Capacidad Adulto (3"×12"×14")',
+        variants: [
+          {
+            id: floreLive?.id || 'f9c09eac-dee0-50ec-1fd8-e591754fdb0a',
+            _wixId: floreLive?._wixId || 'f9c09eac-dee0-50ec-1fd8-e591754fdb0a',
+            productName: floreLive?.name || 'FLORE BIODEGRADABLE URNS',
+            shortLabel: 'Flore Urn',
+            bandsInfo: 'Bandas: Turtle, Deep Blue, Soft Blue',
+            hex: '#8B9E8B',
+            price: floreLive?.price ?? 76.5,
+            originalPrice: floreLive?.originalPrice ?? 90.0,
+            image:
+              floreLive?.images?.[0] ||
+              'https://static.wixstatic.com/media/45119e_92232e8c88c94935befe3b0b088a83a7~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png',
+            slug: 'flore-urns',
+            tagline:
+              'Inspirada en la delicadeza floral. Urna biodegradable para ceremonias en tierra o agua con kit de despedida incluido.',
+          },
+          {
+            id: terraLive?.id || 'b4fd86df-d446-0993-f324-d5d13eface16',
+            _wixId: terraLive?._wixId || 'b4fd86df-d446-0993-f324-d5d13eface16',
+            productName: terraLive?.name || 'TERRA BIODEGRADABLE URN',
+            shortLabel: 'Terra Urn',
+            bandsInfo: 'Bandas: Ginko Gold, Ocean, Pink, Purple, Ginko',
+            hex: '#C4856A',
+            price: terraLive?.price ?? 90.0,
+            originalPrice: terraLive?.originalPrice ?? null,
+            image:
+              terraLive?.images?.[0] ||
+              'https://static.wixstatic.com/media/45119e_8e4a1c81a2bd409e90cf795fe22bac2b~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png',
+            slug: 'terra-urn',
+            tagline:
+              'Textura orgánica natural en tonos tierra. Diseñada para reintegrarse suavemente en suelo o agua sin dañar el ecosistema.',
+          },
+          {
+            id: irisLive?.id || '4d9511b1-1f04-1057-e379-1d7f2030933c',
+            _wixId: irisLive?._wixId || '4d9511b1-1f04-1057-e379-1d7f2030933c',
+            productName: irisLive?.name || 'IRIS BIODEGRADABLE URN',
+            shortLabel: 'Iris Urn',
+            bandsInfo: 'Bandas: Purple, Ocean, Soft Pink, Ginkgo Gold',
+            hex: '#D4A5A5',
+            price: irisLive?.price ?? 76.5,
+            originalPrice: irisLive?.originalPrice ?? 90.0,
+            image:
+              irisLive?.images?.[0] ||
+              'https://static.wixstatic.com/media/45119e_7e8106db1e1645e6a982b82f45d3deeb~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png',
+            slug: 'iris-urn',
+            tagline:
+              'Combinación serena en tonos rosa suave y blanco orgánico, creada para despedidas cálidas en tierra o mar.',
+          },
+        ],
+        bentoSpecs: [
+          { label: 'Ceremonia', value: 'Tierra & Agua', sub: '100% Biodegradable' },
+          { label: 'Dimensiones', value: '3" × 12" × 14"', sub: 'Capacidad 1 Adulto' },
+          { label: 'Pureza', value: '0% Químicos', sub: 'Sin plásticos ni colas' },
+          { label: 'Vuelo Aéreo', value: 'Apta Cabina TSA', sub: 'Envío Gratis USA/CAN' },
+        ],
+        kitHighlight:
+          'Incluye Kit de Despedida: hojas biodegradables + lápiz compostable + guía',
+      },
+      {
+        id: 'col-water',
+        num: '02',
+        elementTag: 'COLECCIÓN OCÉANO & SERENIDAD',
+        edition: 'Urnas Adulto • Agua & Tierra',
+        envImage: '/images/hero-water-ceremony.png',
+        timePill: '🌊 Capacidad Adulto (3"×12"×14")',
+        badge: 'Más Elegida • 15% OFF',
+        variants: [
+          {
+            id: aquaLive?.id || '4d71b043-1af4-8fa4-4a2c-c30289462282',
+            _wixId: aquaLive?._wixId || '4d71b043-1af4-8fa4-4a2c-c30289462282',
+            productName: aquaLive?.name || 'AQUA BIODEGRADABLE URN',
+            shortLabel: 'Aqua Urn',
+            bandsInfo: 'Bandas: Gold, Deep Blue, Ginkgo, Soft Pink, Turtle',
+            hex: '#8BA8A8',
+            price: aquaLive?.price ?? 76.5,
+            originalPrice: aquaLive?.originalPrice ?? 90.0,
+            image:
+              aquaLive?.images?.[0] ||
+              'https://static.wixstatic.com/media/45119e_812f09d2732e4e2db45a354383159ac9~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png',
+            slug: 'aqua-urn',
+            tagline:
+              'Inspirada en la paz del océano. Se disuelve naturalmente en agua o tierra permitiendo un homenaje sereno y ecológico.',
+          },
+          {
+            id: angelLive?.id || 'a09f394c-67bf-476b-f1a9-e3d576ce6505',
+            _wixId: angelLive?._wixId || 'a09f394c-67bf-476b-f1a9-e3d576ce6505',
+            productName: angelLive?.name || 'ANGEL BIODEGRADABLE URN',
+            shortLabel: 'Angel Urn',
+            bandsInfo: '10 diseños de banda disponibles (Ocean, Gold, Ginkgo...)',
+            hex: '#F4F1EA',
+            price: angelLive?.price ?? 90.0,
+            originalPrice: angelLive?.originalPrice ?? null,
+            image:
+              angelLive?.images?.[0] ||
+              'https://static.wixstatic.com/media/45119e_da682a60bd214c8f9b3a100f545edd65~mv2.png/v1/fit/w_1000,h_1000,q_90/file.png',
+            slug: 'angel-urn',
+            tagline:
+              'Diseño blanco minimalista que simboliza luz y paz espiritual. Apta para entierros en mar, lagos o jardines naturales.',
+          },
+        ],
+        bentoSpecs: [
+          { label: 'Ceremonia', value: 'Mar, Lago o Tierra', sub: 'Disolución limpia' },
+          { label: 'Dimensiones', value: '3" × 12" × 14"', sub: 'Capacidad 1 Adulto' },
+          { label: 'Pureza', value: '100% Compostable', sub: 'Respetuosa con fauna' },
+          { label: 'Vuelo Aéreo', value: 'Apta Cabina TSA', sub: 'Envío Gratis USA/CAN' },
+        ],
+        kitHighlight:
+          'Incluye Kit de Despedida: hojas biodegradables + lápiz compostable + guía',
+      },
+      {
+        id: 'col-mini',
+        num: '03',
+        elementTag: 'MINI SETS & BURIAL BAGS',
+        edition: 'Para Compartir o Entierro en Tierra',
+        envImage: '/images/philosophy-hero.png',
+        timePill: '✨ Sets Familiares',
+        variants: [
+          {
+            id: miniFloreLive?.id || 'f843aff9-c2d4-5a9f-a272-9fddf64c68e5',
+            _wixId: miniFloreLive?._wixId || 'f843aff9-c2d4-5a9f-a272-9fddf64c68e5',
+            productName: miniFloreLive?.name || 'MINI URN SET FLORE BIODEGRADABLES',
+            shortLabel: 'Mini Set Flore',
+            bandsInfo: 'Set de mini urnas para compartir en familia',
+            hex: '#D8C3B8',
+            price: miniFloreLive?.price ?? 49.99,
+            originalPrice: miniFloreLive?.originalPrice ?? null,
+            image:
+              miniFloreLive?.images?.[0] ||
+              'https://static.wixstatic.com/media/45119e_d62bb5591c674265a6deee5eb3fa4985~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+            slug: 'mini-biodegradables-urn-set',
+            tagline:
+              'Set de mini urnas biodegradables edición Flore para que hermanos, hijos o familiares compartan una porción simbólica.',
+          },
+          {
+            id: miniOceanLive?.id || '25f910fe-08a8-3004-4b99-579d88e4e240',
+            _wixId: miniOceanLive?._wixId || '25f910fe-08a8-3004-4b99-579d88e4e240',
+            productName: miniOceanLive?.name || 'MINI URN SET OCEAN BIODEGRADABLES',
+            shortLabel: 'Mini Set Ocean',
+            bandsInfo: 'Set de mini urnas edición Ocean',
+            hex: '#89A7B1',
+            price: miniOceanLive?.price ?? 49.99,
+            originalPrice: miniOceanLive?.originalPrice ?? null,
+            image:
+              miniOceanLive?.images?.[0] ||
+              'https://static.wixstatic.com/media/45119e_23cc9997f2b24ac7a9b277be1e904170~mv2.png/v1/fit/w_1024,h_1024,q_90/file.png',
+            slug: 'mini-urn-set-ocean-biodegradables',
+            tagline:
+              'Set de mini urnas biodegradables edición Ocean para homenajes íntimos en múltiples lugares significativos.',
+          },
+          {
+            id: bagTreeLive?.id || 'f1d9e4d3-6ad7-70e4-cb1a-3e2999ae3818',
+            _wixId: bagTreeLive?._wixId || 'f1d9e4d3-6ad7-70e4-cb1a-3e2999ae3818',
+            productName:
+              bagTreeLive?.name || 'ASH BURIAL BAGS TREE OF LIFE DESIGN - Pack of 2',
+            shortLabel: 'Burial Bags (x2)',
+            bandsInfo: 'Pack de 2 bolsas tamaño adulto (Tree of Life / Turtle)',
+            hex: '#C4A97D',
+            price: bagTreeLive?.price ?? 12.99,
+            originalPrice: bagTreeLive?.originalPrice ?? null,
+            image:
+              bagTreeLive?.images?.[0] ||
+              'https://static.wixstatic.com/media/45119e_b515104a49a642a1945b922955493527~mv2.png/v1/fit/w_1000,h_1000,q_90/file.png',
+            slug: 'cremation-burial-bags-tree-of-life-design-pack-of-2',
+            tagline:
+              'Pack de 2 bolsas conmemorativas de papel reciclado con tintas de soja (11.5"×8.5"×4") para entierro en tierra o esparcimiento.',
+          },
+        ],
+        bentoSpecs: [
+          { label: 'Propósito', value: 'Tributo Familiar', sub: 'Compartir cenizas' },
+          { label: 'Opciones', value: 'Mini Sets & Bags', sub: '$49.99 / $12.99 USD' },
+          { label: 'Material', value: 'Fibras Naturales', sub: '100% Eco-Friendly' },
+          { label: 'Vuelo Aéreo', value: 'Apta Cabina TSA', sub: 'Envío Gratis USA/CAN' },
+        ],
+        kitHighlight:
+          'Diseñados para ceremonias íntimas familiares, esparcimiento o entierro natural',
+      },
+    ];
+  }, [getLiveProduct]);
 
   // =========================================================================
-  // SMOOTH SPRING-PHYSICS PRODUCT CAROUSEL LOGIC
+  // SMOOTH SPRING-PHYSICS PRODUCT CAROUSEL LOGIC (REAL WIX PRODUCTS)
   // =========================================================================
   const viewportRef = useRef(null);
   const trackRef = useRef(null);
@@ -325,28 +444,21 @@ export const UrnaBiodegradableLanding = () => {
     restDelta: 0.5,
   });
 
-  const filteredCarouselProducts = products.filter((p) => {
-    if (carouselCategory === 'all') return true;
-    if (carouselCategory === 'earth') {
-      return ['terra-urn', 'flore-urn', 'iris-urn'].some(
-        (s) => p.slug?.includes(s) || p.id?.includes(s)
-      );
-    }
-    if (carouselCategory === 'water') {
-      return ['aqua-urn', 'angel-urn'].some(
-        (s) => p.slug?.includes(s) || p.id?.includes(s)
-      );
-    }
-    if (carouselCategory === 'sets') {
-      return (
-        p.category === 'minis' ||
-        p.category === 'bags' ||
-        p.slug?.includes('mini') ||
-        p.slug?.includes('bag')
-      );
-    }
-    return true;
-  });
+  const filteredCarouselProducts = useMemo(() => {
+    return products.filter((p) => {
+      if (carouselCategory === 'all') return true;
+      if (carouselCategory === 'urns') {
+        return p.category === 'urns';
+      }
+      if (carouselCategory === 'minis') {
+        return p.category === 'minis';
+      }
+      if (carouselCategory === 'bags') {
+        return p.category === 'bags';
+      }
+      return true;
+    });
+  }, [products, carouselCategory]);
 
   const updateCarouselBounds = useCallback(() => {
     if (!viewportRef.current || !trackRef.current) return;
@@ -364,12 +476,10 @@ export const UrnaBiodegradableLanding = () => {
     return () => window.removeEventListener('resize', updateCarouselBounds);
   }, [updateCarouselBounds, filteredCarouselProducts.length, productsLoading]);
 
-  // Reset carousel position smoothly when category changes
   useEffect(() => {
     targetX.set(0);
   }, [carouselCategory, targetX]);
 
-  // Subscribe to smoothX to update progress bar
   useEffect(() => {
     const unsubscribe = smoothX.on('change', (val) => {
       if (maxScroll <= 0) {
@@ -410,7 +520,6 @@ export const UrnaBiodegradableLanding = () => {
     }
     if (!dragInfo.current.moved) return;
     let next = dragInfo.current.startTarget + dx * 1.15;
-    // Rubber-band overscroll resistance
     if (next > 0) next *= 0.28;
     if (next < -maxScroll) next = -maxScroll + (next + maxScroll) * 0.28;
     targetX.set(next);
@@ -420,7 +529,6 @@ export const UrnaBiodegradableLanding = () => {
     if (!dragInfo.current.active) return;
     dragInfo.current.active = false;
     setTimeout(() => setIsDraggingCarousel(false), 60);
-    // Clamp back within bounds with spring physics
     const clamped = Math.max(-maxScroll, Math.min(0, targetX.get()));
     targetX.set(clamped);
   };
@@ -432,46 +540,50 @@ export const UrnaBiodegradableLanding = () => {
     }
   };
 
-  // Direct Add To Cart handler
+  // Direct Add To Cart handler — Always uses the real Wix product object
   const handleDirectBuy = (productData) => {
     const matched = products.find(
-      (p) => p.slug === productData.slug || p.id === productData.id
+      (p) =>
+        p.slug === productData.slug ||
+        p.id === productData.id ||
+        p._wixId === productData._wixId
     );
     const itemToAdd = matched || {
-      id: productData.id,
-      _wixId: productData._wixId,
-      name: productData.name || productData.urnName,
+      id: productData._wixId || productData.id,
+      _wixId: productData._wixId || productData.id,
+      name: productData.productName || productData.name || productData.urnName,
       price: productData.price,
       slug: productData.slug,
       images: [productData.image || productData.urnImage],
     };
 
     addToCart(itemToAdd, 1);
-    setAddedProductId(productData.id);
+    const feedbackKey = productData.slug || productData.id;
+    setAddedProductId(feedbackKey);
     setTimeout(() => setAddedProductId(null), 2400);
   };
 
-  // Hanging Polaroid Slides for Reviews Section
+  // Hanging Polaroid Slides for Reviews Section — Featuring real Kamibi Urn names
   const polaroidReviews = [
     {
       image: '/images/review-polaroid-1.png',
       title: 'Paz infinita en el mar',
       quote:
-        'Flotó entre pétalos blancos al amanecer antes de sumergirse con una calma única. Cero químicos, solo amor.',
+        'Elegimos la Aqua Biodegradable Urn. Flotó al amanecer mientras leíamos las cartas del kit de despedida antes de integrarse en el mar.',
       author: 'Elena R. de Mendoza',
-      location: 'Costa Brava, España',
-      edition: 'Kamibi Ocean',
+      location: 'San Diego, CA',
+      edition: 'Aqua Biodegradable Urn',
       palette: 'dawn',
       seed: 3,
     },
     {
       image: '/images/review-polaroid-2.png',
-      title: 'Hoy brota un árbol nuevo',
+      title: 'Regresó a la tierra en paz',
       quote:
-        'Plantamos la urna Terra en el bosque familiar. Ver nacer un brote verde donde nos despedimos transformó el dolor en vida.',
+        'La Terra Biodegradable Urn con banda Ginkgo Gold es hermosa. Poder escribirle nuestras palabras en las hojas biodegradables fue muy sanador.',
       author: 'Marcus & Claudia G.',
-      location: 'Valle de Bravo, México',
-      edition: 'Kamibi Bios',
+      location: 'Austin, TX',
+      edition: 'Terra Biodegradable Urn',
       palette: 'mist',
       seed: 11,
     },
@@ -479,10 +591,10 @@ export const UrnaBiodegradableLanding = () => {
       image: '/images/review-polaroid-3.png',
       title: 'Un lago en calma eterna',
       quote:
-        'Despedir a mi padre en el lago que tanto amaba fue sumamente digno. Se integró en el agua en minutos con total delicadeza.',
+        'Despedir a mi padre con la Angel Biodegradable Urn en el lago que tanto amaba fue sumamente digno, simple y libre de químicos.',
       author: 'Javier L. Santamaría',
-      location: 'Bariloche, Argentina',
-      edition: 'Kamibi Angel',
+      location: 'Vancouver, Canadá',
+      edition: 'Angel Biodegradable Urn',
       palette: 'dusk',
       seed: 19,
     },
@@ -490,32 +602,32 @@ export const UrnaBiodegradableLanding = () => {
       image: '/images/review-polaroid-4.png',
       title: 'Cuatro hogares, un mismo amor',
       quote:
-        'El set de 4 mini urnas nos permitió a mis hermanos realizar nuestro propio homenaje íntimo en distintas ciudades.',
+        'El Mini Urn Set Flore nos permitió a mis hermanos compartir las cenizas de mamá y realizar cada uno su propio homenaje íntimo.',
       author: 'Sofía Valenzuela',
-      location: 'Santiago, Chile',
-      edition: 'Kamibi Mini Set',
+      location: 'Miami, FL',
+      edition: 'Mini Urn Set Flore',
       palette: 'dawn',
       seed: 27,
     },
     {
       image: '/images/hero-earth-ceremony.png',
-      title: 'Pétalos reales y pureza',
+      title: 'Delicadeza floral única',
       quote:
-        'La textura artesanal con pétalos prensados de la edición Flore parece una escultura orgánica. Nos dio muchísima serenidad.',
+        'La Flore Biodegradable Urn superó nuestras expectativas. La calidad artesanal del papel orgánico nos dio muchísima serenidad.',
       author: 'Valentina & Tomás M.',
-      location: 'Medellín, Colombia',
-      edition: 'Kamibi Flore',
+      location: 'Toronto, Canadá',
+      edition: 'Flore Biodegradable Urn',
       palette: 'mist',
       seed: 35,
     },
     {
       image: '/images/hero-water-ceremony.png',
-      title: 'Viaje seguro hacia el océano',
+      title: 'Viaje seguro en avión TSA',
       quote:
-        'Pudimos llevar la urna en cabina de avión gracias al certificado TSA incluido y hacer la ceremonia frente al Pacífico.',
+        'Viajamos en avión sin ningún inconveniente en cabina con la Iris Biodegradable Urn para hacer la ceremonia familiar frente al Pacífico.',
       author: 'David K. Larraín',
-      location: 'San Diego, CA',
-      edition: 'Kamibi Ocean',
+      location: 'Seattle, WA',
+      edition: 'Iris Biodegradable Urn',
       palette: 'alpine',
       seed: 44,
     },
@@ -541,7 +653,7 @@ export const UrnaBiodegradableLanding = () => {
                 className="kmb-eyebrow-pill"
               >
                 <span className="kmb-gold-dot" />
-                <span>KAMIBI® MEMORIALS • ARTESANÍA 100% ORGÁNICA</span>
+                <span>KAMIBI® MEMORIALS • 100% BIODEGRADABLE & COMPOSTABLE</span>
               </motion.div>
 
               <motion.h1
@@ -560,7 +672,7 @@ export const UrnaBiodegradableLanding = () => {
                 transition={{ duration: 0.85, delay: 0.16, ease: [0.16, 1, 0.3, 1] }}
                 className="kmb-hero-subtitle"
               >
-                Una despedida ecológica, digna y eterna. Urnas esculpidas a mano con fibras botánicas, arcilla mineral y semillas vivas que devuelven la memoria al ciclo de la vida.
+                Una despedida ecológica, digna y eterna. Urnas artesanales para agua y tierra elaboradas con materiales 100% naturales, libres de plásticos y químicos.
               </motion.p>
 
               {/* Interactive Ceremony Environment Selector (3 Tactile Cards) */}
@@ -587,7 +699,9 @@ export const UrnaBiodegradableLanding = () => {
                         />
                       </div>
                       <strong className="kmb-ritual-label">{item.label}</strong>
-                      <span className="kmb-ritual-sub">{item.shortSub}</span>
+                      <span className="kmb-ritual-sub">
+                        Desde ${Number(item.price).toFixed(2)} USD
+                      </span>
                     </button>
                   );
                 })}
@@ -627,7 +741,7 @@ export const UrnaBiodegradableLanding = () => {
                 </button>
               </motion.div>
 
-              {/* Trust Micro-bar */}
+              {/* Trust Micro-bar with Real Prices */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -645,7 +759,7 @@ export const UrnaBiodegradableLanding = () => {
                   >
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
-                  <span>Desde $49.99 / $165.75 USD</span>
+                  <span>Urnas $76.50 – $90 USD • Mini Sets $49.99</span>
                 </div>
                 <span className="kmb-trust-sep">•</span>
                 <div className="kmb-trust-Point">
@@ -659,7 +773,7 @@ export const UrnaBiodegradableLanding = () => {
                   >
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
-                  <span>Certificación Aérea TSA</span>
+                  <span>Apta para Cabina TSA</span>
                 </div>
                 <span className="kmb-trust-sep">•</span>
                 <div className="kmb-trust-Point">
@@ -673,7 +787,7 @@ export const UrnaBiodegradableLanding = () => {
                   >
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
-                  <span>Envío Express Gratis</span>
+                  <span>Envío Gratis USA & Canadá</span>
                 </div>
               </motion.div>
             </div>
@@ -706,25 +820,22 @@ export const UrnaBiodegradableLanding = () => {
                       {currentHero.badgeTop}
                     </span>
                     <span className="kmb-panorama-time-pill">
-                      ⏱ {currentHero.timeBadge}
+                      ✦ {currentHero.timeBadge}
                     </span>
                   </div>
 
                   {/* Subtle bottom-left location caption on image */}
                   <div className="kmb-panorama-caption">
-                    <span>Entorno sugerido:</span>
+                    <span>Ceremonia:</span>
                     <strong>{currentHero.locationHint}</strong>
                   </div>
                 </div>
 
-                {/* Below/Offset Studio Product Dock — Doesn't block the ceremony photo! */}
-                <motion.div
-                  style={{ y: heroDockY }}
-                  className="kmb-studio-dock"
-                >
+                {/* Below/Offset Studio Product Dock — Real Wix Product & Real Price */}
+                <motion.div style={{ y: heroDockY }} className="kmb-studio-dock">
                   <AnimatePresence mode="wait">
                     <motion.div
-                      key={currentHero.id}
+                      key={currentHero.slug}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -8 }}
@@ -742,7 +853,7 @@ export const UrnaBiodegradableLanding = () => {
                         />
                         <img
                           src={currentHero.secondaryUrnImage}
-                          alt="Modelo complementario"
+                          alt="Modelo complementario Kamibi"
                           className="kmb-dock-urn-sec"
                         />
                       </div>
@@ -751,10 +862,10 @@ export const UrnaBiodegradableLanding = () => {
                         <div className="kmb-dock-header-line">
                           <span className="kmb-dock-eyebrow">{currentHero.tag}</span>
                           <span className="kmb-dock-price">
-                            ${currentHero.price.toFixed(2)} <small>USD</small>
+                            ${Number(currentHero.price).toFixed(2)} <small>USD</small>
                             {currentHero.originalPrice && (
                               <s className="kmb-dock-old-price">
-                                ${currentHero.originalPrice.toFixed(2)}
+                                ${Number(currentHero.originalPrice).toFixed(2)}
                               </s>
                             )}
                           </span>
@@ -767,10 +878,10 @@ export const UrnaBiodegradableLanding = () => {
                           <button
                             onClick={() => handleDirectBuy(currentHero)}
                             className={`kmb-dock-buy-btn ${
-                              addedProductId === currentHero.id ? 'added' : ''
+                              addedProductId === currentHero.slug ? 'added' : ''
                             }`}
                           >
-                            {addedProductId === currentHero.id
+                            {addedProductId === currentHero.slug
                               ? '✓ Añadido al Carrito'
                               : 'Añadir al carrito +'}
                           </button>
@@ -778,7 +889,7 @@ export const UrnaBiodegradableLanding = () => {
                             onClick={() => navigate(`/product/${currentHero.slug}`)}
                             className="kmb-dock-link-btn"
                           >
-                            Ver detalles →
+                            Ver bandas y detalles →
                           </button>
                         </div>
                       </div>
@@ -802,7 +913,7 @@ export const UrnaBiodegradableLanding = () => {
               Creada para proteger en el hogar y florecer en la naturaleza.
             </h2>
             <p className="kmb-section-lead">
-              Desliza para descubrir cómo cada capa de Kamibi une artesanía orgánica, respeto ambiental y una despedida llena de significado.
+              Desliza para descubrir cómo cada urna Kamibi combina materiales 100% compostables, bandas botánicas y un kit ceremonial pensado para honrar la memoria.
             </p>
           </div>
 
@@ -835,8 +946,8 @@ export const UrnaBiodegradableLanding = () => {
                         <img
                           src={
                             cardBioMode === 'earth'
-                              ? '/products/terra-urn.png'
-                              : '/products/aqua-urn.png'
+                              ? 'https://static.wixstatic.com/media/45119e_8e4a1c81a2bd409e90cf795fe22bac2b~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png'
+                              : 'https://static.wixstatic.com/media/45119e_812f09d2732e4e2db45a354383159ac9~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png'
                           }
                           alt="Urna Biodegradable Kamibi"
                           className="kmb-bio-urn-render"
@@ -850,13 +961,13 @@ export const UrnaBiodegradableLanding = () => {
                         onClick={() => setCardBioMode('earth')}
                         className={`kmb-seg-btn ${cardBioMode === 'earth' ? 'active' : ''}`}
                       >
-                        Tierra & Árbol
+                        Terra Urn ($90 USD)
                       </button>
                       <button
                         onClick={() => setCardBioMode('water')}
                         className={`kmb-seg-btn ${cardBioMode === 'water' ? 'active' : ''}`}
                       >
-                        Agua & Mar
+                        Aqua Urn ($76.50 USD)
                       </button>
                     </div>
                   </div>
@@ -880,23 +991,19 @@ export const UrnaBiodegradableLanding = () => {
                     <div className="kmb-metric-item">
                       <span className="kmb-metric-val">100%</span>
                       <span className="kmb-metric-lbl">
-                        Compuestos botánicos y arcilla mineral
+                        Materiales naturales, sostenibles y compostables
                       </span>
                     </div>
                     <div className="kmb-metric-item">
                       <span className="kmb-metric-val">0%</span>
                       <span className="kmb-metric-lbl">
-                        Residuos químicos, resinas o metales
+                        Plásticos, pegamentos, toxinas o químicos
                       </span>
                     </div>
                     <div className="kmb-metric-item">
-                      <span className="kmb-metric-val">
-                        {cardBioMode === 'earth' ? '2 a 4 sem' : '30 min'}
-                      </span>
+                      <span className="kmb-metric-val">3"×12"×14"</span>
                       <span className="kmb-metric-lbl">
-                        {cardBioMode === 'earth'
-                          ? 'Integración armónica en suelo'
-                          : 'Disolución limpia en agua'}
+                        Capacidad completa para un adulto (ligera y apta TSA)
                       </span>
                     </div>
                   </div>
@@ -931,12 +1038,12 @@ export const UrnaBiodegradableLanding = () => {
                     />
                     <div className="kmb-craft-floating-urn-box">
                       <img
-                        src="/products/flore-urn.png"
-                        alt="Kamibi Flore con pétalos naturales"
+                        src="https://static.wixstatic.com/media/45119e_92232e8c88c94935befe3b0b088a83a7~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png"
+                        alt="Flore Biodegradable Urns"
                         className="kmb-craft-urn-img"
                       />
                       <span className="kmb-craft-urn-caption">
-                        Edición Flore • Pétalos reales prensados
+                        Flore Urn • $76.50 USD (Antes $90)
                       </span>
                     </div>
                   </div>
@@ -945,15 +1052,15 @@ export const UrnaBiodegradableLanding = () => {
                 <div className="kmb-stack-text-pane">
                   <div className="kmb-card-step-header">
                     <span className="kmb-card-step-num">02 / 03</span>
-                    <span className="kmb-card-step-tag">ALQUIMIA BOTÁNICA</span>
+                    <span className="kmb-card-step-tag">ARTESANÍA CONSCIENTE</span>
                   </div>
 
                   <h3 className="kmb-stack-card-title">
-                    Solo lo que la tierra y el océano reconocen como propio.
+                    Bandas personalizadas y materiales que honran la vida.
                   </h3>
 
                   <p className="kmb-stack-card-desc">
-                    Cada urna permanece firme e intacta durante años mientras se conserve en el hogar. Su proceso de reintegración biológica solo se activa al entrar en contacto profundo con el agua o la humedad de la tierra.
+                    Cada urna permanece firme e intacta mientras se conserve en interior seco, y permite elegir entre delicadas bandas conmemorativas (Ginkgo Gold, Ocean, Turtle, Soft Pink, Deep Blue y Purple).
                   </p>
 
                   <div className="kmb-materials-interactive-box">
@@ -1003,7 +1110,7 @@ export const UrnaBiodegradableLanding = () => {
                 <div className="kmb-stack-text-pane">
                   <div className="kmb-card-step-header kmb-header-light">
                     <span className="kmb-card-step-num">03 / 03</span>
-                    <span className="kmb-card-step-tag">PACK MEMORIAL INTEGRAL</span>
+                    <span className="kmb-card-step-tag">KIT DE DESPEDIDA INCLUIDO</span>
                   </div>
 
                   <h3 className="kmb-stack-card-title kmb-text-cream">
@@ -1011,25 +1118,33 @@ export const UrnaBiodegradableLanding = () => {
                   </h3>
 
                   <p className="kmb-stack-card-desc kmb-text-sand">
-                    Cada pedido de Kamibi incluye el kit ceremonial completo en un empaque biodegradable de presentación, pensado para acompañar a tu familia sin complicaciones y con total delicadeza.
+                    Cada urna biodegradable de adulto incluye sin costo adicional nuestro Kit de Despedida para que familiares y amigos participen en el ritual escribiendo sus mensajes finales.
                   </p>
 
                   <ul className="kmb-pack-checklist">
                     <li>
                       <span className="kmb-check-gold">✓</span>
-                      <span>Urna artesanal 100% biodegradable y orgánica</span>
+                      <span>
+                        Urna 100% biodegradable para agua y tierra (3&quot; Alto × 12&quot; Ancho × 14&quot; Largo)
+                      </span>
                     </li>
                     <li>
                       <span className="kmb-check-gold">✓</span>
-                      <span>Bolsa interior hidrosoluble de contención segura</span>
+                      <span>
+                        Hojas de escritura biodegradables y lápiz compostable incluidos para mensajes familiares
+                      </span>
                     </li>
                     <li>
                       <span className="kmb-check-gold">✓</span>
-                      <span>Cápsula con semillas nativas de flores silvestres o árbol</span>
+                      <span>
+                        Instrucciones paso a paso para ceremonia en océano, lago o tierra
+                      </span>
                     </li>
                     <li>
                       <span className="kmb-check-gold">✓</span>
-                      <span>Certificado de materiales orgánicos apto para cabina TSA</span>
+                      <span>
+                        Cumple normativa TSA para viajar en avión + Envío Gratis en USA y Canadá
+                      </span>
                     </li>
                   </ul>
 
@@ -1038,10 +1153,10 @@ export const UrnaBiodegradableLanding = () => {
                       onClick={() => scrollToSection('comparativa')}
                       className="kmb-btn-gold"
                     >
-                      Ver precios y paquetes →
+                      Ver precios y modelos →
                     </button>
                     <span className="kmb-pack-price-hint">
-                      Sets desde $49.99 USD • Urnas principales desde $165.75 USD
+                      Bolsas $12.99 • Mini Sets $49.99 • Urnas Adulto $76.50 – $90.00 USD
                     </span>
                   </div>
                 </div>
@@ -1057,7 +1172,7 @@ export const UrnaBiodegradableLanding = () => {
                       }}
                     />
                     <img
-                      src="/products/terra-urn.png"
+                      src="https://static.wixstatic.com/media/45119e_8e4a1c81a2bd409e90cf795fe22bac2b~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png"
                       alt="Urna Kamibi Terra"
                       className="kmb-pack-floating-urn"
                     />
@@ -1070,15 +1185,15 @@ export const UrnaBiodegradableLanding = () => {
       </section>
 
       {/* =====================================================================
-          3. SECCIÓN COMPARATIVA: TRÍPTICO EDITORIAL INTERACTIVO DE 3 PRODUCTOS
+          3. SECCIÓN COMPARATIVA: TRÍPTICO INTERACTIVO CON PRODUCTOS Y PRECIOS REALES
          ===================================================================== */}
       <section className="kmb-comparison-section" id="comparativa">
         <div className="kmb-container">
           <div className="kmb-section-intro">
-            <span className="kmb-section-eyebrow">COLECCIÓN ELEMENTAL KAMIBI®</span>
+            <span className="kmb-section-eyebrow">CATÁLOGO Y PRECIOS OFICIALES</span>
             <h2 className="kmb-section-heading">¿Qué Urna Kamibi elegir?</h2>
             <p className="kmb-section-lead">
-              Explora las tres ediciones principales diseñadas para cada tipo de ceremonia. Selecciona el acabado en cada tarjeta para previsualizar el modelo.
+              Compara nuestras líneas oficiales. Haz clic en los modelos dentro de cada tarjeta para ver su foto real, precio actualizado y opciones de banda.
             </p>
           </div>
 
@@ -1126,13 +1241,13 @@ export const UrnaBiodegradableLanding = () => {
                       <span className="kmb-triptych-time-pill">{model.timePill}</span>
                     </div>
 
-                    {/* Dynamic 3D Urn Pedestal */}
+                    {/* Dynamic Real Wix Product Image Pedestal */}
                     <div className="kmb-triptych-urn-pedestal">
                       <AnimatePresence mode="wait">
                         <motion.img
-                          key={activeVar.image}
+                          key={activeVar.slug}
                           src={activeVar.image}
-                          alt={`${model.name} - ${activeVar.name}`}
+                          alt={activeVar.productName}
                           initial={{ opacity: 0, scale: 0.9, y: 8 }}
                           animate={{ opacity: 1, scale: 1, y: 0 }}
                           exit={{ opacity: 0, scale: 0.92, y: -6 }}
@@ -1144,15 +1259,12 @@ export const UrnaBiodegradableLanding = () => {
                     </div>
                   </div>
 
-                  {/* Interactive Finish / Edition Selector Bar */}
+                  {/* Interactive Real Model Selector Bar */}
                   <div className="kmb-triptych-finish-bar">
-                    <span className="kmb-finish-active-label">
-                      Acabado: <strong>{activeVar.name}</strong>
-                    </span>
-                    <div className="kmb-finish-swatches">
+                    <div className="kmb-finish-pills-group">
                       {model.variants.map((v, vIdx) => (
                         <button
-                          key={vIdx}
+                          key={v.slug}
                           type="button"
                           onClick={() =>
                             setSelectedFinishes((prev) => ({
@@ -1160,44 +1272,53 @@ export const UrnaBiodegradableLanding = () => {
                               [model.id]: vIdx,
                             }))
                           }
-                          className={`kmb-finish-swatch-btn ${
+                          className={`kmb-model-switch-pill ${
                             activeVarIdx === vIdx ? 'active' : ''
                           }`}
-                          title={v.name}
-                          aria-label={`Seleccionar acabado ${v.name}`}
                         >
                           <span
-                            className="kmb-finish-swatch-dot"
+                            className="kmb-model-switch-dot"
                             style={{ backgroundColor: v.hex }}
                           />
+                          <span>{v.shortLabel}</span>
                         </button>
                       ))}
                     </div>
                   </div>
 
-                  {/* Card Body: Title, Tagline & 2x2 Bento Specs */}
+                  {/* Card Body: Real Product Name, Real Wix Price & 2x2 Bento Specs */}
                   <div className="kmb-triptych-body">
                     <div className="kmb-triptych-heading-row">
                       <div>
                         <span className="kmb-triptych-edition">{model.edition}</span>
-                        <h3 className="kmb-triptych-title">{model.name}</h3>
+                        <h3
+                          className="kmb-triptych-title"
+                          onClick={() => navigate(`/product/${activeVar.slug}`)}
+                          style={{ cursor: 'pointer' }}
+                        >
+                          {activeVar.productName}
+                        </h3>
+                        <span className="kmb-triptych-bands-note">
+                          {activeVar.bandsInfo}
+                        </span>
                       </div>
+
                       <div className="kmb-triptych-price-block">
-                        <span className="kmb-triptych-price-from">Desde</span>
+                        <span className="kmb-triptych-price-from">Precio</span>
                         <div className="kmb-triptych-price-line">
                           <span className="kmb-triptych-price">
-                            ${model.price.toFixed(2)}
+                            ${Number(activeVar.price).toFixed(2)}
                           </span>
-                          {model.originalPrice && (
+                          {activeVar.originalPrice && (
                             <s className="kmb-triptych-old-price">
-                              ${model.originalPrice.toFixed(2)}
+                              ${Number(activeVar.originalPrice).toFixed(2)}
                             </s>
                           )}
                         </div>
                       </div>
                     </div>
 
-                    <p className="kmb-triptych-tagline">{model.tagline}</p>
+                    <p className="kmb-triptych-tagline">{activeVar.tagline}</p>
 
                     {/* 2x2 Architectural Bento Spec Grid */}
                     <div className="kmb-triptych-bento">
@@ -1219,27 +1340,21 @@ export const UrnaBiodegradableLanding = () => {
                     {/* Action Buttons */}
                     <div className="kmb-triptych-actions">
                       <button
-                        onClick={() =>
-                          handleDirectBuy({
-                            ...model,
-                            slug: activeVar.slug,
-                            image: activeVar.image,
-                          })
-                        }
+                        onClick={() => handleDirectBuy(activeVar)}
                         className={`kmb-triptych-buy-btn ${
-                          addedProductId === model.id ? 'added' : ''
+                          addedProductId === activeVar.slug ? 'added' : ''
                         }`}
                       >
-                        {addedProductId === model.id
+                        {addedProductId === activeVar.slug
                           ? '✓ Añadido al Carrito'
-                          : `Comprar ${model.name} →`}
+                          : `Añadir al carrito • $${Number(activeVar.price).toFixed(2)}`}
                       </button>
 
                       <button
                         onClick={() => navigate(`/product/${activeVar.slug}`)}
                         className="kmb-triptych-detail-btn"
                       >
-                        Ver ficha
+                        Elegir banda →
                       </button>
                     </div>
                   </div>
@@ -1251,23 +1366,25 @@ export const UrnaBiodegradableLanding = () => {
       </section>
 
       {/* =====================================================================
-          4. CARRUSEL DE PRODUCTOS CON FÍSICA SPRING ULTRA-SMOOTH
+          4. CARRUSEL DE PRODUCTOS CON FÍSICA SPRING ULTRA-SMOOTH (9 PRODUCTOS REALES)
          ===================================================================== */}
       <section className="kmb-carousel-section" id="catalogo">
         <div className="kmb-container">
           <div className="kmb-carousel-header">
             <div>
-              <span className="kmb-section-eyebrow">CATÁLOGO OFICIAL KAMIBI</span>
-              <h2 className="kmb-carousel-title">Adquiere tu urna con envío inmediato.</h2>
+              <span className="kmb-section-eyebrow">TIENDA OFICIAL KAMIBI STORE</span>
+              <h2 className="kmb-carousel-title">
+                Todos los productos disponibles con envío gratis.
+              </h2>
             </div>
 
             <div className="kmb-carousel-controls-row">
               <div className="kmb-carousel-filters">
                 {[
-                  { id: 'all', label: 'Todas' },
-                  { id: 'earth', label: 'Tierra & Flores' },
-                  { id: 'water', label: 'Agua & Mar' },
-                  { id: 'sets', label: 'Mini Sets & Bolsas' },
+                  { id: 'all', label: `Todos (${products.length || 9})` },
+                  { id: 'urns', label: 'Urnas Adulto ($76.50 – $90)' },
+                  { id: 'minis', label: 'Mini Urn Sets ($49.99)' },
+                  { id: 'bags', label: 'Burial Bags ($12.99)' },
                 ].map((f) => (
                   <button
                     key={f.id}
@@ -1315,7 +1432,7 @@ export const UrnaBiodegradableLanding = () => {
           >
             {productsLoading ? (
               <div className="kmb-carousel-loading">
-                Cargando colección artesanal Kamibi...
+                Cargando catálogo oficial de Kamibi Store...
               </div>
             ) : (
               <motion.div
@@ -1345,26 +1462,30 @@ export const UrnaBiodegradableLanding = () => {
                         }}
                       >
                         <img
-                          src={prod.images?.[0] || '/products/terra-urn.png'}
+                          src={prod.images?.[0]}
                           alt={prod.name}
                           className="kmb-prod-img"
                           draggable={false}
                           loading="lazy"
                         />
                         {prod.originalPrice && prod.originalPrice > prod.price && (
-                          <span className="kmb-prod-sale-pill">Oferta Especial</span>
+                          <span className="kmb-prod-sale-pill">15% OFF</span>
                         )}
-                        <span className="kmb-prod-quickview">Ver detalles →</span>
+                        <span className="kmb-prod-quickview">Ver producto →</span>
                       </div>
 
                       <div className="kmb-prod-body">
                         <div className="kmb-prod-meta">
                           <span
                             className="kmb-prod-dot"
-                            style={{ backgroundColor: prod.colorHex || '#C4856A' }}
+                            style={{ backgroundColor: '#C4A97D' }}
                           />
                           <span className="kmb-prod-color-name">
-                            {prod.colorName || '100% Biodegradable'}
+                            {prod.variants?.length > 0
+                              ? `${prod.variants.length} diseños de banda`
+                              : prod.category === 'minis'
+                              ? 'Set Familiar Compartido'
+                              : 'Pack de 2 Unidades'}
                           </span>
                         </div>
 
@@ -1378,15 +1499,15 @@ export const UrnaBiodegradableLanding = () => {
                         </h3>
 
                         <p className="kmb-prod-desc">
-                          {locale === 'es'
-                            ? prod.shortDescription?.substring(0, 75) + '...'
-                            : prod.tagline}
+                          {prod.shortDescription
+                            ? prod.shortDescription.substring(0, 90) + '...'
+                            : '100% Biodegradable y compostable. Envío gratis en USA y Canadá.'}
                         </p>
 
                         <div className="kmb-prod-footer">
                           <div className="kmb-prod-price-col">
                             <span className="kmb-prod-price">
-                              ${Number(prod.price).toFixed(2)}
+                              ${Number(prod.price).toFixed(2)} USD
                             </span>
                             {prod.originalPrice && (
                               <span className="kmb-prod-old-price">
@@ -1398,10 +1519,12 @@ export const UrnaBiodegradableLanding = () => {
                           <button
                             onClick={() => handleDirectBuy(prod)}
                             className={`kmb-prod-buy-btn ${
-                              addedProductId === prod.id ? 'added' : ''
+                              addedProductId === prod.slug || addedProductId === prod.id
+                                ? 'added'
+                                : ''
                             }`}
                           >
-                            {addedProductId === prod.id
+                            {addedProductId === prod.slug || addedProductId === prod.id
                               ? '✓ Añadido'
                               : 'Añadir al carrito'}
                           </button>
@@ -1473,7 +1596,7 @@ export const UrnaBiodegradableLanding = () => {
             <div className="kmb-final-cta-text">
               <h3>Un tributo sereno que devuelve vida a la tierra.</h3>
               <p>
-                Envío express gratuito y asegurado a todo el país. Si necesitas orientación sobre qué urna elegir, nuestro equipo te acompaña en cada paso.
+                Envío estándar gratuito a todo Estados Unidos y Canadá. Todas nuestras urnas incluyen Kit de Despedida y son aptas para transporte aéreo TSA.
               </p>
             </div>
             <div className="kmb-final-cta-buttons">
@@ -1534,29 +1657,29 @@ export const UrnaBiodegradableLanding = () => {
                     <div className="kmb-modal-step">
                       <span className="kmb-step-num">I</span>
                       <div>
-                        <h4>Preparación en casa</h4>
+                        <h4>Mensajes del Kit de Despedida</h4>
                         <p>
-                          Deposita las cenizas dentro de la bolsa hidrosoluble ceremonial incluida y colócala en el interior de la urna Kamibi junto con las semillas si elegiste la edición de tierra.
+                          Cada urna incluye hojas biodegradables y un lápiz compostable para que los familiares escriban cartas, recuerdos y palabras de amor que se colocan dentro de la urna junto a las cenizas.
                         </p>
                       </div>
                     </div>
                     <div className="kmb-modal-step">
                       <span className="kmb-step-num">II</span>
                       <div>
-                        <h4>Entrega a la naturaleza</h4>
+                        <h4>Entrega en Agua o Tierra</h4>
                         <p>
-                          <strong>En Tierra:</strong> Entierra la urna a 25–30 cm de profundidad en un jardín, bosque o maceta grande y riega suavemente.
+                          <strong>En Tierra:</strong> Entierra la urna en un jardín, bosque conmemorativo o espacio natural.
                           <br />
-                          <strong>En Agua:</strong> Deposita la urna sobre el mar o lago; flotará de 5 a 10 minutos permitiendo una despedida serena antes de descender.
+                          <strong>En Agua:</strong> Deposita la urna sobre el océano o lago; flotará brevemente permitiendo una despedida serena antes de descender suavemente.
                         </p>
                       </div>
                     </div>
                     <div className="kmb-modal-step">
                       <span className="kmb-step-num">III</span>
                       <div>
-                        <h4>Reintegración y florecimiento</h4>
+                        <h4>Reintegración 100% libre de tóxicos</h4>
                         <p>
-                          Sin aditivos químicos ni plásticos, la estructura orgánica vuelve al ciclo vital en ~30 minutos en agua o de 2 a 4 semanas en tierra.
+                          Fabricada sin plásticos, pegamentos ni metales, la urna se integra armónicamente con el agua o el suelo respetando por completo el ecosistema.
                         </p>
                       </div>
                     </div>
@@ -1581,7 +1704,7 @@ export const UrnaBiodegradableLanding = () => {
                   <span className="kmb-section-eyebrow">COMPOSICIÓN 100% ORGÁNICA</span>
                   <h3 className="kmb-modal-title">Materiales nobles de origen natural</h3>
                   <p className="kmb-modal-sub">
-                    Cada urna Kamibi está libre de resinas epóxicas, metales y barnices sintéticos.
+                    Cada urna Kamibi está libre de plásticos, pegamentos químicos, metales y barnices sintéticos.
                   </p>
 
                   <div className="kmb-modal-materials-grid">

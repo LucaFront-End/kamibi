@@ -1,4 +1,7 @@
 User-agent: *
+Disallow: /urna-biodegradable
+Disallow: /lp/
+Disallow: /lp/*
 Allow: /
 
 Sitemap: https://kamibistore.com/sitemap.xml

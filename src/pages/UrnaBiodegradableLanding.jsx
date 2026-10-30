@@ -86,6 +86,12 @@ export const UrnaBiodegradableLanding = () => {
   const [activeModal, setActiveModal] = useState(null);
   // Feedback when adding to cart
   const [addedProductId, setAddedProductId] = useState(null);
+  // Active finish variant per card in the 3-product comparison triptych
+  const [selectedFinishes, setSelectedFinishes] = useState({
+    'terra-urn': 0,
+    'aqua-urn': 0,
+    'mini-urns': 0,
+  });
 
   // Hero scroll parallax
   const heroRef = useRef(null);
@@ -189,83 +195,116 @@ export const UrnaBiodegradableLanding = () => {
     },
   ];
 
-  // Comparison models definition
+  // Comparison models definition (Interactive 3-Product Sanctuary Triptych)
   const comparisonModels = [
     {
       id: 'terra-urn',
-      slug: 'terra-urn',
+      num: '01',
+      elementTag: 'TIERRA & BOSQUE',
       name: 'Kamibi Bios',
-      edition: 'Versión Tierra & Árbol',
-      tagline: 'Para jardines, bosques memoriales o entierros ecológicos.',
-      image: '/products/terra-urn.png',
-      bgAura:
-        'radial-gradient(circle at 50% 42%, rgba(196, 133, 106, 0.22), rgba(232, 222, 209, 0.05) 70%)',
+      edition: 'Edición Germinación en Tierra',
+      tagline:
+        'Creada para integrarse con el suelo y nutrir el nacimiento de un nuevo árbol o jardín memorial.',
+      envImage: '/images/hero-earth-ceremony.png',
+      timePill: '🌱 2 a 4 semanas',
       price: 189.0,
       originalPrice: null,
-      palette: [
-        { hex: '#C4856A', name: 'Terracotta' },
-        { hex: '#8B9E8B', name: 'Floral Sage' },
-        { hex: '#D4A5A5', name: 'Soft Rose' },
+      variants: [
+        {
+          name: 'Terracotta Natural',
+          hex: '#C4856A',
+          image: '/products/terra-urn.png',
+          slug: 'terra-urn',
+        },
+        {
+          name: 'Flore (Pétalos Reales)',
+          hex: '#8B9E8B',
+          image: '/products/flore-urn.png',
+          slug: 'flore-urn',
+        },
+        {
+          name: 'Iris (Rosa Botánico)',
+          hex: '#D4A5A5',
+          image: '/products/iris-urn.png',
+          slug: 'iris-urn',
+        },
       ],
-      specs: {
-        material: 'Sustrato vegetal, celulosa virgen y arcilla natural',
-        time: '2 a 4 semanas en contacto con la tierra',
-        capacity: '3.5 Litros (Capacidad completa adulto)',
-        memory: 'Incluye cápsula de germinación y semillas vivas',
-        ceremony: 'Bosque conmemorativo, jardín privado o maceta grande',
-        tsa: 'Certificada TSA para equipaje de mano en avión',
-      },
+      bentoSpecs: [
+        { label: 'Biodegradación', value: '2 a 4 semanas', sub: 'En tierra húmeda' },
+        { label: 'Capacidad', value: '3.5 Litros', sub: '100% Adulto' },
+        { label: 'Composición', value: 'Fibra & Arcilla', sub: '0% Químicos' },
+        { label: 'Vuelo Aéreo', value: 'Apta Cabina TSA', sub: 'Certificado incl.' },
+      ],
+      kitHighlight: 'Incluye cápsula con semillas nativas vivas + bolsa soluble',
     },
     {
       id: 'aqua-urn',
-      slug: 'aqua-urn',
+      num: '02',
+      elementTag: 'OCÉANO & CALMA',
       name: 'Kamibi Ocean',
-      edition: 'Versión Mar & Agua',
-      tagline: 'Diseñada para flotar brevemente y descender con gracia en el agua.',
-      image: '/products/aqua-urn.png',
-      bgAura:
-        'radial-gradient(circle at 50% 42%, rgba(184, 197, 197, 0.35), rgba(232, 222, 209, 0.05) 70%)',
+      edition: 'Edición Ceremonia en Agua',
+      tagline:
+        'Diseñada para flotar serenamente unos minutos sobre el mar o lago antes de fundirse con pureza.',
+      envImage: '/images/hero-water-ceremony.png',
+      timePill: '🌊 ~30 minutos',
       price: 165.75,
       originalPrice: 195.0,
       badge: 'Más Elegida',
-      palette: [
-        { hex: '#B8C5C5', name: 'Ocean Mint' },
-        { hex: '#FFFFFF', name: 'Pure Angel White' },
-        { hex: '#E8DED1', name: 'Sand Mist' },
+      variants: [
+        {
+          name: 'Aqua Marina',
+          hex: '#9BB4B6',
+          image: '/products/aqua-urn.png',
+          slug: 'aqua-urn',
+        },
+        {
+          name: 'Blanco Ángel',
+          hex: '#F4F1EA',
+          image: '/products/angel-urn.png',
+          slug: 'angel-urn',
+        },
       ],
-      specs: {
-        material: 'Celulosa hidrosoluble orgánica y sal marina mineral',
-        time: 'Flota 5–10 min; disolución total en ~30 minutos',
-        capacity: '3.2 Litros (Capacidad completa adulto)',
-        memory: 'Disolución marina limpia con bolsa soluble incluida',
-        ceremony: 'Altamar, costa, lago, laguna o río de curso libre',
-        tsa: 'Certificada TSA para equipaje de mano en avión',
-      },
+      bentoSpecs: [
+        { label: 'Disolución', value: '~30 minutos', sub: 'Flota 5–10 min' },
+        { label: 'Capacidad', value: '3.2 Litros', sub: '100% Adulto' },
+        { label: 'Composición', value: 'Celulosa & Sal', sub: 'pH Neutro Marino' },
+        { label: 'Vuelo Aéreo', value: 'Apta Cabina TSA', sub: 'Certificado incl.' },
+      ],
+      kitHighlight: 'Incluye bolsa hidrosoluble de contención marina + guía ritual',
     },
     {
       id: 'mini-urns',
-      slug: 'mini-biodegradables-urn-set',
+      num: '03',
+      elementTag: 'TRIBUTO COMPARTIDO',
       name: 'Kamibi Mini',
       edition: 'Set Familiar (x4) & Mascotas',
-      tagline: 'Cuatro mini urnas para compartir el homenaje entre familiares.',
-      image: '/products/mini-urns.png',
-      bgAura:
-        'radial-gradient(circle at 50% 42%, rgba(139, 158, 139, 0.25), rgba(232, 222, 209, 0.05) 70%)',
+      tagline:
+        'Cuatro mini urnas orgánicas para que distintos familiares compartan el homenaje o para mascotas.',
+      envImage: '/images/philosophy-hero.png',
+      timePill: '✨ Pack de 4 urnas',
       price: 49.99,
       originalPrice: null,
-      palette: [
-        { hex: '#E8DED1', name: 'Warm Sand' },
-        { hex: '#C4856A', name: 'Clay' },
-        { hex: '#8B9E8B', name: 'Sage' },
+      variants: [
+        {
+          name: 'Set 4 Mini Urnas',
+          hex: '#E2D5C3',
+          image: '/products/mini-urns.png',
+          slug: 'mini-biodegradables-urn-set',
+        },
+        {
+          name: 'Edición Iris Mini',
+          hex: '#C4856A',
+          image: '/products/iris-urn.png',
+          slug: 'mini-biodegradables-urn-set',
+        },
       ],
-      specs: {
-        material: 'Fibra botánica compacta y almidones vegetales',
-        time: '1 a 3 semanas en tierra o agua dulce',
-        capacity: '0.4 L por unidad (Incluye pack de 4 urnas)',
-        memory: 'Cajas individuales de presentación para cada familiar',
-        ceremony: 'Ceremonias íntimas simultáneas o memorial de mascotas',
-        tsa: 'Certificada TSA para equipaje de mano en avión',
-      },
+      bentoSpecs: [
+        { label: 'Integración', value: '1 a 3 semanas', sub: 'Tierra o agua' },
+        { label: 'Capacidad', value: '4 × 0.4 L', sub: 'Set de 4 piezas' },
+        { label: 'Composición', value: 'Fibra Botánica', sub: '100% Orgánica' },
+        { label: 'Vuelo Aéreo', value: 'Apta Cabina TSA', sub: 'Fácil traslado' },
+      ],
+      kitHighlight: 'Incluye 4 cajas individuales de presentación y bolsas solubles',
     },
   ];
 
@@ -1031,117 +1070,182 @@ export const UrnaBiodegradableLanding = () => {
       </section>
 
       {/* =====================================================================
-          3. SECCIÓN COMPARATIVA: "¿Qué Urna Kamibi Elegir?"
+          3. SECCIÓN COMPARATIVA: TRÍPTICO EDITORIAL INTERACTIVO DE 3 PRODUCTOS
          ===================================================================== */}
       <section className="kmb-comparison-section" id="comparativa">
         <div className="kmb-container">
           <div className="kmb-section-intro">
-            <span className="kmb-section-eyebrow">GUÍA COMPARATIVA</span>
+            <span className="kmb-section-eyebrow">COLECCIÓN ELEMENTAL KAMIBI®</span>
             <h2 className="kmb-section-heading">¿Qué Urna Kamibi elegir?</h2>
             <p className="kmb-section-lead">
-              Compara las tres ediciones según el entorno de la ceremonia, el tiempo de reintegración y la capacidad.
+              Explora las tres ediciones principales diseñadas para cada tipo de ceremonia. Selecciona el acabado en cada tarjeta para previsualizar el modelo.
             </p>
           </div>
 
-          <div className="kmb-comparison-grid">
-            {comparisonModels.map((model, idx) => (
-              <motion.div
-                key={model.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-8%' }}
-                transition={{
-                  duration: 0.7,
-                  delay: idx * 0.12,
-                  ease: [0.16, 1, 0.3, 1],
-                }}
-                className={`kmb-comp-card ${model.badge ? 'kmb-comp-featured' : ''}`}
-              >
-                {model.badge && <span className="kmb-comp-badge">{model.badge}</span>}
+          <div className="kmb-triptych-grid">
+            {comparisonModels.map((model, idx) => {
+              const activeVarIdx = selectedFinishes[model.id] || 0;
+              const activeVar = model.variants[activeVarIdx] || model.variants[0];
 
-                <div
-                  className="kmb-comp-img-stage"
-                  style={{ background: model.bgAura }}
-                  onClick={() => navigate(`/product/${model.slug}`)}
-                >
-                  <img src={model.image} alt={model.name} className="kmb-comp-img" />
-                </div>
-
-                <div className="kmb-comp-swatches">
-                  {model.palette.map((swatch, sIdx) => (
-                    <span
-                      key={sIdx}
-                      className="kmb-comp-swatch"
-                      style={{ backgroundColor: swatch.hex }}
-                      title={swatch.name}
-                    />
-                  ))}
-                </div>
-
-                <span className="kmb-comp-edition">{model.edition}</span>
-                <h3 className="kmb-comp-name">{model.name}</h3>
-                <p className="kmb-comp-tagline">{model.tagline}</p>
-
-                <div className="kmb-comp-price-box">
-                  <span className="kmb-comp-price-from">Desde</span>
-                  <div className="kmb-comp-price-nums">
-                    <span className="kmb-comp-price-main">
-                      ${model.price.toFixed(2)} USD
-                    </span>
-                    {model.originalPrice && (
-                      <span className="kmb-comp-price-old">
-                        ${model.originalPrice.toFixed(2)}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                <button
-                  onClick={() => handleDirectBuy(model)}
-                  className={`kmb-comp-buy-btn ${
-                    addedProductId === model.id ? 'added' : ''
+              return (
+                <motion.div
+                  key={model.id}
+                  initial={{ opacity: 0, y: 32 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: '-8%' }}
+                  transition={{
+                    duration: 0.75,
+                    delay: idx * 0.12,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
+                  className={`kmb-triptych-card ${
+                    model.badge ? 'kmb-triptych-featured' : ''
                   }`}
                 >
-                  {addedProductId === model.id ? '✓ Añadido al Carrito' : 'Comprar ahora'}
-                </button>
+                  {model.badge && (
+                    <span className="kmb-triptych-crown">{model.badge}</span>
+                  )}
 
-                <button
-                  onClick={() => navigate(`/product/${model.slug}`)}
-                  className="kmb-comp-detail-link"
-                >
-                  Ver ficha completa →
-                </button>
+                  {/* Upper Atmospheric Sanctuary Header */}
+                  <div
+                    className="kmb-triptych-stage"
+                    onClick={() => navigate(`/product/${activeVar.slug}`)}
+                  >
+                    <img
+                      src={model.envImage}
+                      alt={model.elementTag}
+                      className="kmb-triptych-env-bg"
+                    />
+                    <div className="kmb-triptych-env-veil" />
 
-                <div className="kmb-comp-divider" />
+                    {/* Top Floating Pills inside Stage */}
+                    <div className="kmb-triptych-stage-top">
+                      <span className="kmb-triptych-elem-pill">
+                        <b>{model.num}</b> • {model.elementTag}
+                      </span>
+                      <span className="kmb-triptych-time-pill">{model.timePill}</span>
+                    </div>
 
-                <div className="kmb-comp-specs">
-                  <div className="kmb-comp-spec-row">
-                    <span className="kmb-spec-lbl">Material</span>
-                    <span className="kmb-spec-val">{model.specs.material}</span>
+                    {/* Dynamic 3D Urn Pedestal */}
+                    <div className="kmb-triptych-urn-pedestal">
+                      <AnimatePresence mode="wait">
+                        <motion.img
+                          key={activeVar.image}
+                          src={activeVar.image}
+                          alt={`${model.name} - ${activeVar.name}`}
+                          initial={{ opacity: 0, scale: 0.9, y: 8 }}
+                          animate={{ opacity: 1, scale: 1, y: 0 }}
+                          exit={{ opacity: 0, scale: 0.92, y: -6 }}
+                          transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                          className="kmb-triptych-urn-img"
+                        />
+                      </AnimatePresence>
+                      <div className="kmb-triptych-pedestal-glow" />
+                    </div>
                   </div>
-                  <div className="kmb-comp-spec-row">
-                    <span className="kmb-spec-lbl">Tiempo de integración</span>
-                    <span className="kmb-spec-val kmb-spec-accent">{model.specs.time}</span>
+
+                  {/* Interactive Finish / Edition Selector Bar */}
+                  <div className="kmb-triptych-finish-bar">
+                    <span className="kmb-finish-active-label">
+                      Acabado: <strong>{activeVar.name}</strong>
+                    </span>
+                    <div className="kmb-finish-swatches">
+                      {model.variants.map((v, vIdx) => (
+                        <button
+                          key={vIdx}
+                          type="button"
+                          onClick={() =>
+                            setSelectedFinishes((prev) => ({
+                              ...prev,
+                              [model.id]: vIdx,
+                            }))
+                          }
+                          className={`kmb-finish-swatch-btn ${
+                            activeVarIdx === vIdx ? 'active' : ''
+                          }`}
+                          title={v.name}
+                          aria-label={`Seleccionar acabado ${v.name}`}
+                        >
+                          <span
+                            className="kmb-finish-swatch-dot"
+                            style={{ backgroundColor: v.hex }}
+                          />
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                  <div className="kmb-comp-spec-row">
-                    <span className="kmb-spec-lbl">Capacidad</span>
-                    <span className="kmb-spec-val">{model.specs.capacity}</span>
+
+                  {/* Card Body: Title, Tagline & 2x2 Bento Specs */}
+                  <div className="kmb-triptych-body">
+                    <div className="kmb-triptych-heading-row">
+                      <div>
+                        <span className="kmb-triptych-edition">{model.edition}</span>
+                        <h3 className="kmb-triptych-title">{model.name}</h3>
+                      </div>
+                      <div className="kmb-triptych-price-block">
+                        <span className="kmb-triptych-price-from">Desde</span>
+                        <div className="kmb-triptych-price-line">
+                          <span className="kmb-triptych-price">
+                            ${model.price.toFixed(2)}
+                          </span>
+                          {model.originalPrice && (
+                            <s className="kmb-triptych-old-price">
+                              ${model.originalPrice.toFixed(2)}
+                            </s>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    <p className="kmb-triptych-tagline">{model.tagline}</p>
+
+                    {/* 2x2 Architectural Bento Spec Grid */}
+                    <div className="kmb-triptych-bento">
+                      {model.bentoSpecs.map((sp, spIdx) => (
+                        <div key={spIdx} className="kmb-bento-cell">
+                          <span className="kmb-bento-lbl">{sp.label}</span>
+                          <strong className="kmb-bento-val">{sp.value}</strong>
+                          <span className="kmb-bento-sub">{sp.sub}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Included Kit Highlight */}
+                    <div className="kmb-triptych-kit-chip">
+                      <span className="kmb-kit-check">✦</span>
+                      <span>{model.kitHighlight}</span>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="kmb-triptych-actions">
+                      <button
+                        onClick={() =>
+                          handleDirectBuy({
+                            ...model,
+                            slug: activeVar.slug,
+                            image: activeVar.image,
+                          })
+                        }
+                        className={`kmb-triptych-buy-btn ${
+                          addedProductId === model.id ? 'added' : ''
+                        }`}
+                      >
+                        {addedProductId === model.id
+                          ? '✓ Añadido al Carrito'
+                          : `Comprar ${model.name} →`}
+                      </button>
+
+                      <button
+                        onClick={() => navigate(`/product/${activeVar.slug}`)}
+                        className="kmb-triptych-detail-btn"
+                      >
+                        Ver ficha
+                      </button>
+                    </div>
                   </div>
-                  <div className="kmb-comp-spec-row">
-                    <span className="kmb-spec-lbl">Tipo de recuerdo</span>
-                    <span className="kmb-spec-val">{model.specs.memory}</span>
-                  </div>
-                  <div className="kmb-comp-spec-row">
-                    <span className="kmb-spec-lbl">Ceremonia sugerida</span>
-                    <span className="kmb-spec-val">{model.specs.ceremony}</span>
-                  </div>
-                  <div className="kmb-comp-spec-row">
-                    <span className="kmb-spec-lbl">Transporte aéreo</span>
-                    <span className="kmb-spec-val kmb-spec-accent">✓ {model.specs.tsa}</span>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -1352,11 +1456,11 @@ export const UrnaBiodegradableLanding = () => {
         <div className="kmb-polaroid-stage-wrap">
           <PolaroidLineCarousel
             slides={polaroidReviews}
-            height={610}
-            cardWidth={275}
-            sag={52}
+            height={560}
+            cardWidth={345}
+            sag={50}
             swing={1.35}
-            autoplay={5200}
+            autoplay={5400}
             string="#B59E7A"
             background="transparent"
             ink="#2D2D2D"

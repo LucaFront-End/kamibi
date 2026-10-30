@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 /*
  * Polaroid Line Carousel — Adapted for KAMIBI® Memorial Reviews
- * Instant photos pegged to a sagging botanical twine string. Drag the line
+ * Large instant photos pegged to a sagging botanical twine string. Drag the line
  * (or use the arrows / click any print) and the prints slide along it,
  * swinging on their pegs with realistic pendulum physics, inertia, and
  * settling back with a gentle overshoot; even at rest they sway in a light breeze.
@@ -172,21 +172,28 @@ function useSlideImages(slides) {
 }
 
 const PL_CSS = `
-.pl-root {
+.pl-wrapper {
   position: relative;
   width: 100%;
-  overflow: hidden;
   background: var(--pl-bg);
   color: var(--pl-ink);
   user-select: none;
   -webkit-user-select: none;
-  touch-action: pan-y;
   outline: none;
+}
+
+.pl-stage {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  touch-action: pan-y;
   cursor: grab;
 }
-.pl-root[data-drag='1'] {
+
+.pl-stage[data-drag='1'] {
   cursor: grabbing;
 }
+
 .pl-string {
   position: absolute;
   left: 0;
@@ -197,6 +204,7 @@ const PL_CSS = `
   overflow: visible;
   z-index: 1;
 }
+
 .pl-card {
   position: absolute;
   left: 0;
@@ -206,30 +214,42 @@ const PL_CSS = `
   will-change: transform;
   cursor: pointer;
 }
+
 .pl-print {
   margin-top: 12px;
   background: #FFFDF9;
-  padding: 12px 12px 14px;
-  border-radius: 4px;
-  border: 1px solid rgba(232, 222, 209, 0.85);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.08), 0 22px 42px -14px rgba(28, 25, 22, 0.32);
-  transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1), filter 0.55s ease, box-shadow 0.55s ease;
+  padding: 14px 14px 18px;
+  border-radius: 5px;
+  border: 1px solid rgba(226, 214, 198, 0.9);
+  box-shadow:
+    0 2px 5px rgba(0, 0, 0, 0.06),
+    0 22px 44px -14px rgba(28, 25, 22, 0.26);
+  transition:
+    transform 0.55s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.55s ease,
+    box-shadow 0.55s ease;
 }
+
 .pl-card[data-on='1'] .pl-print {
-  transform: scale(1.04);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1), 0 28px 55px -12px rgba(28, 25, 22, 0.42);
+  transform: scale(1.06);
+  box-shadow:
+    0 6px 16px rgba(0, 0, 0, 0.09),
+    0 32px 64px -12px rgba(28, 25, 22, 0.36);
 }
+
 .pl-card[data-on='0'] .pl-print {
   transform: scale(0.88);
-  filter: saturate(0.75) brightness(0.95);
+  filter: saturate(0.78) brightness(0.96);
 }
+
 .pl-shot {
   position: relative;
-  aspect-ratio: 1 / 0.92;
+  aspect-ratio: 1 / 0.96;
   overflow: hidden;
   background: #E8DED1;
   border-radius: 2px;
 }
+
 .pl-shot img {
   position: absolute;
   inset: 0;
@@ -241,49 +261,40 @@ const PL_CSS = `
   pointer-events: none;
   transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
 }
+
 .pl-card[data-on='1']:hover .pl-shot img {
   transform: scale(1.05);
 }
-.pl-shot-stars {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: rgba(255, 253, 249, 0.92);
-  backdrop-filter: blur(6px);
-  padding: 3px 8px;
-  border-radius: 999px;
-  font-size: 10px;
-  letter-spacing: 1.5px;
-  color: #C4A97D;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-}
+
 .pl-shot-edition {
   position: absolute;
-  bottom: 8px;
-  left: 8px;
-  background: rgba(29, 38, 31, 0.82);
-  backdrop-filter: blur(6px);
+  bottom: 10px;
+  left: 10px;
+  background: rgba(24, 32, 26, 0.78);
+  backdrop-filter: blur(8px);
   color: #FAF7F2;
-  padding: 3px 9px;
+  padding: 4px 11px;
   border-radius: 999px;
-  font-size: 10px;
+  font-size: 10.5px;
   font-weight: 500;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
 }
+
 .pl-note {
-  min-height: 44px;
+  min-height: 52px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 10px 6px 2px;
+  padding: 14px 8px 2px;
   text-align: center;
 }
+
 .pl-note-handwriting {
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-style: italic;
   font-weight: 600;
-  font-size: 16.5px;
+  font-size: 19px;
   line-height: 1.15;
   color: #2D2D2D;
   white-space: nowrap;
@@ -291,126 +302,205 @@ const PL_CSS = `
   text-overflow: ellipsis;
   max-width: 100%;
 }
+
 .pl-note-author {
   font-family: 'Inter', sans-serif;
   font-size: 10.5px;
   font-weight: 500;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #8B9E8B;
-  margin-top: 3px;
+  color: #7A8B7A;
+  margin-top: 4px;
 }
+
 .pl-peg {
   position: absolute;
   left: 50%;
-  top: -3px;
-  width: 11px;
-  height: 28px;
-  margin-left: -5.5px;
+  top: -4px;
+  width: 12px;
+  height: 30px;
+  margin-left: -6px;
   border-radius: 2.5px;
   background: linear-gradient(90deg, #b89464, #e2c79c 46%, #9f7c4e);
-  box-shadow: 0 3px 6px rgba(0,0,0,0.28);
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.28);
   z-index: 3;
 }
+
 .pl-peg::after {
   content: '';
   position: absolute;
   left: 3px;
-  top: 9px;
-  width: 5px;
+  top: 10px;
+  width: 6px;
   height: 3px;
   background: rgba(70, 50, 25, 0.55);
   border-radius: 1px;
 }
-.pl-bar {
-  position: absolute;
-  left: clamp(20px, 4.5vw, 64px);
-  right: clamp(20px, 4.5vw, 64px);
-  bottom: clamp(22px, 4vh, 38px);
-  max-width: 1240px;
-  margin: 0 auto;
+
+/* ==========================================================================
+   EDITORIAL QUOTE SHOWCASE — Separated cleanly below the hanging Polaroids
+   ========================================================================== */
+.pl-editorial-footer {
+  max-width: 920px;
+  margin: 1.25rem auto 0;
+  padding: 0 1.5rem;
+  text-align: center;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: clamp(14px, 2.5vw, 28px);
-  cursor: default;
-  background: rgba(255, 253, 249, 0.92);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  padding: 18px 26px;
-  border-radius: 22px;
-  border: 1px solid rgba(196, 169, 125, 0.35);
-  box-shadow: 0 14px 36px rgba(26, 26, 26, 0.07);
-  z-index: 20;
 }
-.pl-cap {
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
+
+.pl-quote-stage {
+  min-height: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  animation: pl-fade-up 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
-.pl-cap > * {
-  display: block;
-  animation: pl-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+
+.pl-quote-meta-top {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 0.85rem;
 }
-.pl-title {
+
+.pl-quote-stars {
+  color: #C4A97D;
+  font-size: 0.85rem;
+  letter-spacing: 3px;
+}
+
+.pl-quote-sep {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #C4A97D;
+  opacity: 0.6;
+}
+
+.pl-quote-edition-tag {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #5A7A5A;
+}
+
+.pl-editorial-quote {
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-style: italic;
-  font-weight: 500;
-  font-size: clamp(18px, 2vw, 23px);
-  line-height: 1.25;
+  font-weight: 400;
+  font-size: clamp(1.55rem, 2.6vw, 2.25rem);
+  line-height: 1.38;
   color: #2D2D2D;
+  max-width: 800px;
+  margin: 0 auto 1.15rem;
+  letter-spacing: -0.01em;
 }
-.pl-sub {
-  margin-top: 5px;
-  font-family: 'Inter', system-ui, sans-serif;
-  font-size: 12.5px;
-  line-height: 1.4;
-  color: #6B6560;
+
+.pl-author-signature {
   display: flex;
-  align-items: center;
-  gap: 8px;
   flex-wrap: wrap;
-}
-.pl-verified {
-  color: #5A7A5A;
-  font-weight: 600;
-  font-size: 11.5px;
-}
-.pl-count {
-  font-family: 'Inter', monospace;
-  font-weight: 500;
-  font-size: 12px;
-  letter-spacing: 0.14em;
-  color: #8B9E8B;
-  white-space: nowrap;
-}
-.pl-count b {
-  color: #2D2D2D;
-  font-weight: 600;
-}
-.pl-nav-group {
-  display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  gap: 0.6rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.82rem;
+  color: #6B6560;
 }
+
+.pl-author-signature strong {
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.76rem;
+  color: #2D2D2D;
+}
+
+.pl-verified-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0.2rem 0.65rem;
+  background: rgba(90, 122, 90, 0.1);
+  color: #5A7A5A;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+/* Controls Row below Quote */
+.pl-controls-row {
+  margin-top: 1.65rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 0.45rem 0.65rem;
+  background: rgba(255, 253, 249, 0.75);
+  border: 1px solid rgba(232, 222, 209, 0.9);
+  border-radius: 999px;
+  box-shadow: 0 8px 24px rgba(26, 26, 26, 0.04);
+}
+
 .pl-btn {
   appearance: none;
-  width: 42px;
-  height: 42px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   border: 1px solid #E8DED1;
-  background: #FAF7F2;
+  background: #FFFDF9;
   color: #2D2D2D;
   display: grid;
   place-items: center;
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
+
 .pl-btn:hover {
   background: #2D2D2D;
   border-color: #2D2D2D;
   color: #FFFDF9;
   transform: scale(1.06);
 }
+
+.pl-dots {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pl-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: rgba(196, 169, 125, 0.38);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pl-dot.active {
+  width: 24px;
+  background: #2D2D2D;
+}
+
+.pl-count {
+  font-family: 'Inter', monospace;
+  font-weight: 500;
+  font-size: 11.5px;
+  letter-spacing: 0.12em;
+  color: #8B9E8B;
+  padding: 0 4px;
+}
+
+.pl-count b {
+  color: #2D2D2D;
+  font-weight: 600;
+}
+
 .pl-sr {
   position: absolute;
   width: 1px;
@@ -419,40 +509,36 @@ const PL_CSS = `
   clip: rect(0 0 0 0);
   white-space: nowrap;
 }
-@keyframes pl-in {
+
+@keyframes pl-fade-up {
   from {
-    transform: translateY(60%);
+    transform: translateY(14px);
     opacity: 0;
   }
   to {
-    transform: none;
+    transform: translateY(0);
     opacity: 1;
   }
 }
+
 @media (max-width: 680px) {
-  .pl-bar {
-    flex-wrap: wrap;
-    padding: 14px 18px;
-    bottom: 14px;
-    left: 14px;
-    right: 14px;
-    gap: 10px;
+  .pl-editorial-quote {
+    font-size: 1.35rem;
   }
-  .pl-cap {
-    width: 100%;
-    flex: 1 1 100%;
+  .pl-quote-stage {
+    min-height: 170px;
   }
 }
 `;
 
 export function PolaroidLineCarousel({
   slides = [],
-  height = 610,
-  cardWidth = 275,
+  height = 540,
+  cardWidth = 340,
   sag = 48,
-  swing = 1.25,
-  autoplay = 5200,
-  string = '#B5A48B',
+  swing = 1.35,
+  autoplay = 5400,
+  string = '#B59E7A',
   background = 'transparent',
   ink = '#2D2D2D',
   onChange,
@@ -464,8 +550,8 @@ export function PolaroidLineCarousel({
   const srcs = useSlideImages(slides);
   const [active, setActive] = useState(0);
   const [dragging, setDragging] = useState(false);
-  const [size, setSize] = useState({ w: 1200, h: 610, cw: cardWidth });
-  const rootRef = useRef(null);
+  const [size, setSize] = useState({ w: 1400, h: Number(height) || 540, cw: cardWidth });
+  const stageRef = useRef(null);
   const pathRef = useRef(null);
   const shadowPathRef = useRef(null);
   const cards = useRef([]);
@@ -476,29 +562,29 @@ export function PolaroidLineCarousel({
   const opts = useRef({ sag, swing });
   opts.current = { sag, swing };
 
-  const spacing = size.cw * 1.12;
+  const spacing = size.cw * 1.14;
   const goTo = useCallback(
     (i) => {
       const nextIdx = clamp(i, 0, n - 1);
       sim.current.target = nextIdx * spacing;
-      // Add a subtle physical impulse to the target card so it rocks gently on arrival
       if (sim.current.w[nextIdx] !== undefined) {
         const dir = nextIdx > activeRef.current ? 1 : -1;
-        sim.current.w[nextIdx] = (sim.current.w[nextIdx] || 0) + dir * 0.22;
+        sim.current.w[nextIdx] = (sim.current.w[nextIdx] || 0) + dir * 0.24;
       }
     },
     [n, spacing]
   );
 
   useEffect(() => {
-    const root = rootRef.current;
-    if (!root) return;
+    const stage = stageRef.current;
+    if (!stage) return;
     const ro = new ResizeObserver(() => {
-      const r = root.getBoundingClientRect();
-      const cw = Math.round(Math.max(175, Math.min(cardWidth, r.width * 0.44, r.height * 0.45)));
+      const r = stage.getBoundingClientRect();
+      // Allow large Polaroids on desktop while scaling gracefully on mobile
+      const cw = Math.round(Math.max(220, Math.min(cardWidth, r.width * 0.68)));
       setSize({ w: r.width, h: r.height, cw });
     });
-    ro.observe(root);
+    ro.observe(stage);
     return () => ro.disconnect();
   }, [cardWidth]);
 
@@ -513,8 +599,8 @@ export function PolaroidLineCarousel({
 
   // Physics loop running at 60/120fps directly on DOM nodes
   useEffect(() => {
-    const root = rootRef.current;
-    if (!root) return;
+    const stage = stageRef.current;
+    if (!stage) return;
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let visible = true;
     let raf = 0;
@@ -526,8 +612,8 @@ export function PolaroidLineCarousel({
       if (!visible) return;
       const dt = Math.min(0.033, (now - prev) / 1000);
       prev = now;
-      const { w, h, cw } = size;
-      const y0 = Math.max(38, h * 0.13);
+      const { w, cw } = size;
+      const y0 = 28;
       const d = drag.current;
       let lineVel;
       if (d && d.moved) {
@@ -542,7 +628,7 @@ export function PolaroidLineCarousel({
       const near = nearestAt(S.off, spacing, n);
 
       // Dynamic string sag reacts subtly to velocity
-      const dynamicSag = o.sag + Math.min(10, Math.abs(lineVel) * 0.004);
+      const dynamicSag = o.sag + Math.min(12, Math.abs(lineVel) * 0.004);
 
       for (let i = 0; i < n; i++) {
         const el = cards.current[i];
@@ -556,7 +642,6 @@ export function PolaroidLineCarousel({
         let a = S.a[i] || 0;
         let av = S.w[i] || 0;
         [a, av] = swingStep(a, av, lineVel, dt, g);
-        // Gentle natural breeze sway + string tangent resting angle
         if (g) {
           const breeze = Math.sin(now / 1150 + i * 1.85) * 0.0014 * g;
           const restingTilt = stringSlopeAngle(x, w, dynamicSag) * 0.15;
@@ -598,7 +683,7 @@ export function PolaroidLineCarousel({
         raf = requestAnimationFrame(frame);
       }
     });
-    io.observe(root);
+    io.observe(stage);
     raf = requestAnimationFrame(frame);
     return () => {
       cancelAnimationFrame(raf);
@@ -618,7 +703,6 @@ export function PolaroidLineCarousel({
   }, [autoplay, n, goTo]);
 
   const onDown = (e) => {
-    if (e.target.closest('.pl-bar')) return;
     lastTouch.current = performance.now();
     drag.current = {
       x: e.clientX,
@@ -637,7 +721,7 @@ export function PolaroidLineCarousel({
     if (!d.moved && Math.abs(dx) > 5) {
       d.moved = true;
       setDragging(true);
-      rootRef.current?.setPointerCapture?.(e.pointerId);
+      stageRef.current?.setPointerCapture?.(e.pointerId);
     }
     if (!d.moved) return;
     const dt = Math.max(1, e.timeStamp - d.lt);
@@ -665,7 +749,6 @@ export function PolaroidLineCarousel({
     const card = e.target.closest('[data-i]');
     if (card) {
       const idx = Number(card.getAttribute('data-i'));
-      // Give clicked card a gentle swing nudge
       sim.current.w[idx] = (sim.current.w[idx] || 0) + 0.3;
       goTo(idx);
     }
@@ -684,96 +767,112 @@ export function PolaroidLineCarousel({
   };
 
   const s = slides[active] || {};
+  // Responsive stage height based on actual card width so the bottom of the Polaroid never clips
+  const computedStageHeight = Math.max(Number(height) || 520, Math.round(size.cw * 1.48 + 90));
 
   return (
     <div
-      ref={rootRef}
-      className={['pl-root', className].filter(Boolean).join(' ')}
+      className={['pl-wrapper', className].filter(Boolean).join(' ')}
       style={{
-        height: typeof height === 'number' ? `${height}px` : height,
         '--pl-bg': background,
         '--pl-ink': ink,
         '--pl-cw': size.cw + 'px',
         ...style,
       }}
-      data-drag={dragging ? '1' : '0'}
       role="region"
       aria-roledescription="carousel"
       aria-label={ariaLabel}
       tabIndex={0}
       onKeyDown={onKey}
-      onPointerDown={onDown}
-      onPointerMove={onMove}
-      onPointerUp={onUp}
-      onPointerCancel={onUp}
     >
       <style>{PL_CSS}</style>
 
-      {/* Sagging Botanical Twine & Shadow */}
-      <svg className="pl-string" aria-hidden="true">
-        <path
-          ref={shadowPathRef}
-          fill="none"
-          stroke="rgba(0,0,0,0.06)"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-        />
-        <path
-          ref={pathRef}
-          fill="none"
-          stroke={string}
-          strokeWidth="1.8"
-          strokeLinecap="round"
-        />
-      </svg>
+      {/* Full-Width Hanging Polaroid Stage */}
+      <div
+        ref={stageRef}
+        className="pl-stage"
+        style={{ height: `${computedStageHeight}px` }}
+        data-drag={dragging ? '1' : '0'}
+        onPointerDown={onDown}
+        onPointerMove={onMove}
+        onPointerUp={onUp}
+        onPointerCancel={onUp}
+      >
+        {/* Sagging Botanical Twine & Shadow */}
+        <svg className="pl-string" aria-hidden="true">
+          <path
+            ref={shadowPathRef}
+            fill="none"
+            stroke="rgba(0,0,0,0.05)"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+          />
+          <path
+            ref={pathRef}
+            fill="none"
+            stroke={string}
+            strokeWidth="2"
+            strokeLinecap="round"
+          />
+        </svg>
 
-      {/* Hanging Polaroid Prints */}
-      {slides.map((sl, i) => (
-        <div
-          key={i}
-          className="pl-card"
-          data-i={i}
-          data-on={i === active ? '1' : '0'}
-          ref={(el) => {
-            cards.current[i] = el;
-          }}
-          aria-hidden={i === active ? undefined : true}
-        >
-          <div className="pl-print">
-            <div className="pl-shot">
-              {srcs[i] ? (
-                <img src={srcs[i]} alt={sl.alt || sl.title || ''} draggable={false} />
-              ) : null}
-              <span className="pl-shot-stars">★★★★★</span>
-              {sl.edition && <span className="pl-shot-edition">{sl.edition}</span>}
+        {/* Hanging Polaroid Prints */}
+        {slides.map((sl, i) => (
+          <div
+            key={i}
+            className="pl-card"
+            data-i={i}
+            data-on={i === active ? '1' : '0'}
+            ref={(el) => {
+              cards.current[i] = el;
+            }}
+            aria-hidden={i === active ? undefined : true}
+          >
+            <div className="pl-print">
+              <div className="pl-shot">
+                {srcs[i] ? (
+                  <img src={srcs[i]} alt={sl.alt || sl.title || ''} draggable={false} />
+                ) : null}
+                {sl.edition && <span className="pl-shot-edition">{sl.edition}</span>}
+              </div>
+              <div className="pl-note">
+                <span className="pl-note-handwriting">“{sl.title || ''}”</span>
+                {sl.author && <span className="pl-note-author">{sl.author}</span>}
+              </div>
             </div>
-            <div className="pl-note">
-              <span className="pl-note-handwriting">“{sl.title || ''}”</span>
-              {sl.author && <span className="pl-note-author">{sl.author}</span>}
-            </div>
+            <div className="pl-peg" />
           </div>
-          <div className="pl-peg" />
-        </div>
-      ))}
+        ))}
+      </div>
 
-      {/* Active Review Caption & Controls Bar */}
-      <div className="pl-bar">
-        <div className="pl-cap" key={active} aria-hidden="true">
+      {/* Editorial Quote Showcase cleanly separated below the Polaroids */}
+      <div className="pl-editorial-footer">
+        <div className="pl-quote-stage" key={active}>
+          <div className="pl-quote-meta-top">
+            <span className="pl-quote-stars">★★★★★</span>
+            {s.edition && (
+              <>
+                <span className="pl-quote-sep" />
+                <span className="pl-quote-edition-tag">Edición {s.edition}</span>
+              </>
+            )}
+          </div>
+
           {s.quote || s.title ? (
-            <span className="pl-title">“{s.quote || s.title}”</span>
+            <blockquote className="pl-editorial-quote">
+              “{s.quote || s.title}”
+            </blockquote>
           ) : null}
-          <span className="pl-sub">
+
+          <div className="pl-author-signature">
             {s.author && <strong>{s.author}</strong>}
-            {s.location && <span>• {s.location}</span>}
-            <span className="pl-verified">✓ Familias Kamibi Verificadas</span>
-          </span>
+            {s.location && <span>— {s.location}</span>}
+            <span className="pl-verified-pill">✓ Familia Kamibi Verificada</span>
+          </div>
         </div>
 
-        <span className="pl-count" aria-hidden="true">
-          <b>{pad2(active + 1)}</b> / {pad2(n)}
-        </span>
-
-        <div className="pl-nav-group">
+        {/* Minimal Gallery Navigation Bar */}
+        <div className="pl-controls-row">
           <button
             type="button"
             className="pl-btn"
@@ -784,6 +883,28 @@ export function PolaroidLineCarousel({
               <path d="M10 3 5 8l5 5" stroke="currentColor" strokeWidth="1.5" />
             </svg>
           </button>
+
+          <div className="pl-dots" role="tablist" aria-label="Seleccionar recuerdo">
+            {slides.map((_, idx) => (
+              <button
+                key={idx}
+                type="button"
+                role="tab"
+                aria-selected={idx === active}
+                aria-label={`Recuerdo ${idx + 1}`}
+                className={`pl-dot ${idx === active ? 'active' : ''}`}
+                onClick={() => {
+                  lastTouch.current = performance.now();
+                  goTo(idx);
+                }}
+              />
+            ))}
+          </div>
+
+          <span className="pl-count" aria-hidden="true">
+            <b>{pad2(active + 1)}</b> / {pad2(n)}
+          </span>
+
           <button
             type="button"
             className="pl-btn"
@@ -805,4 +926,3 @@ export function PolaroidLineCarousel({
 }
 
 export default PolaroidLineCarousel;
-

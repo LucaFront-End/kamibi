@@ -55,7 +55,7 @@ export const Navbar = () => {
     '/shipping-policy', '/politica-de-envios',
     '/refund-policy', '/politica-de-reembolsos',
     '/cookie-policy', '/politica-de-cookies',
-    '/legal', '/urna-biodegradable', '/lp'
+    '/legal', '/urna-biodegradable', '/urnas-biodegradables', '/lp'
   ];
   const isLightPage = lightPrefixes.some(prefix =>
     location.pathname === prefix || location.pathname.startsWith(prefix + '/')

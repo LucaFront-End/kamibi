@@ -57,6 +57,11 @@ export const CityLandingPage = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
 
+    if (slug === 'urna-biodegradable' || slug === 'urnas-biodegradables') {
+      navigate('/urna-biodegradable', { replace: true });
+      return;
+    }
+
     if (typeof window !== 'undefined' && slug) {
       const pathname = window.location.pathname;
       if (!pathname.toLowerCase().startsWith('/ciudades/')) {

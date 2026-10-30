@@ -70,7 +70,11 @@ function App() {
                     <Route path="/legal/:slug" element={<LegalPage />} />
                     {/* Apple-style Product Landing Page (No index) */}
                     <Route path="/urna-biodegradable" element={<UrnaBiodegradableLanding />} />
+                    <Route path="/urna-biodegradable/*" element={<UrnaBiodegradableLanding />} />
+                    <Route path="/urnas-biodegradables" element={<UrnaBiodegradableLanding />} />
+                    <Route path="/urnas-biodegradables/*" element={<UrnaBiodegradableLanding />} />
                     <Route path="/lp/urna-biodegradable" element={<UrnaBiodegradableLanding />} />
+                    <Route path="/lp/urna-biodegradable/*" element={<UrnaBiodegradableLanding />} />
                     {/* Thank You page after checkout */}
                     <Route path="/thank-you" element={<ThankYouPage />} />
                     {/* Dynamic CMS city landing pages with /ciudades and /Ciudades prefix */}

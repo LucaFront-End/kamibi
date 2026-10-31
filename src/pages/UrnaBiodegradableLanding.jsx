@@ -75,6 +75,7 @@ export const UrnaBiodegradableLanding = () => {
 
   // Interactive visual states
   const [heroPair, setHeroPair] = useState('urns'); // 'urns' | 'earth' | 'minis'
+  const [hoveredHeroUrn, setHoveredHeroUrn] = useState(null); // 'left' | 'right' | null
   const [cardBioMode, setCardBioMode] = useState('water'); // 'water' | 'earth'
   const [activeBandIdx, setActiveBandIdx] = useState(0);
   const [carouselCategory, setCarouselCategory] = useState('all');
@@ -113,11 +114,11 @@ export const UrnaBiodegradableLanding = () => {
       'https://static.wixstatic.com/media/45119e_b29071730d57411e80628960675d4a04~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
   };
 
-  // Hero Dual-Product Visual Pairs (100% Pure Clean Box Cutouts — Zero bags/pens)
+  // Hero Dual-Product Visual Pairs with Hover Detail Metadata
   const heroVisualPairs = {
     urns: {
       label: 'Agua & Mar',
-      caption: 'Kamibi Aqua (Gold)  •  Kamibi Flore (Turtle)',
+      caption: 'Pasa el cursor sobre cada urna para ver sus detalles',
       slug: 'aqua-urn',
       leftImg:
         'https://static.wixstatic.com/media/45119e_48478600018f46ffb3f1ac569e733471~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
@@ -125,10 +126,30 @@ export const UrnaBiodegradableLanding = () => {
         'https://static.wixstatic.com/media/45119e_44f8f91ccd1b439098bf5760374cc702~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
       leftName: 'Kamibi Aqua (Gold)',
       rightName: 'Kamibi Flore (Turtle)',
+      leftDetail: {
+        id: '4d71b043-1af4-8fa4-4a2c-c30289462282',
+        slug: 'aqua-urn',
+        name: 'Kamibi Aqua',
+        band: 'Banda Golden Leaf',
+        hex: '#C4A97D',
+        price: 76.5,
+        oldPrice: 90.0,
+        chips: ['Flotación + Mar', '14" × 12" × 3"', 'Cabina TSA'],
+      },
+      rightDetail: {
+        id: 'f9c09eac-dee0-50ec-1fd8-e591754fdb0a',
+        slug: 'flore-urns',
+        name: 'Kamibi Flore',
+        band: 'Banda Turtle Floral',
+        hex: '#2B9EB3',
+        price: 76.5,
+        oldPrice: 90.0,
+        chips: ['Agua & Tierra', 'Pétalos Reales', 'Kit Ritual'],
+      },
     },
     earth: {
       label: 'Tierra & Bosque',
-      caption: 'Kamibi Terra (Botanical)  •  Kamibi Iris (Sakura)',
+      caption: 'Pasa el cursor sobre cada urna para ver sus detalles',
       slug: 'terra-urn',
       leftImg:
         'https://static.wixstatic.com/media/45119e_277f4849b55642b1a9c570a911f20d37~mv2.png/v1/fit/w_1000,h_1000,q_90/file.png',
@@ -136,10 +157,30 @@ export const UrnaBiodegradableLanding = () => {
         'https://static.wixstatic.com/media/45119e_4515ed8dce4f4ea28b7bfeb68eac9066~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
       leftName: 'Kamibi Terra (Botanical)',
       rightName: 'Kamibi Iris (Sakura)',
+      leftDetail: {
+        id: 'b4fd86df-d446-0993-f324-d5d13eface16',
+        slug: 'terra-urn',
+        name: 'Kamibi Terra',
+        band: 'Eucalyptus Botanical',
+        hex: '#8B9E8B',
+        price: 90.0,
+        oldPrice: null,
+        chips: ['Suelo 2–4 sem', 'Fibras Puras', 'Nutre Raíces'],
+      },
+      rightDetail: {
+        id: '4d9511b1-1f04-1057-e379-1d7f2030933c',
+        slug: 'iris-urn',
+        name: 'Kamibi Iris',
+        band: 'Sakura Blossom',
+        hex: '#E2B4BD',
+        price: 76.5,
+        oldPrice: 90.0,
+        chips: ['Tierra & Agua', '100% Orgánica', 'Cabina TSA'],
+      },
     },
     minis: {
       label: 'Mini Sets (×4)',
-      caption: 'Mini Set Flore (×4)  •  Mini Set Ocean (×4)',
+      caption: 'Pasa el cursor sobre cada set para ver sus detalles',
       slug: 'mini-biodegradables-urn-set',
       leftImg:
         'https://static.wixstatic.com/media/45119e_d62bb5591c674265a6deee5eb3fa4985~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
@@ -147,6 +188,26 @@ export const UrnaBiodegradableLanding = () => {
         'https://static.wixstatic.com/media/45119e_b29071730d57411e80628960675d4a04~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
       leftName: 'Mini Set Flore',
       rightName: 'Mini Set Ocean',
+      leftDetail: {
+        id: 'f843aff9-c2d4-5a9f-a272-9fddf64c68e5',
+        slug: 'mini-biodegradables-urn-set',
+        name: 'Mini Set Flore',
+        band: 'Set Familiar × 4 Urnas',
+        hex: '#8B9E8B',
+        price: 49.99,
+        oldPrice: null,
+        chips: ['4 Mini Urnas', 'Para Compartir', 'Kit Incluido'],
+      },
+      rightDetail: {
+        id: '25f910fe-08a8-3004-4b99-579d88e4e240',
+        slug: 'mini-urn-set-ocean-biodegradables',
+        name: 'Mini Set Ocean',
+        band: 'Set Marino × 4 Urnas',
+        hex: '#7BA7B5',
+        price: 49.99,
+        oldPrice: null,
+        chips: ['4 Mini Urnas', 'Agua y Tierra', 'Cabina TSA'],
+      },
     },
   };
 
@@ -198,15 +259,18 @@ export const UrnaBiodegradableLanding = () => {
     },
   ];
 
-  // Apple-Style 3-Column Comparison Data (100% Pure Clean Urn Cutouts)
+  // Visual-First 3-Product Showcase Cards (Zero long spec lists — Scenic Backdrop + Floating Cutout + Visual Chips)
   const appleComparisonCols = [
     {
       key: 'col1',
+      envTag: 'Agua & Mar',
+      envIcon: 'water',
+      sceneBg: '/images/home-test-water.png',
       badge: '15% OFF',
       title: 'Kamibi Aqua & Flore',
-      subtitle: 'Edición Agua y Tierra',
       price: 76.5,
       originalPrice: 90.0,
+      chips: ['🌊 Agua & Tierra', '✈️ Cabina TSA', '📜 Kit Ritual'],
       swatches: [
         {
           label: 'Aqua Gold',
@@ -249,20 +313,17 @@ export const UrnaBiodegradableLanding = () => {
           img: 'https://static.wixstatic.com/media/45119e_30cc2647cbfa4613b55c9c180bd8be22~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
         },
       ],
-      specs: [
-        { big: '14" × 12" × 3"', sub: 'Capacidad completa 1 adulto' },
-        { big: 'Agua y Tierra', sub: 'Biodegradación 100% natural' },
-        { big: 'Kit Ritual', sub: 'Hojas biodegradables + lápiz' },
-        { big: 'Cabina TSA', sub: 'Certificada para vuelo aéreo' },
-      ],
     },
     {
       key: 'col2',
-      badge: 'Clásico',
+      envTag: 'Tierra & Bosque',
+      envIcon: 'earth',
+      sceneBg: '/images/about-process.png',
+      badge: '10 Bandas',
       title: 'Kamibi Terra & Angel',
-      subtitle: 'Edición Tierra y Serenidad',
       price: 90.0,
       originalPrice: null,
+      chips: ['🌱 Suelo 2–4 sem', '✈️ Cabina TSA', '🌿 100% Orgánica'],
       swatches: [
         {
           label: 'Terra Botanical',
@@ -305,20 +366,17 @@ export const UrnaBiodegradableLanding = () => {
           img: 'https://static.wixstatic.com/media/45119e_06646d5f8f6c4200aa02c9052fe7b168~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
         },
       ],
-      specs: [
-        { big: '14" × 12" × 3"', sub: 'Capacidad completa 1 adulto' },
-        { big: '10 Bandas', sub: 'Ginkgo, Ocean, Gold, Pink...' },
-        { big: 'Kit Ritual', sub: 'Hojas biodegradables + lápiz' },
-        { big: 'Cabina TSA', sub: 'Certificada para vuelo aéreo' },
-      ],
     },
     {
       key: 'col3',
-      badge: 'Set Familiar',
+      envTag: 'Set Familiar ×4',
+      envIcon: 'minis',
+      sceneBg: '/images/caja-terra.png',
+      badge: 'Compartir',
       title: 'Kamibi Mini & Bags',
-      subtitle: 'Para compartir o entierro',
       price: 49.99,
       originalPrice: null,
+      chips: ['🤍 Pack ×4 / ×2', '✈️ Cabina TSA', '🌾 Papel Puro'],
       swatches: [
         {
           label: 'Mini Set Flore (×4)',
@@ -347,12 +405,6 @@ export const UrnaBiodegradableLanding = () => {
           priceOverride: 12.99,
           img: 'https://static.wixstatic.com/media/45119e_b515104a49a642a1945b922955493527~mv2.png/v1/fit/w_1000,h_1000,q_90/file.png',
         },
-      ],
-      specs: [
-        { big: 'Set × 4 / × 2', sub: 'Tributo compartido en familia' },
-        { big: '100% Orgánico', sub: 'Papel reciclado y fibras puras' },
-        { big: 'Desde $12.99', sub: 'Bolsas ($12.99) y Minis ($49.99)' },
-        { big: 'Cabina TSA', sub: 'Fácil traslado para familiares' },
       ],
     },
   ];
@@ -580,8 +632,88 @@ export const UrnaBiodegradableLanding = () => {
             </div>
           </motion.div>
 
-          {/* Giant Dual-Urn Studio Stage (Pure Clean Cutouts, Parallel 3D Perspective) */}
+          {/* Giant Dual-Urn Studio Stage + Minimalist Ambient SVGs + Hover Detail Popovers */}
           <div className="kmb-dual-urn-stage">
+            {/* Minimalist Ambient Background SVGs per Environment (Water / Forest / Minis) */}
+            <div className="kmb-hero-ambient-svg-wrap" aria-hidden="true">
+              <AnimatePresence mode="wait">
+                {heroPair === 'urns' && (
+                  <motion.svg
+                    key="svg-water"
+                    viewBox="0 0 900 420"
+                    fill="none"
+                    initial={{ opacity: 0, scale: 0.96 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 1.03 }}
+                    transition={{ duration: 0.6 }}
+                    className="kmb-ambient-svg kmb-svg-water"
+                  >
+                    {/* Concentric Water Ripples */}
+                    <ellipse cx="450" cy="215" rx="220" ry="88" stroke="currentColor" strokeWidth="1" strokeDasharray="4 6" opacity="0.45" />
+                    <ellipse cx="450" cy="215" rx="320" ry="126" stroke="currentColor" strokeWidth="1" opacity="0.3" />
+                    <ellipse cx="450" cy="215" rx="410" ry="164" stroke="currentColor" strokeWidth="0.75" opacity="0.18" />
+                    {/* Flowing Ocean Topographic Waves */}
+                    <path d="M 40 165 Q 245 110, 450 165 T 860 165" stroke="currentColor" strokeWidth="1.2" opacity="0.35" />
+                    <path d="M 20 245 Q 235 300, 450 245 T 880 245" stroke="currentColor" strokeWidth="1.2" opacity="0.35" />
+                    <path d="M 80 310 Q 265 265, 450 310 T 820 310" stroke="currentColor" strokeWidth="0.9" strokeDasharray="3 5" opacity="0.28" />
+                    {/* Minimalist Water Droplet & Wave Accents */}
+                    <circle cx="135" cy="120" r="4" fill="currentColor" opacity="0.35" />
+                    <circle cx="765" cy="135" r="3.5" fill="currentColor" opacity="0.35" />
+                    <path d="M 755 95 C 765 80, 775 80, 785 95" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" opacity="0.4" />
+                  </motion.svg>
+                )}
+
+                {heroPair === 'earth' && (
+                  <motion.svg
+                    key="svg-earth"
+                    viewBox="0 0 900 420"
+                    fill="none"
+                    initial={{ opacity: 0, scale: 0.96 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 1.03 }}
+                    transition={{ duration: 0.6 }}
+                    className="kmb-ambient-svg kmb-svg-earth"
+                  >
+                    {/* Organic Tree Growth Rings */}
+                    <circle cx="450" cy="205" r="145" stroke="currentColor" strokeWidth="1" strokeDasharray="6 6" opacity="0.38" />
+                    <circle cx="450" cy="205" r="215" stroke="currentColor" strokeWidth="1" opacity="0.26" />
+                    <circle cx="450" cy="205" r="290" stroke="currentColor" strokeWidth="0.8" opacity="0.16" />
+                    {/* Left Minimal Botanical Leaf Branch */}
+                    <path d="M 110 290 Q 155 200, 215 115" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" opacity="0.42" />
+                    <path d="M 140 240 C 115 225, 118 198, 152 212" stroke="currentColor" strokeWidth="1.1" opacity="0.38" />
+                    <path d="M 172 185 C 148 168, 152 142, 184 158" stroke="currentColor" strokeWidth="1.1" opacity="0.38" />
+                    <path d="M 155 222 C 182 215, 192 238, 162 245" stroke="currentColor" strokeWidth="1.1" opacity="0.38" />
+                    {/* Right Minimal Botanical Leaf Branch */}
+                    <path d="M 790 290 Q 745 200, 685 115" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" opacity="0.42" />
+                    <path d="M 760 240 C 785 225, 782 198, 748 212" stroke="currentColor" strokeWidth="1.1" opacity="0.38" />
+                    <path d="M 728 185 C 752 168, 748 142, 716 158" stroke="currentColor" strokeWidth="1.1" opacity="0.38" />
+                  </motion.svg>
+                )}
+
+                {heroPair === 'minis' && (
+                  <motion.svg
+                    key="svg-minis"
+                    viewBox="0 0 900 420"
+                    fill="none"
+                    initial={{ opacity: 0, scale: 0.96 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 1.03 }}
+                    transition={{ duration: 0.6 }}
+                    className="kmb-ambient-svg kmb-svg-minis"
+                  >
+                    {/* Four Interconnected Family Tribute Orbits */}
+                    <circle cx="340" cy="195" r="130" stroke="currentColor" strokeWidth="1" opacity="0.3" />
+                    <circle cx="560" cy="195" r="130" stroke="currentColor" strokeWidth="1" opacity="0.3" />
+                    <circle cx="450" cy="145" r="110" stroke="currentColor" strokeWidth="0.9" strokeDasharray="4 6" opacity="0.28" />
+                    <circle cx="450" cy="245" r="110" stroke="currentColor" strokeWidth="0.9" strokeDasharray="4 6" opacity="0.28" />
+                    {/* 4 Cardinal Botanical Stars */}
+                    <path d="M 165 135 L 170 148 L 183 153 L 170 158 L 165 171 L 160 158 L 147 153 L 160 148 Z" stroke="currentColor" strokeWidth="1" opacity="0.4" />
+                    <path d="M 735 135 L 740 148 L 753 153 L 740 158 L 735 171 L 730 158 L 717 153 L 730 148 Z" stroke="currentColor" strokeWidth="1" opacity="0.4" />
+                  </motion.svg>
+                )}
+              </AnimatePresence>
+            </div>
+
             <AnimatePresence mode="wait">
               <motion.div
                 key={heroPair}
@@ -593,28 +725,188 @@ export const UrnaBiodegradableLanding = () => {
               >
                 <div className="kmb-stage-floor-glow" aria-hidden="true" />
 
+                {/* LEFT URN + INTERACTIVE HOVER POPOVER */}
                 <motion.div
                   style={{ y: leftUrnY }}
-                  className="kmb-giant-urn-wrap kmb-urn-left"
-                  onClick={() => navigate(`/product/${activeHero.slug}`)}
+                  className={`kmb-giant-urn-wrap kmb-urn-left ${
+                    hoveredHeroUrn === 'left'
+                      ? 'is-hovered'
+                      : hoveredHeroUrn === 'right'
+                      ? 'is-dimmed'
+                      : ''
+                  }`}
+                  onMouseEnter={() => setHoveredHeroUrn('left')}
+                  onMouseLeave={() => setHoveredHeroUrn(null)}
+                  onClick={() => navigate(`/product/${activeHero.leftDetail.slug}`)}
                 >
                   <img
                     src={activeHero.leftImg}
                     alt={activeHero.leftName}
                     className="kmb-giant-urn-img"
                   />
+
+                  <span className="kmb-urn-hotspot" aria-hidden="true">
+                    +
+                  </span>
+
+                  <AnimatePresence>
+                    {hoveredHeroUrn === 'left' && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10, scale: 0.94 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 8, scale: 0.95 }}
+                        transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+                        className="kmb-urn-hover-card kmb-hover-left"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <div className="kmb-uhc-top">
+                          <span
+                            className="kmb-uhc-dot"
+                            style={{ backgroundColor: activeHero.leftDetail.hex }}
+                          />
+                          <span className="kmb-uhc-band">
+                            {activeHero.leftDetail.band}
+                          </span>
+                        </div>
+
+                        <div className="kmb-uhc-title-row">
+                          <strong>{activeHero.leftDetail.name}</strong>
+                          <span className="kmb-uhc-price">
+                            ${activeHero.leftDetail.price.toFixed(2)}
+                            {activeHero.leftDetail.oldPrice && (
+                              <s>${activeHero.leftDetail.oldPrice.toFixed(2)}</s>
+                            )}
+                          </span>
+                        </div>
+
+                        <div className="kmb-uhc-chips">
+                          {activeHero.leftDetail.chips.map((c, idx) => (
+                            <span key={idx} className="kmb-uhc-chip">
+                              {c}
+                            </span>
+                          ))}
+                        </div>
+
+                        <div className="kmb-uhc-actions">
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleDirectBuy({
+                                ...activeHero.leftDetail,
+                                img: activeHero.leftImg,
+                              })
+                            }
+                            className="kmb-uhc-buy"
+                          >
+                            {addedProductId === activeHero.leftDetail.slug
+                              ? '✓ Añadido'
+                              : '+ Comprar'}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              navigate(`/product/${activeHero.leftDetail.slug}`)
+                            }
+                            className="kmb-uhc-link"
+                          >
+                            Ver <span>→</span>
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </motion.div>
 
+                {/* RIGHT URN + INTERACTIVE HOVER POPOVER */}
                 <motion.div
                   style={{ y: rightUrnY }}
-                  className="kmb-giant-urn-wrap kmb-urn-right"
-                  onClick={() => navigate(`/product/${activeHero.slug}`)}
+                  className={`kmb-giant-urn-wrap kmb-urn-right ${
+                    hoveredHeroUrn === 'right'
+                      ? 'is-hovered'
+                      : hoveredHeroUrn === 'left'
+                      ? 'is-dimmed'
+                      : ''
+                  }`}
+                  onMouseEnter={() => setHoveredHeroUrn('right')}
+                  onMouseLeave={() => setHoveredHeroUrn(null)}
+                  onClick={() => navigate(`/product/${activeHero.rightDetail.slug}`)}
                 >
                   <img
                     src={activeHero.rightImg}
                     alt={activeHero.rightName}
                     className="kmb-giant-urn-img"
                   />
+
+                  <span className="kmb-urn-hotspot" aria-hidden="true">
+                    +
+                  </span>
+
+                  <AnimatePresence>
+                    {hoveredHeroUrn === 'right' && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10, scale: 0.94 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 8, scale: 0.95 }}
+                        transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+                        className="kmb-urn-hover-card kmb-hover-right"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <div className="kmb-uhc-top">
+                          <span
+                            className="kmb-uhc-dot"
+                            style={{ backgroundColor: activeHero.rightDetail.hex }}
+                          />
+                          <span className="kmb-uhc-band">
+                            {activeHero.rightDetail.band}
+                          </span>
+                        </div>
+
+                        <div className="kmb-uhc-title-row">
+                          <strong>{activeHero.rightDetail.name}</strong>
+                          <span className="kmb-uhc-price">
+                            ${activeHero.rightDetail.price.toFixed(2)}
+                            {activeHero.rightDetail.oldPrice && (
+                              <s>${activeHero.rightDetail.oldPrice.toFixed(2)}</s>
+                            )}
+                          </span>
+                        </div>
+
+                        <div className="kmb-uhc-chips">
+                          {activeHero.rightDetail.chips.map((c, idx) => (
+                            <span key={idx} className="kmb-uhc-chip">
+                              {c}
+                            </span>
+                          ))}
+                        </div>
+
+                        <div className="kmb-uhc-actions">
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleDirectBuy({
+                                ...activeHero.rightDetail,
+                                img: activeHero.rightImg,
+                              })
+                            }
+                            className="kmb-uhc-buy"
+                          >
+                            {addedProductId === activeHero.rightDetail.slug
+                              ? '✓ Añadido'
+                              : '+ Comprar'}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              navigate(`/product/${activeHero.rightDetail.slug}`)
+                            }
+                            className="kmb-uhc-link"
+                          >
+                            Ver <span>→</span>
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </motion.div>
               </motion.div>
             </AnimatePresence>
@@ -627,7 +919,10 @@ export const UrnaBiodegradableLanding = () => {
                 <button
                   key={key}
                   type="button"
-                  onClick={() => setHeroPair(key)}
+                  onClick={() => {
+                    setHeroPair(key);
+                    setHoveredHeroUrn(null);
+                  }}
                   className={`kmb-pair-pill ${heroPair === key ? 'active' : ''}`}
                 >
                   {item.label}
@@ -839,97 +1134,142 @@ export const UrnaBiodegradableLanding = () => {
       </section>
 
       {/* =====================================================================
-          3. SECCIÓN COMPARATIVA: "¿Qué Kamibi elegir?" — EXACT APPLE COMPARISON LAYOUT
+          3. SECCIÓN 3 PRODUCTOS: VISUAL GALLERY CARDS (85% VISUAL, ZERO SPEC LISTS)
          ===================================================================== */}
-      <section className="kmb-apple-compare-section" id="comparativa">
+      <section className="kmb-visual-trio-section" id="comparativa">
         <div className="kmb-container">
-          <h2 className="kmb-compare-main-title">¿Qué Kamibi elegir?</h2>
+          <div className="kmb-vt-header">
+            <span className="kmb-vt-eyebrow">Tres ediciones orgánicas</span>
+            <h2 className="kmb-compare-main-title">¿Qué Kamibi elegir?</h2>
+          </div>
 
-          <div className="kmb-apple-compare-grid">
+          <div className="kmb-visual-trio-grid">
             {appleComparisonCols.map((col) => {
               const activeIdx = compSwatchIdx[col.key] || 0;
               const activeSwatch = col.swatches[activeIdx] || col.swatches[0];
               const displayPrice = activeSwatch.priceOverride ?? col.price;
 
               return (
-                <div key={col.key} className="kmb-ac-col">
-                  {/* Large Floating Product Image */}
+                <div key={col.key} className="kmb-vt-card">
+                  {/* TOP 70%: IMMERSIVE SCENIC VISUAL STAGE + FLOATING URN + SWATCH BAR */}
                   <div
-                    className="kmb-ac-img-wrap"
+                    className="kmb-vt-stage"
                     onClick={() => navigate(`/product/${activeSwatch.slug}`)}
                   >
-                    <AnimatePresence mode="wait">
-                      <motion.img
-                        key={activeSwatch.img}
-                        src={activeSwatch.img}
-                        alt={activeSwatch.name}
-                        initial={{ opacity: 0, scale: 0.92 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.94 }}
-                        transition={{ duration: 0.3 }}
-                        className="kmb-ac-img"
-                      />
-                    </AnimatePresence>
+                    <img
+                      src={col.sceneBg}
+                      alt={col.envTag}
+                      className="kmb-vt-scene-bg"
+                      loading="lazy"
+                    />
+                    <div className="kmb-vt-scene-overlay" />
+
+                    {/* Top Floating Pills (Environment + Price) */}
+                    <div className="kmb-vt-top-bar">
+                      <span className="kmb-vt-env-pill">{col.envTag}</span>
+                      <span className="kmb-vt-price-pill">
+                        ${Number(displayPrice).toFixed(2)}
+                        {col.originalPrice && !activeSwatch.priceOverride && (
+                          <s>${Number(col.originalPrice).toFixed(2)}</s>
+                        )}
+                      </span>
+                    </div>
+
+                    {/* Floating Studio Cutout Urn */}
+                    <div className="kmb-vt-urn-center">
+                      <AnimatePresence mode="wait">
+                        <motion.img
+                          key={activeSwatch.img}
+                          src={activeSwatch.img}
+                          alt={activeSwatch.name}
+                          initial={{ opacity: 0, scale: 0.88, y: 8 }}
+                          animate={{ opacity: 1, scale: 1, y: 0 }}
+                          exit={{ opacity: 0, scale: 0.92, y: -6 }}
+                          transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
+                          className="kmb-vt-urn-img"
+                        />
+                      </AnimatePresence>
+                    </div>
+
+                    {/* Interactive Band Color Swatch Bar inside Stage */}
+                    <div
+                      className="kmb-vt-swatch-bar"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <div className="kmb-vt-dots">
+                        {col.swatches.map((sw, sIdx) => (
+                          <button
+                            key={sIdx}
+                            type="button"
+                            onClick={() =>
+                              setCompSwatchIdx((prev) => ({
+                                ...prev,
+                                [col.key]: sIdx,
+                              }))
+                            }
+                            className={`kmb-vt-dot ${
+                              activeIdx === sIdx ? 'active' : ''
+                            }`}
+                            style={{ backgroundColor: sw.hex }}
+                            title={sw.label}
+                            aria-label={sw.label}
+                          />
+                        ))}
+                      </div>
+                      <span className="kmb-vt-swatch-label">
+                        {activeSwatch.label}
+                      </span>
+                    </div>
                   </div>
 
-                  {/* Interactive Color Swatch Dots */}
-                  <div className="kmb-ac-swatches">
-                    {col.swatches.map((sw, sIdx) => (
+                  {/* BOTTOM 30%: ULTRA-MINIMAL FOOTER (Title + 3 Visual Chips + Buy CTA) */}
+                  <div className="kmb-vt-footer">
+                    <div className="kmb-vt-title-row">
+                      <h3
+                        className="kmb-vt-title"
+                        onClick={() => navigate(`/product/${activeSwatch.slug}`)}
+                      >
+                        {col.title}
+                      </h3>
+                      <span className="kmb-vt-badge">{col.badge}</span>
+                    </div>
+
+                    <div className="kmb-vt-chips-row">
+                      {col.chips.map((ch, idx) => (
+                        <span key={idx} className="kmb-vt-chip">
+                          {ch}
+                        </span>
+                      ))}
+                    </div>
+
+                    <div className="kmb-vt-cta-row">
                       <button
-                        key={sIdx}
                         type="button"
                         onClick={() =>
-                          setCompSwatchIdx((prev) => ({ ...prev, [col.key]: sIdx }))
+                          handleDirectBuy({
+                            ...activeSwatch,
+                            price: displayPrice,
+                          })
                         }
-                        className={`kmb-ac-dot ${activeIdx === sIdx ? 'active' : ''}`}
-                        style={{ backgroundColor: sw.hex }}
-                        title={sw.label}
-                        aria-label={sw.label}
-                      />
-                    ))}
-                  </div>
+                        className={`kmb-pill-cta-solid kmb-vt-buy-btn ${
+                          addedProductId === activeSwatch.slug ? 'added' : ''
+                        }`}
+                      >
+                        {addedProductId === activeSwatch.slug
+                          ? '✓ Añadido al carrito'
+                          : `Comprar — $${Number(displayPrice).toFixed(2)}`}
+                      </button>
 
-                  <span className="kmb-ac-badge">{activeSwatch.label}</span>
-                  <h3 className="kmb-ac-name">{col.title}</h3>
-
-                  <div className="kmb-ac-price">
-                    Desde ${Number(displayPrice).toFixed(2)} USD
-                    {col.originalPrice && !activeSwatch.priceOverride && (
-                      <s>${Number(col.originalPrice).toFixed(2)}</s>
-                    )}
-                  </div>
-
-                  <button
-                    onClick={() =>
-                      handleDirectBuy({
-                        ...activeSwatch,
-                        price: displayPrice,
-                      })
-                    }
-                    className={`kmb-pill-cta-solid kmb-ac-buy ${
-                      addedProductId === activeSwatch.slug ? 'added' : ''
-                    }`}
-                  >
-                    {addedProductId === activeSwatch.slug ? '✓ Añadido' : 'Comprar'}
-                  </button>
-
-                  <button
-                    onClick={() => navigate(`/product/${activeSwatch.slug}`)}
-                    className="kmb-apple-link kmb-ac-more"
-                  >
-                    Más información <span>›</span>
-                  </button>
-
-                  <div className="kmb-ac-divider" />
-
-                  {/* Clean Apple-Style Visual Specs */}
-                  <div className="kmb-ac-specs">
-                    {col.specs.map((sp, i) => (
-                      <div key={i} className="kmb-ac-spec-item">
-                        <strong className="kmb-ac-spec-big">{sp.big}</strong>
-                        <span className="kmb-ac-spec-sub">{sp.sub}</span>
-                      </div>
-                    ))}
+                      <button
+                        type="button"
+                        onClick={() => navigate(`/product/${activeSwatch.slug}`)}
+                        className="kmb-vt-detail-btn"
+                        title="Ver producto"
+                        aria-label="Ver detalles del producto"
+                      >
+                        ↗
+                      </button>
+                    </div>
                   </div>
                 </div>
               );

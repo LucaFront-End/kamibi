@@ -259,21 +259,27 @@ export const UrnaBiodegradableLanding = () => {
     },
   ];
 
-  // Visual-First 3-Product Showcase Cards (Zero long spec lists — Scenic Backdrop + Floating Cutout + Visual Chips)
+  // Sculptural Editorial 3-Product Showcase Cards (Organic Studio Pedestal + Delicate Botanical SVG + Architectural Spec Strip)
   const appleComparisonCols = [
     {
       key: 'col1',
+      indexNum: '01',
       envTag: 'Agua & Mar',
-      envIcon: 'water',
-      sceneBg: '/images/home-test-water.png',
-      badge: '15% OFF',
-      title: 'Kamibi Aqua & Flore',
+      theme: 'water',
+      badge: '−15% OFF',
+      subtitle: 'Inmersión serena en mar, río o lago y entierro orgánico',
       price: 76.5,
       originalPrice: 90.0,
-      chips: ['🌊 Agua & Tierra', '✈️ Cabina TSA', '📜 Kit Ritual'],
+      specs: [
+        { val: '3–5 min', label: 'Biodegradación' },
+        { val: '220 in³', label: 'Capacidad Adulto' },
+        { val: 'Cabina OK', label: 'Vuelo TSA' },
+      ],
       swatches: [
         {
           label: 'Aqua Gold',
+          modelTitle: 'Kamibi Aqua',
+          editionSub: 'Banda Golden Leaf · Agua y Tierra',
           hex: '#C4A97D',
           slug: 'aqua-urn',
           id: '4d71b043-1af4-8fa4-4a2c-c30289462282',
@@ -282,6 +288,8 @@ export const UrnaBiodegradableLanding = () => {
         },
         {
           label: 'Flore Turtle',
+          modelTitle: 'Kamibi Flore',
+          editionSub: 'Banda Turtle Floral · Agua y Tierra',
           hex: '#2B9EB3',
           slug: 'flore-urns',
           id: 'f9c09eac-dee0-50ec-1fd8-e591754fdb0a',
@@ -290,6 +298,8 @@ export const UrnaBiodegradableLanding = () => {
         },
         {
           label: 'Iris Sakura',
+          modelTitle: 'Kamibi Iris',
+          editionSub: 'Banda Sakura Blossom · Agua y Tierra',
           hex: '#E2B4BD',
           slug: 'iris-urn',
           id: '4d9511b1-1f04-1057-e379-1d7f2030933c',
@@ -298,6 +308,8 @@ export const UrnaBiodegradableLanding = () => {
         },
         {
           label: 'Aqua Deep Blue',
+          modelTitle: 'Kamibi Aqua',
+          editionSub: 'Banda Deep Ocean · Agua y Tierra',
           hex: '#1C7C9C',
           slug: 'aqua-urn',
           id: '4d71b043-1af4-8fa4-4a2c-c30289462282',
@@ -306,6 +318,8 @@ export const UrnaBiodegradableLanding = () => {
         },
         {
           label: 'Iris Ginkgo',
+          modelTitle: 'Kamibi Iris',
+          editionSub: 'Banda Ginkgo Leaf · Agua y Tierra',
           hex: '#E5A9A9',
           slug: 'iris-urn',
           id: '4d9511b1-1f04-1057-e379-1d7f2030933c',
@@ -316,17 +330,23 @@ export const UrnaBiodegradableLanding = () => {
     },
     {
       key: 'col2',
+      indexNum: '02',
       envTag: 'Tierra & Bosque',
-      envIcon: 'earth',
-      sceneBg: '/images/about-process.png',
+      theme: 'earth',
       badge: '10 Bandas',
-      title: 'Kamibi Terra & Angel',
+      subtitle: 'Fibras botánicas prensadas a mano para jardín o bosque',
       price: 90.0,
       originalPrice: null,
-      chips: ['🌱 Suelo 2–4 sem', '✈️ Cabina TSA', '🌿 100% Orgánica'],
+      specs: [
+        { val: '2–4 sem', label: 'Integración Suelo' },
+        { val: '220 in³', label: 'Capacidad Adulto' },
+        { val: 'Cabina OK', label: 'Vuelo TSA' },
+      ],
       swatches: [
         {
           label: 'Terra Botanical',
+          modelTitle: 'Kamibi Terra',
+          editionSub: 'Banda Eucalyptus · Tierra y Bosque',
           hex: '#8B9E8B',
           slug: 'terra-urn',
           id: 'b4fd86df-d446-0993-f324-d5d13eface16',
@@ -335,6 +355,8 @@ export const UrnaBiodegradableLanding = () => {
         },
         {
           label: 'Angel Gold',
+          modelTitle: 'Kamibi Angel',
+          editionSub: 'Banda Golden Leaf · Tierra y Agua',
           hex: '#D4BC94',
           slug: 'angel-urn',
           id: 'a09f394c-67bf-476b-f1a9-e3d576ce6505',
@@ -343,6 +365,8 @@ export const UrnaBiodegradableLanding = () => {
         },
         {
           label: 'Angel Ocean',
+          modelTitle: 'Kamibi Angel',
+          editionSub: 'Banda Ocean Wave · Tierra y Agua',
           hex: '#7BA7B5',
           slug: 'angel-urn',
           id: 'a09f394c-67bf-476b-f1a9-e3d576ce6505',
@@ -351,6 +375,8 @@ export const UrnaBiodegradableLanding = () => {
         },
         {
           label: 'Angel Soft Pink',
+          modelTitle: 'Kamibi Angel',
+          editionSub: 'Banda Sakura Rose · Tierra y Agua',
           hex: '#E2B4BD',
           slug: 'angel-urn',
           id: 'a09f394c-67bf-476b-f1a9-e3d576ce6505',
@@ -359,6 +385,8 @@ export const UrnaBiodegradableLanding = () => {
         },
         {
           label: 'Angel Deep Blue',
+          modelTitle: 'Kamibi Angel',
+          editionSub: 'Banda Deep Indigo · Tierra y Agua',
           hex: '#1C7C9C',
           slug: 'angel-urn',
           id: 'a09f394c-67bf-476b-f1a9-e3d576ce6505',
@@ -369,17 +397,23 @@ export const UrnaBiodegradableLanding = () => {
     },
     {
       key: 'col3',
+      indexNum: '03',
       envTag: 'Set Familiar ×4',
-      envIcon: 'minis',
-      sceneBg: '/images/caja-terra.png',
+      theme: 'minis',
       badge: 'Compartir',
-      title: 'Kamibi Mini & Bags',
+      subtitle: 'Sets de 4 mini urnas individuales para compartir el homenaje',
       price: 49.99,
       originalPrice: null,
-      chips: ['🤍 Pack ×4 / ×2', '✈️ Cabina TSA', '🌾 Papel Puro'],
+      specs: [
+        { val: 'Pack ×4', label: 'Para Compartir' },
+        { val: '4 × 55 in³', label: 'Capacidad Set' },
+        { val: 'Cabina OK', label: 'Vuelo TSA' },
+      ],
       swatches: [
         {
           label: 'Mini Set Flore (×4)',
+          modelTitle: 'Kamibi Mini Set',
+          editionSub: 'Edición Flore · 4 Mini Urnas Orgánicas',
           hex: '#8B9E8B',
           slug: 'mini-biodegradables-urn-set',
           id: 'f843aff9-c2d4-5a9f-a272-9fddf64c68e5',
@@ -389,6 +423,8 @@ export const UrnaBiodegradableLanding = () => {
         },
         {
           label: 'Mini Set Ocean (×4)',
+          modelTitle: 'Kamibi Mini Ocean',
+          editionSub: 'Edición Ocean · 4 Mini Urnas Agua y Tierra',
           hex: '#7BA7B5',
           slug: 'mini-urn-set-ocean-biodegradables',
           id: '25f910fe-08a8-3004-4b99-579d88e4e240',
@@ -398,6 +434,8 @@ export const UrnaBiodegradableLanding = () => {
         },
         {
           label: 'Tree of Life Bags (×2)',
+          modelTitle: 'Kamibi Ash Bags',
+          editionSub: 'Pack ×2 Bolsas Solubles · Árbol de la Vida',
           hex: '#C49A6C',
           slug: 'cremation-burial-bags-tree-of-life-design-pack-of-2',
           id: 'f1d9e4d3-6ad7-70e4-cb1a-3e2999ae3818',
@@ -1279,48 +1317,114 @@ export const UrnaBiodegradableLanding = () => {
               const displayPrice = activeSwatch.priceOverride ?? col.price;
 
               return (
-                <div key={col.key} className="kmb-vt-card">
-                  {/* TOP 70%: IMMERSIVE SCENIC VISUAL STAGE + FLOATING URN + SWATCH BAR */}
+                <div
+                  key={col.key}
+                  className={`kmb-vt-card kmb-vt-card--${col.theme}`}
+                  style={{ '--swatch-accent': activeSwatch.hex }}
+                >
+                  {/* TOP STUDIO PEDESTAL STAGE: ORGANIC ATMOSPHERE + DELICATE SVG + FLOATING 3D URN */}
                   <div
-                    className="kmb-vt-stage"
+                    className={`kmb-vt-stage kmb-vt-stage--${col.theme}`}
                     onClick={() => navigate(`/product/${activeSwatch.slug}`)}
                   >
-                    <img
-                      src={col.sceneBg}
-                      alt={col.envTag}
-                      className="kmb-vt-scene-bg"
-                      loading="lazy"
-                    />
-                    <div className="kmb-vt-scene-overlay" />
+                    {/* Dynamic Swatch Aura + Delicate Botanical/Coastal SVG Watermark */}
+                    <div className="kmb-vt-ambient-glow" />
 
-                    {/* Top Floating Pills (Environment + Price) */}
+                    {col.theme === 'water' && (
+                      <svg
+                        className="kmb-vt-stage-svg"
+                        viewBox="0 0 400 280"
+                        fill="none"
+                        aria-hidden="true"
+                      >
+                        <circle cx="320" cy="64" r="38" stroke="currentColor" strokeWidth="1" opacity="0.28" />
+                        <path d="M-20 220 C60 198, 140 242, 220 218 C300 194, 360 232, 420 212" stroke="currentColor" strokeWidth="1.2" opacity="0.32" />
+                        <path d="M-20 242 C70 224, 150 258, 240 236 C320 216, 370 246, 420 232" stroke="currentColor" strokeWidth="1" strokeDasharray="4 6" opacity="0.24" />
+                        {/* Coastal reeds left */}
+                        <path d="M36 250 Q48 165 24 85" stroke="currentColor" strokeWidth="1.2" opacity="0.35" />
+                        <path d="M50 250 Q66 175 78 102" stroke="currentColor" strokeWidth="1.1" opacity="0.28" />
+                        <path d="M44 148 Q26 135 16 142" stroke="currentColor" strokeWidth="1" opacity="0.28" />
+                        <path d="M58 166 Q76 152 88 158" stroke="currentColor" strokeWidth="1" opacity="0.25" />
+                        {/* Sea kelp right */}
+                        <path d="M362 248 C348 205, 374 165, 356 118" stroke="currentColor" strokeWidth="1.2" opacity="0.3" />
+                        <path d="M360 168 C346 158, 344 144, 356 138" stroke="currentColor" strokeWidth="1" opacity="0.25" />
+                      </svg>
+                    )}
+
+                    {col.theme === 'earth' && (
+                      <svg
+                        className="kmb-vt-stage-svg"
+                        viewBox="0 0 400 280"
+                        fill="none"
+                        aria-hidden="true"
+                      >
+                        <path d="M-20 232 Q110 202 220 226 T420 216" stroke="currentColor" strokeWidth="1.2" opacity="0.3" />
+                        {/* Delicate layered pine left */}
+                        <line x1="46" y1="78" x2="46" y2="235" stroke="currentColor" strokeWidth="1.2" opacity="0.32" />
+                        <path d="M46 84 L26 116 L66 116 Z" stroke="currentColor" strokeWidth="1.1" opacity="0.28" />
+                        <path d="M46 106 L20 146 L72 146 Z" stroke="currentColor" strokeWidth="1.1" opacity="0.28" />
+                        <path d="M46 132 L14 178 L78 178 Z" stroke="currentColor" strokeWidth="1.1" opacity="0.24" />
+                        {/* Eucalyptus stem right */}
+                        <path d="M356 234 Q344 162 366 88" stroke="currentColor" strokeWidth="1.2" opacity="0.32" />
+                        <ellipse cx="345" cy="158" rx="11" ry="6" transform="rotate(-28 345 158)" stroke="currentColor" strokeWidth="1" opacity="0.28" />
+                        <ellipse cx="367" cy="136" rx="11" ry="6" transform="rotate(24 367 136)" stroke="currentColor" strokeWidth="1" opacity="0.28" />
+                        <ellipse cx="349" cy="114" rx="9" ry="5" transform="rotate(-22 349 114)" stroke="currentColor" strokeWidth="1" opacity="0.26" />
+                      </svg>
+                    )}
+
+                    {col.theme === 'minis' && (
+                      <svg
+                        className="kmb-vt-stage-svg"
+                        viewBox="0 0 400 280"
+                        fill="none"
+                        aria-hidden="true"
+                      >
+                        <path d="M-20 230 Q130 208 250 226 T420 218" stroke="currentColor" strokeWidth="1.1" opacity="0.3" />
+                        {/* Wildflower stem left */}
+                        <path d="M44 236 Q58 164 38 96" stroke="currentColor" strokeWidth="1.2" opacity="0.34" />
+                        <circle cx="38" cy="92" r="4" stroke="currentColor" strokeWidth="1.1" opacity="0.36" />
+                        <circle cx="38" cy="82" r="4.5" stroke="currentColor" strokeWidth="1" opacity="0.26" />
+                        <circle cx="38" cy="102" r="4.5" stroke="currentColor" strokeWidth="1" opacity="0.26" />
+                        <circle cx="28" cy="92" r="4.5" stroke="currentColor" strokeWidth="1" opacity="0.26" />
+                        <circle cx="48" cy="92" r="4.5" stroke="currentColor" strokeWidth="1" opacity="0.26" />
+                        {/* Lavender stem right */}
+                        <path d="M356 236 Q342 168 364 102" stroke="currentColor" strokeWidth="1.2" opacity="0.32" />
+                        <ellipse cx="356" cy="142" rx="6" ry="3.2" transform="rotate(-30 356 142)" stroke="currentColor" strokeWidth="1" opacity="0.28" />
+                        <ellipse cx="366" cy="128" rx="6" ry="3.2" transform="rotate(30 366 128)" stroke="currentColor" strokeWidth="1" opacity="0.28" />
+                        <ellipse cx="359" cy="114" rx="5.5" ry="3" transform="rotate(-28 359 114)" stroke="currentColor" strokeWidth="1" opacity="0.28" />
+                      </svg>
+                    )}
+
+                    {/* Top Editorial Header inside Stage */}
                     <div className="kmb-vt-top-bar">
-                      <span className="kmb-vt-env-pill">{col.envTag}</span>
-                      <span className="kmb-vt-price-pill">
-                        ${Number(displayPrice).toFixed(2)}
-                        {col.originalPrice && !activeSwatch.priceOverride && (
-                          <s>${Number(col.originalPrice).toFixed(2)}</s>
-                        )}
+                      <span className="kmb-vt-env-pill">
+                        <strong className="kmb-vt-index">{col.indexNum}</strong>
+                        <span className="kmb-vt-env-dot" />
+                        {col.envTag}
+                      </span>
+                      <span className={`kmb-vt-badge-pill kmb-vt-badge--${col.theme}`}>
+                        {col.badge}
                       </span>
                     </div>
 
-                    {/* Floating Studio Cutout Urn */}
+                    {/* Floating 3D Studio Cutout Urn + Grounded Plinth Shadow */}
                     <div className="kmb-vt-urn-center">
                       <AnimatePresence mode="wait">
                         <motion.img
                           key={activeSwatch.img}
                           src={activeSwatch.img}
                           alt={activeSwatch.name}
-                          initial={{ opacity: 0, scale: 0.88, y: 8 }}
+                          initial={{ opacity: 0, scale: 0.9, y: 10 }}
                           animate={{ opacity: 1, scale: 1, y: 0 }}
-                          exit={{ opacity: 0, scale: 0.92, y: -6 }}
-                          transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
+                          exit={{ opacity: 0, scale: 0.94, y: -6 }}
+                          transition={{ duration: 0.34, ease: [0.16, 1, 0.3, 1] }}
                           className="kmb-vt-urn-img"
                         />
                       </AnimatePresence>
+                      <div className="kmb-vt-floor-shadow" />
                     </div>
 
-                    {/* Interactive Band Color Swatch Bar inside Stage */}
+                    {/* Interactive Band Color Swatch Selector */}
                     <div
                       className="kmb-vt-swatch-bar"
                       onClick={(e) => e.stopPropagation()}
@@ -1351,53 +1455,71 @@ export const UrnaBiodegradableLanding = () => {
                     </div>
                   </div>
 
-                  {/* BOTTOM 30%: ULTRA-MINIMAL FOOTER (Title + 3 Visual Chips + Buy CTA) */}
+                  {/* BOTTOM EDITORIAL BODY: DYNAMIC MODEL NAME + 3-COLUMN SPEC STRIP + PRICE CTA */}
                   <div className="kmb-vt-footer">
-                    <div className="kmb-vt-title-row">
+                    <div className="kmb-vt-heading-block">
                       <h3
                         className="kmb-vt-title"
                         onClick={() => navigate(`/product/${activeSwatch.slug}`)}
                       >
-                        {col.title}
+                        {activeSwatch.modelTitle}
                       </h3>
-                      <span className="kmb-vt-badge">{col.badge}</span>
+                      <p className="kmb-vt-edition-sub">
+                        {activeSwatch.editionSub}
+                      </p>
                     </div>
 
-                    <div className="kmb-vt-chips-row">
-                      {col.chips.map((ch, idx) => (
-                        <span key={idx} className="kmb-vt-chip">
-                          {ch}
-                        </span>
+                    {/* Clean 3-Column Architectural Spec Strip (Zero Emojis) */}
+                    <div className="kmb-vt-spec-grid">
+                      {col.specs.map((sp, idx) => (
+                        <div key={idx} className="kmb-vt-spec-cell">
+                          <strong>{sp.val}</strong>
+                          <span>{sp.label}</span>
+                        </div>
                       ))}
                     </div>
 
+                    {/* Price Lockup + Action Buttons */}
                     <div className="kmb-vt-cta-row">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          handleDirectBuy({
-                            ...activeSwatch,
-                            price: displayPrice,
-                          })
-                        }
-                        className={`kmb-pill-cta-solid kmb-vt-buy-btn ${
-                          addedProductId === activeSwatch.slug ? 'added' : ''
-                        }`}
-                      >
-                        {addedProductId === activeSwatch.slug
-                          ? '✓ Añadido al carrito'
-                          : `Comprar — $${Number(displayPrice).toFixed(2)}`}
-                      </button>
+                      <div className="kmb-vt-price-block">
+                        <span className="kmb-vt-price-caption">Precio</span>
+                        <div className="kmb-vt-price-values">
+                          <strong>${Number(displayPrice).toFixed(2)}</strong>
+                          <small>USD</small>
+                          {col.originalPrice && !activeSwatch.priceOverride && (
+                            <s>${Number(col.originalPrice).toFixed(2)}</s>
+                          )}
+                        </div>
+                      </div>
 
-                      <button
-                        type="button"
-                        onClick={() => navigate(`/product/${activeSwatch.slug}`)}
-                        className="kmb-vt-detail-btn"
-                        title="Ver producto"
-                        aria-label="Ver detalles del producto"
-                      >
-                        ↗
-                      </button>
+                      <div className="kmb-vt-actions-right">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleDirectBuy({
+                              ...activeSwatch,
+                              price: displayPrice,
+                            })
+                          }
+                          className={`kmb-pill-cta-solid kmb-vt-buy-btn ${
+                            addedProductId === activeSwatch.slug ? 'added' : ''
+                          }`}
+                        >
+                          {addedProductId === activeSwatch.slug
+                            ? '✓ Añadido'
+                            : 'Comprar'}
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => navigate(`/product/${activeSwatch.slug}`)}
+                          className="kmb-vt-detail-btn"
+                          title="Ver ficha completa"
+                          aria-label="Ver detalles del producto"
+                        >
+                          ↗
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>

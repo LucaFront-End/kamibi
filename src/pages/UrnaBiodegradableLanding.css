@@ -743,7 +743,7 @@
 }
 
 /* ==========================================================================
-   3. SECCIÓN 3 PRODUCTOS: VISUAL GALLERY CARDS (85% VISUAL, ZERO SPEC LISTS)
+   3. SECCIÓN 3 PRODUCTOS: SCULPTURAL EDITORIAL CARDS (STUDIO PEDESTAL + SVG)
    ========================================================================== */
 .kmb-visual-trio-section {
   padding: 5.5rem 0 6.5rem;
@@ -752,7 +752,7 @@
 
 .kmb-vt-header {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 3.25rem;
 }
 
 .kmb-vt-eyebrow {
@@ -776,65 +776,87 @@
 .kmb-visual-trio-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1.75rem;
+  gap: 1.85rem;
 }
 
 .kmb-vt-card {
   background: #FFFDF9;
-  border: 1px solid rgba(226, 213, 193, 0.9);
-  border-radius: 32px;
+  border: 1px solid rgba(218, 206, 188, 0.75);
+  border-radius: 30px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 18px 42px rgba(26, 26, 26, 0.05);
-  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 0.45s ease;
+  box-shadow: 0 20px 48px rgba(28, 25, 21, 0.05);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.5s ease,
+    border-color 0.4s ease;
 }
 
 .kmb-vt-card:hover {
   transform: translateY(-8px);
-  box-shadow: 0 28px 56px rgba(26, 26, 26, 0.1);
+  box-shadow: 0 32px 64px rgba(28, 25, 21, 0.1);
+  border-color: rgba(180, 165, 144, 0.95);
 }
 
-/* Top 70% Visual Stage with Scenic Nature Photo + Floating Cutout */
+/* Top Studio Pedestal Stage with Organic Atmosphere + Botanical SVG Watermark */
 .kmb-vt-stage {
   position: relative;
-  height: 360px;
+  height: 345px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 1.15rem;
+  padding: 1.25rem 1.35rem 1.15rem;
   cursor: pointer;
+  border-bottom: 1px solid rgba(226, 213, 193, 0.45);
 }
 
-.kmb-vt-scene-bg {
+.kmb-vt-stage--water {
+  background: linear-gradient(165deg, #EAF2F4 0%, #F4F8F8 58%, #FFFDF9 100%);
+  color: #3A7A8C;
+}
+
+.kmb-vt-stage--earth {
+  background: linear-gradient(165deg, #ECF1EA 0%, #F6F7F2 58%, #FFFDF9 100%);
+  color: #4A664A;
+}
+
+.kmb-vt-stage--minis {
+  background: linear-gradient(165deg, #F4EFE6 0%, #FAF7F2 58%, #FFFDF9 100%);
+  color: #9E7E52;
+}
+
+/* Dynamic Swatch Radial Glow inside Stage */
+.kmb-vt-ambient-glow {
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  top: 46%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    circle,
+    var(--swatch-accent, #8B9E8B) 0%,
+    transparent 70%
+  );
+  opacity: 0.22;
+  filter: blur(24px);
+  pointer-events: none;
+  z-index: 1;
+  transition: background 0.4s ease;
+}
+
+.kmb-vt-stage-svg {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  filter: saturate(0.9) brightness(0.95);
-  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-  z-index: 0;
-}
-
-.kmb-vt-card:hover .kmb-vt-scene-bg {
-  transform: scale(1.06);
-}
-
-.kmb-vt-scene-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    180deg,
-    rgba(22, 24, 21, 0.25) 0%,
-    rgba(250, 247, 242, 0.76) 52%,
-    rgba(255, 253, 249, 0.96) 100%
-  );
+  pointer-events: none;
   z-index: 1;
 }
 
+/* Top Header Bar inside Stage */
 .kmb-vt-top-bar {
   position: relative;
   z-index: 3;
@@ -845,53 +867,107 @@
 }
 
 .kmb-vt-env-pill {
-  padding: 0.32rem 0.8rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42rem;
+  padding: 0.34rem 0.82rem;
   border-radius: 999px;
-  background: rgba(255, 253, 249, 0.88);
+  background: rgba(255, 253, 249, 0.85);
   backdrop-filter: blur(10px);
+  border: 1px solid rgba(212, 198, 179, 0.55);
   font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: 0.04em;
   color: var(--color-charcoal, #2D2D2D);
 }
 
-.kmb-vt-price-pill {
-  padding: 0.32rem 0.8rem;
+.kmb-vt-index {
+  font-family: var(--font-display, 'Cormorant Garamond', Georgia, serif);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-stone, #6B6560);
+}
+
+.kmb-vt-env-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--swatch-accent, #4A664A);
+}
+
+.kmb-vt-badge-pill {
+  white-space: nowrap;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 0.3rem 0.72rem;
   border-radius: 999px;
-  background: var(--color-charcoal, #2D2D2D);
-  color: #FFFDF9;
-  font-size: 0.78rem;
-  font-weight: 600;
 }
 
-.kmb-vt-price-pill s {
-  color: rgba(255, 253, 249, 0.6);
-  font-weight: 400;
-  font-size: 0.7rem;
-  margin-left: 0.3rem;
+.kmb-vt-badge--water {
+  background: rgba(196, 133, 106, 0.16);
+  color: #B2674B;
+  border: 1px solid rgba(196, 133, 106, 0.3);
 }
 
+.kmb-vt-badge--earth {
+  background: rgba(74, 102, 74, 0.12);
+  color: #3D583D;
+  border: 1px solid rgba(74, 102, 74, 0.22);
+}
+
+.kmb-vt-badge--minis {
+  background: rgba(182, 147, 98, 0.15);
+  color: #87683E;
+  border: 1px solid rgba(182, 147, 98, 0.28);
+}
+
+/* Floating 3D Cutout + Grounded Floor Contact Shadow */
 .kmb-vt-urn-center {
   position: relative;
   z-index: 3;
   flex: 1;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 0.4rem 0;
+  padding: 0.25rem 0;
 }
 
 .kmb-vt-urn-img {
   width: 100%;
-  max-width: 245px;
-  max-height: 205px;
+  max-width: 248px;
+  max-height: 192px;
   object-fit: contain;
-  filter: drop-shadow(0 22px 28px rgba(20, 18, 15, 0.24));
-  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  filter: drop-shadow(0 18px 24px rgba(24, 22, 18, 0.18));
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 2;
 }
 
 .kmb-vt-card:hover .kmb-vt-urn-img {
-  transform: translateY(-6px) scale(1.05);
+  transform: translateY(-7px) scale(1.05);
+}
+
+.kmb-vt-floor-shadow {
+  width: 150px;
+  height: 14px;
+  margin-top: -6px;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(30, 27, 22, 0.22) 0%,
+    rgba(30, 27, 22, 0.06) 55%,
+    transparent 78%
+  );
+  filter: blur(3px);
+  transition: transform 0.5s ease, opacity 0.5s ease;
+  z-index: 1;
+}
+
+.kmb-vt-card:hover .kmb-vt-floor-shadow {
+  transform: scaleX(0.88);
+  opacity: 0.72;
 }
 
 /* Interactive Color Swatch Bar inside the Visual Stage */
@@ -901,11 +977,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: rgba(255, 253, 249, 0.9);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(212, 198, 179, 0.75);
+  background: rgba(255, 253, 249, 0.92);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(212, 198, 179, 0.65);
   border-radius: 999px;
-  padding: 0.42rem 0.85rem;
+  padding: 0.42rem 0.88rem;
+  box-shadow: 0 6px 18px rgba(28, 25, 21, 0.04);
 }
 
 .kmb-vt-dots {
@@ -918,14 +995,18 @@
   width: 15px;
   height: 15px;
   border-radius: 50%;
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(0, 0, 0, 0.18);
   padding: 0;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+.kmb-vt-dot:hover {
+  transform: scale(1.15);
+}
+
 .kmb-vt-dot.active {
-  transform: scale(1.25);
+  transform: scale(1.22);
   box-shadow: 0 0 0 2px #FFFDF9, 0 0 0 3.5px var(--color-charcoal, #2D2D2D);
 }
 
@@ -933,86 +1014,159 @@
   font-size: 0.72rem;
   font-weight: 600;
   color: var(--color-stone, #6B6560);
+  white-space: nowrap;
 }
 
-/* Minimal Footer (30% height — Zero Spec Paragraphs) */
+/* Editorial Footer Body — Clean Hierarchy, Zero Wrapping Clutter */
 .kmb-vt-footer {
-  padding: 1.25rem 1.45rem 1.45rem;
+  padding: 1.35rem 1.5rem 1.5rem;
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
+  gap: 1.05rem;
   background: #FFFDF9;
+  flex: 1;
+  justify-content: space-between;
 }
 
-.kmb-vt-title-row {
+.kmb-vt-heading-block {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
+  flex-direction: column;
+  gap: 0.22rem;
 }
 
 .kmb-vt-title {
   font-family: var(--font-display, 'Cormorant Garamond', Georgia, serif);
-  font-size: 1.65rem;
+  font-size: 1.85rem;
   font-weight: 600;
+  line-height: 1.1;
   color: var(--color-charcoal, #2D2D2D);
   margin: 0;
   cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.kmb-vt-badge {
-  font-size: 0.66rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  padding: 0.22rem 0.6rem;
-  border-radius: 999px;
-  background: rgba(196, 133, 106, 0.14);
-  color: var(--color-terracotta, #C4856A);
-}
-
-.kmb-vt-chips-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-}
-
-.kmb-vt-chip {
-  font-size: 0.72rem;
+.kmb-vt-edition-sub {
+  font-size: 0.78rem;
   font-weight: 500;
-  padding: 0.28rem 0.65rem;
-  border-radius: 999px;
-  background: var(--color-cream, #FAF7F2);
-  border: 1px solid rgba(226, 213, 193, 0.8);
-  color: var(--color-charcoal, #2D2D2D);
+  color: var(--color-stone, #6B6560);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
+/* 3-Column Architectural Spec Strip (Replaces Emoji Chips) */
+.kmb-vt-spec-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid rgba(218, 206, 188, 0.65);
+  border-bottom: 1px solid rgba(218, 206, 188, 0.65);
+  padding: 0.72rem 0;
+}
+
+.kmb-vt-spec-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.12rem;
+  padding: 0 0.35rem;
+}
+
+.kmb-vt-spec-cell + .kmb-vt-spec-cell {
+  border-left: 1px solid rgba(218, 206, 188, 0.55);
+}
+
+.kmb-vt-spec-cell strong {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--color-charcoal, #2D2D2D);
+  letter-spacing: -0.01em;
+}
+
+.kmb-vt-spec-cell span {
+  font-size: 0.66rem;
+  font-weight: 500;
+  color: var(--color-stone, #6B6560);
+}
+
+/* Bottom Price Lockup + Action Buttons */
 .kmb-vt-cta-row {
   display: flex;
   align-items: center;
-  gap: 0.55rem;
-  margin-top: 0.15rem;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-top: 0.1rem;
+}
+
+.kmb-vt-price-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.08rem;
+}
+
+.kmb-vt-price-caption {
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-stone, #6B6560);
+}
+
+.kmb-vt-price-values {
+  display: flex;
+  align-items: baseline;
+  gap: 0.28rem;
+}
+
+.kmb-vt-price-values strong {
+  font-family: var(--font-display, 'Cormorant Garamond', Georgia, serif);
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--color-charcoal, #2D2D2D);
+}
+
+.kmb-vt-price-values small {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--color-stone, #6B6560);
+}
+
+.kmb-vt-price-values s {
+  font-size: 0.76rem;
+  color: rgba(107, 101, 96, 0.65);
+  margin-left: 0.15rem;
+}
+
+.kmb-vt-actions-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .kmb-vt-buy-btn {
-  flex: 1;
-  padding: 0.7rem 1.1rem;
-  font-size: 0.86rem;
+  padding: 0.68rem 1.25rem;
+  font-size: 0.84rem;
+  white-space: nowrap;
 }
 
 .kmb-vt-detail-btn {
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   border: 1px solid rgba(212, 198, 179, 0.9);
   background: var(--color-cream, #FAF7F2);
   color: var(--color-charcoal, #2D2D2D);
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
+  flex-shrink: 0;
 }
 
 .kmb-vt-detail-btn:hover {

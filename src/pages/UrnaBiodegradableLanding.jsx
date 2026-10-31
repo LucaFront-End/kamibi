@@ -86,106 +86,119 @@ export const UrnaBiodegradableLanding = () => {
     col3: 0,
   });
 
-  // Hero scroll parallax for the two intertwined urns
+  // Hero scroll parallax for the two clean studio urns (NO rotation so isometric 3D lines stay parallel)
   const heroRef = useRef(null);
   const { scrollYProgress: heroScroll } = useScroll({
     target: heroRef,
     offset: ['start start', 'end start'],
   });
-  const leftUrnY = useTransform(heroScroll, [0, 1], [0, -35]);
-  const rightUrnY = useTransform(heroScroll, [0, 1], [0, 25]);
-  const leftUrnRotate = useTransform(heroScroll, [0, 1], [-6, -10]);
-  const rightUrnRotate = useTransform(heroScroll, [0, 1], [6, 11]);
+  const leftUrnY = useTransform(heroScroll, [0, 1], [0, -24]);
+  const rightUrnY = useTransform(heroScroll, [0, 1], [0, 18]);
 
-  // Hero Dual-Product Visual Pairs (Real 2000x2000 Wix Studio Renders)
+  // Clean standalone urn cutouts (100% pure box renders without floating bags or pens)
+  const CLEAN_URN_CUTOUTS = {
+    'flore-urns':
+      'https://static.wixstatic.com/media/45119e_44f8f91ccd1b439098bf5760374cc702~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+    'aqua-urn':
+      'https://static.wixstatic.com/media/45119e_48478600018f46ffb3f1ac569e733471~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+    'iris-urn':
+      'https://static.wixstatic.com/media/45119e_4515ed8dce4f4ea28b7bfeb68eac9066~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+    'terra-urn':
+      'https://static.wixstatic.com/media/45119e_277f4849b55642b1a9c570a911f20d37~mv2.png/v1/fit/w_1000,h_1000,q_90/file.png',
+    'angel-urn':
+      'https://static.wixstatic.com/media/45119e_6fee7c273f3f487aba1e9f9e8aee9a72~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+    'mini-biodegradables-urn-set':
+      'https://static.wixstatic.com/media/45119e_d62bb5591c674265a6deee5eb3fa4985~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+    'mini-urn-set-ocean-biodegradables':
+      'https://static.wixstatic.com/media/45119e_b29071730d57411e80628960675d4a04~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+  };
+
+  // Hero Dual-Product Visual Pairs (100% Pure Clean Box Cutouts — Zero bags/pens)
   const heroVisualPairs = {
     urns: {
-      label: 'Agua & Tierra',
-      priceText: 'Desde $76.50 USD (antes $90.00)',
+      label: 'Agua & Mar',
+      caption: 'Kamibi Aqua (Gold)  •  Kamibi Flore (Turtle)',
       slug: 'aqua-urn',
       leftImg:
-        'https://static.wixstatic.com/media/45119e_812f09d2732e4e2db45a354383159ac9~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png',
+        'https://static.wixstatic.com/media/45119e_48478600018f46ffb3f1ac569e733471~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
       rightImg:
-        'https://static.wixstatic.com/media/45119e_92232e8c88c94935befe3b0b088a83a7~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png',
+        'https://static.wixstatic.com/media/45119e_44f8f91ccd1b439098bf5760374cc702~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
       leftName: 'Kamibi Aqua (Gold)',
       rightName: 'Kamibi Flore (Turtle)',
-      sceneBg: '/images/hero-water-ceremony.png',
     },
     earth: {
       label: 'Tierra & Bosque',
-      priceText: 'Desde $76.50 – $90.00 USD',
+      caption: 'Kamibi Terra (Botanical)  •  Kamibi Iris (Sakura)',
       slug: 'terra-urn',
       leftImg:
-        'https://static.wixstatic.com/media/45119e_d7d0de24d7d44bc2812fdbd7b0f02a68~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png',
+        'https://static.wixstatic.com/media/45119e_277f4849b55642b1a9c570a911f20d37~mv2.png/v1/fit/w_1000,h_1000,q_90/file.png',
       rightImg:
-        'https://static.wixstatic.com/media/45119e_7e8106db1e1645e6a982b82f45d3deeb~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png',
-      leftName: 'Kamibi Terra (Ginkgo Gold)',
-      rightName: 'Kamibi Iris (Purple)',
-      sceneBg: '/images/hero-earth-ceremony.png',
+        'https://static.wixstatic.com/media/45119e_4515ed8dce4f4ea28b7bfeb68eac9066~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+      leftName: 'Kamibi Terra (Botanical)',
+      rightName: 'Kamibi Iris (Sakura)',
     },
     minis: {
-      label: 'Mini Sets (x4)',
-      priceText: 'Set de 4 por $49.99 USD',
+      label: 'Mini Sets (×4)',
+      caption: 'Mini Set Flore (×4)  •  Mini Set Ocean (×4)',
       slug: 'mini-biodegradables-urn-set',
       leftImg:
         'https://static.wixstatic.com/media/45119e_d62bb5591c674265a6deee5eb3fa4985~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
       rightImg:
-        'https://static.wixstatic.com/media/45119e_23cc9997f2b24ac7a9b277be1e904170~mv2.png/v1/fit/w_1024,h_1024,q_90/file.png',
+        'https://static.wixstatic.com/media/45119e_b29071730d57411e80628960675d4a04~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
       leftName: 'Mini Set Flore',
       rightName: 'Mini Set Ocean',
-      sceneBg: '/images/philosophy-hero.png',
     },
   };
 
   const activeHero = heroVisualPairs[heroPair];
 
-  // Card 2 Interactive Band Showcase (Real Wix Variant Photos)
+  // Card 2 Interactive Band Showcase (100% Pure Clean Urn Cutouts)
   const bandShowcase = [
     {
-      name: 'Ginkgo Gold',
+      name: 'Eucalyptus Botanical',
       model: 'Terra Urn • $90.00 USD',
       slug: 'terra-urn',
-      hex: '#C4A97D',
-      img: 'https://static.wixstatic.com/media/45119e_d7d0de24d7d44bc2812fdbd7b0f02a68~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png',
+      hex: '#8B9E8B',
+      img: 'https://static.wixstatic.com/media/45119e_277f4849b55642b1a9c570a911f20d37~mv2.png/v1/fit/w_1000,h_1000,q_90/file.png',
     },
     {
       name: 'Turtle Floral',
       model: 'Flore Urn • $76.50 USD',
       slug: 'flore-urns',
-      hex: '#6E8B74',
-      img: 'https://static.wixstatic.com/media/45119e_92232e8c88c94935befe3b0b088a83a7~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png',
+      hex: '#2B9EB3',
+      img: 'https://static.wixstatic.com/media/45119e_44f8f91ccd1b439098bf5760374cc702~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
     },
     {
-      name: 'Deep Blue',
+      name: 'Golden Leaf',
       model: 'Aqua Urn • $76.50 USD',
       slug: 'aqua-urn',
-      hex: '#3A5A78',
-      img: 'https://static.wixstatic.com/media/45119e_f889a60e679c4eab8395a9b15b0de33d~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png',
+      hex: '#C4A97D',
+      img: 'https://static.wixstatic.com/media/45119e_48478600018f46ffb3f1ac569e733471~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
     },
     {
-      name: 'Soft Pink',
+      name: 'Sakura Blossom',
       model: 'Iris Urn • $76.50 USD',
       slug: 'iris-urn',
       hex: '#E2B4BD',
-      img: 'https://static.wixstatic.com/media/45119e_c80008cc26fd424b807495ddf1b54103~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png',
+      img: 'https://static.wixstatic.com/media/45119e_4515ed8dce4f4ea28b7bfeb68eac9066~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
     },
     {
-      name: 'Botanical Purple',
-      model: 'Terra Urn • $90.00 USD',
-      slug: 'terra-urn',
-      hex: '#8C7396',
-      img: 'https://static.wixstatic.com/media/45119e_8e4a1c81a2bd409e90cf795fe22bac2b~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png',
+      name: 'Deep Ocean',
+      model: 'Aqua Urn • $76.50 USD',
+      slug: 'aqua-urn',
+      hex: '#1C7C9C',
+      img: 'https://static.wixstatic.com/media/45119e_5d507d8460784c628298d2c49edaac3e~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
     },
     {
-      name: 'Ocean Wave',
+      name: 'Angel Gold',
       model: 'Angel Urn • $90.00 USD',
       slug: 'angel-urn',
-      hex: '#7BA7B5',
-      img: 'https://static.wixstatic.com/media/45119e_055fa3d6159a47a8b60de621c43b90e1~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+      hex: '#D4BC94',
+      img: 'https://static.wixstatic.com/media/45119e_6fee7c273f3f487aba1e9f9e8aee9a72~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
     },
   ];
 
-  // Apple-Style 3-Column Comparison Data (Real Wix Products & Real Variant Images)
+  // Apple-Style 3-Column Comparison Data (100% Pure Clean Urn Cutouts)
   const appleComparisonCols = [
     {
       key: 'col1',
@@ -201,39 +214,39 @@ export const UrnaBiodegradableLanding = () => {
           slug: 'aqua-urn',
           id: '4d71b043-1af4-8fa4-4a2c-c30289462282',
           name: 'AQUA BIODEGRADABLE URN',
-          img: 'https://static.wixstatic.com/media/45119e_812f09d2732e4e2db45a354383159ac9~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png',
+          img: 'https://static.wixstatic.com/media/45119e_48478600018f46ffb3f1ac569e733471~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
         },
         {
           label: 'Flore Turtle',
-          hex: '#6E8B74',
+          hex: '#2B9EB3',
           slug: 'flore-urns',
           id: 'f9c09eac-dee0-50ec-1fd8-e591754fdb0a',
           name: 'FLORE BIODEGRADABLE URNS',
-          img: 'https://static.wixstatic.com/media/45119e_92232e8c88c94935befe3b0b088a83a7~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png',
+          img: 'https://static.wixstatic.com/media/45119e_44f8f91ccd1b439098bf5760374cc702~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
         },
         {
-          label: 'Iris Purple',
-          hex: '#8C7396',
-          slug: 'iris-urn',
-          id: '4d9511b1-1f04-1057-e379-1d7f2030933c',
-          name: 'IRIS BIODEGRADABLE URN',
-          img: 'https://static.wixstatic.com/media/45119e_7e8106db1e1645e6a982b82f45d3deeb~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png',
-        },
-        {
-          label: 'Aqua Deep Blue',
-          hex: '#3A5A78',
-          slug: 'aqua-urn',
-          id: '4d71b043-1af4-8fa4-4a2c-c30289462282',
-          name: 'AQUA BIODEGRADABLE URN',
-          img: 'https://static.wixstatic.com/media/45119e_f889a60e679c4eab8395a9b15b0de33d~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png',
-        },
-        {
-          label: 'Iris Soft Pink',
+          label: 'Iris Sakura',
           hex: '#E2B4BD',
           slug: 'iris-urn',
           id: '4d9511b1-1f04-1057-e379-1d7f2030933c',
           name: 'IRIS BIODEGRADABLE URN',
-          img: 'https://static.wixstatic.com/media/45119e_c80008cc26fd424b807495ddf1b54103~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png',
+          img: 'https://static.wixstatic.com/media/45119e_4515ed8dce4f4ea28b7bfeb68eac9066~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+        },
+        {
+          label: 'Aqua Deep Blue',
+          hex: '#1C7C9C',
+          slug: 'aqua-urn',
+          id: '4d71b043-1af4-8fa4-4a2c-c30289462282',
+          name: 'AQUA BIODEGRADABLE URN',
+          img: 'https://static.wixstatic.com/media/45119e_5d507d8460784c628298d2c49edaac3e~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+        },
+        {
+          label: 'Iris Ginkgo',
+          hex: '#E5A9A9',
+          slug: 'iris-urn',
+          id: '4d9511b1-1f04-1057-e379-1d7f2030933c',
+          name: 'IRIS BIODEGRADABLE URN',
+          img: 'https://static.wixstatic.com/media/45119e_30cc2647cbfa4613b55c9c180bd8be22~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
         },
       ],
       specs: [
@@ -252,36 +265,12 @@ export const UrnaBiodegradableLanding = () => {
       originalPrice: null,
       swatches: [
         {
-          label: 'Terra Ginkgo Gold',
-          hex: '#C4856A',
+          label: 'Terra Botanical',
+          hex: '#8B9E8B',
           slug: 'terra-urn',
           id: 'b4fd86df-d446-0993-f324-d5d13eface16',
           name: 'TERRA BIODEGRADABLE URN',
-          img: 'https://static.wixstatic.com/media/45119e_d7d0de24d7d44bc2812fdbd7b0f02a68~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png',
-        },
-        {
-          label: 'Angel White',
-          hex: '#EAE5DC',
-          slug: 'angel-urn',
-          id: 'a09f394c-67bf-476b-f1a9-e3d576ce6505',
-          name: 'ANGEL BIODEGRADABLE URN',
-          img: 'https://static.wixstatic.com/media/45119e_da682a60bd214c8f9b3a100f545edd65~mv2.png/v1/fit/w_1000,h_1000,q_90/file.png',
-        },
-        {
-          label: 'Terra Ocean',
-          hex: '#5D8AA8',
-          slug: 'terra-urn',
-          id: 'b4fd86df-d446-0993-f324-d5d13eface16',
-          name: 'TERRA BIODEGRADABLE URN',
-          img: 'https://static.wixstatic.com/media/45119e_014a43b4c98c4ce7be9ac20f1773f330~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png',
-        },
-        {
-          label: 'Terra Pink',
-          hex: '#D98A9C',
-          slug: 'terra-urn',
-          id: 'b4fd86df-d446-0993-f324-d5d13eface16',
-          name: 'TERRA BIODEGRADABLE URN',
-          img: 'https://static.wixstatic.com/media/45119e_d0e625964608448abb482746e95034ea~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png',
+          img: 'https://static.wixstatic.com/media/45119e_277f4849b55642b1a9c570a911f20d37~mv2.png/v1/fit/w_1000,h_1000,q_90/file.png',
         },
         {
           label: 'Angel Gold',
@@ -290,6 +279,30 @@ export const UrnaBiodegradableLanding = () => {
           id: 'a09f394c-67bf-476b-f1a9-e3d576ce6505',
           name: 'ANGEL BIODEGRADABLE URN',
           img: 'https://static.wixstatic.com/media/45119e_6fee7c273f3f487aba1e9f9e8aee9a72~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+        },
+        {
+          label: 'Angel Ocean',
+          hex: '#7BA7B5',
+          slug: 'angel-urn',
+          id: 'a09f394c-67bf-476b-f1a9-e3d576ce6505',
+          name: 'ANGEL BIODEGRADABLE URN',
+          img: 'https://static.wixstatic.com/media/45119e_055fa3d6159a47a8b60de621c43b90e1~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+        },
+        {
+          label: 'Angel Soft Pink',
+          hex: '#E2B4BD',
+          slug: 'angel-urn',
+          id: 'a09f394c-67bf-476b-f1a9-e3d576ce6505',
+          name: 'ANGEL BIODEGRADABLE URN',
+          img: 'https://static.wixstatic.com/media/45119e_8d3df7b505f7458a98c95c0fc4ea293e~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+        },
+        {
+          label: 'Angel Deep Blue',
+          hex: '#1C7C9C',
+          slug: 'angel-urn',
+          id: 'a09f394c-67bf-476b-f1a9-e3d576ce6505',
+          name: 'ANGEL BIODEGRADABLE URN',
+          img: 'https://static.wixstatic.com/media/45119e_06646d5f8f6c4200aa02c9052fe7b168~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
         },
       ],
       specs: [
@@ -308,8 +321,8 @@ export const UrnaBiodegradableLanding = () => {
       originalPrice: null,
       swatches: [
         {
-          label: 'Mini Set Flore',
-          hex: '#D8C3B8',
+          label: 'Mini Set Flore (×4)',
+          hex: '#8B9E8B',
           slug: 'mini-biodegradables-urn-set',
           id: 'f843aff9-c2d4-5a9f-a272-9fddf64c68e5',
           name: 'MINI URN SET FLORE BIODEGRADABLES',
@@ -317,17 +330,17 @@ export const UrnaBiodegradableLanding = () => {
           img: 'https://static.wixstatic.com/media/45119e_d62bb5591c674265a6deee5eb3fa4985~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
         },
         {
-          label: 'Mini Set Ocean',
-          hex: '#89A7B1',
+          label: 'Mini Set Ocean (×4)',
+          hex: '#7BA7B5',
           slug: 'mini-urn-set-ocean-biodegradables',
           id: '25f910fe-08a8-3004-4b99-579d88e4e240',
           name: 'MINI URN SET OCEAN BIODEGRADABLES',
           priceOverride: 49.99,
-          img: 'https://static.wixstatic.com/media/45119e_23cc9997f2b24ac7a9b277be1e904170~mv2.png/v1/fit/w_1024,h_1024,q_90/file.png',
+          img: 'https://static.wixstatic.com/media/45119e_b29071730d57411e80628960675d4a04~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
         },
         {
-          label: 'Tree of Life Bags (x2)',
-          hex: '#8B9E8B',
+          label: 'Tree of Life Bags (×2)',
+          hex: '#C49A6C',
           slug: 'cremation-burial-bags-tree-of-life-design-pack-of-2',
           id: 'f1d9e4d3-6ad7-70e4-cb1a-3e2999ae3818',
           name: 'ASH BURIAL BAGS TREE OF LIFE DESIGN - Pack of 2',
@@ -567,33 +580,21 @@ export const UrnaBiodegradableLanding = () => {
             </div>
           </motion.div>
 
-          {/* Giant Dual-Urn Intertwined Stage (Apple Watch Hero Visual) */}
+          {/* Giant Dual-Urn Studio Stage (Pure Clean Cutouts, Parallel 3D Perspective) */}
           <div className="kmb-dual-urn-stage">
-            {/* Soft circular organic nature halo behind the two giant urns */}
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={activeHero.sceneBg}
-                initial={{ opacity: 0, scale: 0.92 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.7 }}
-                className="kmb-dual-nature-halo"
-              >
-                <img src={activeHero.sceneBg} alt="" className="kmb-halo-img" />
-              </motion.div>
-            </AnimatePresence>
-
             <AnimatePresence mode="wait">
               <motion.div
                 key={heroPair}
-                initial={{ opacity: 0, y: 24, scale: 0.95 }}
+                initial={{ opacity: 0, y: 18, scale: 0.96 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+                exit={{ opacity: 0, scale: 0.96 }}
+                transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
                 className="kmb-dual-urns-composition"
               >
+                <div className="kmb-stage-floor-glow" aria-hidden="true" />
+
                 <motion.div
-                  style={{ y: leftUrnY, rotate: leftUrnRotate }}
+                  style={{ y: leftUrnY }}
                   className="kmb-giant-urn-wrap kmb-urn-left"
                   onClick={() => navigate(`/product/${activeHero.slug}`)}
                 >
@@ -602,11 +603,10 @@ export const UrnaBiodegradableLanding = () => {
                     alt={activeHero.leftName}
                     className="kmb-giant-urn-img"
                   />
-                  <span className="kmb-urn-float-tag">{activeHero.leftName}</span>
                 </motion.div>
 
                 <motion.div
-                  style={{ y: rightUrnY, rotate: rightUrnRotate }}
+                  style={{ y: rightUrnY }}
                   className="kmb-giant-urn-wrap kmb-urn-right"
                   onClick={() => navigate(`/product/${activeHero.slug}`)}
                 >
@@ -615,10 +615,11 @@ export const UrnaBiodegradableLanding = () => {
                     alt={activeHero.rightName}
                     className="kmb-giant-urn-img"
                   />
-                  <span className="kmb-urn-float-tag">{activeHero.rightName}</span>
                 </motion.div>
               </motion.div>
             </AnimatePresence>
+
+            <p className="kmb-hero-pair-caption">{activeHero.caption}</p>
 
             {/* Minimal 3-pill visual switcher */}
             <div className="kmb-hero-pair-pills">
@@ -643,35 +644,26 @@ export const UrnaBiodegradableLanding = () => {
       <section className="kmb-stack-section" id="caracteristicas">
         <div className="kmb-container">
           <div className="kmb-sticky-stack-container">
-            {/* STICKY CARD 1: Giant Urn Left + Big Statement Right (Apple Block 2) */}
+            {/* STICKY CARD 1: Giant Clean Urn Left + Big Statement Right (Apple Block 2) */}
             <StickyCardWrapper index={0} total={3}>
               <div className="kmb-apple-feature-card">
                 <div className="kmb-af-visual">
                   <AnimatePresence mode="wait">
                     <motion.div
                       key={cardBioMode}
-                      initial={{ opacity: 0, scale: 0.92 }}
+                      initial={{ opacity: 0, scale: 0.94 }}
                       animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.94 }}
-                      transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+                      exit={{ opacity: 0, scale: 0.96 }}
+                      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                       className="kmb-af-urn-stage"
                     >
                       <img
                         src={
                           cardBioMode === 'water'
-                            ? '/images/hero-water-ceremony.png'
-                            : '/images/hero-earth-ceremony.png'
+                            ? 'https://static.wixstatic.com/media/45119e_48478600018f46ffb3f1ac569e733471~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png'
+                            : 'https://static.wixstatic.com/media/45119e_277f4849b55642b1a9c570a911f20d37~mv2.png/v1/fit/w_1000,h_1000,q_90/file.png'
                         }
-                        alt=""
-                        className="kmb-af-env-circle"
-                      />
-                      <img
-                        src={
-                          cardBioMode === 'water'
-                            ? 'https://static.wixstatic.com/media/45119e_812f09d2732e4e2db45a354383159ac9~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png'
-                            : 'https://static.wixstatic.com/media/45119e_d7d0de24d7d44bc2812fdbd7b0f02a68~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png'
-                        }
-                        alt="Urna Kamibi"
+                        alt="Urna Biodegradable Kamibi"
                         className="kmb-af-big-urn"
                       />
                     </motion.div>
@@ -713,10 +705,10 @@ export const UrnaBiodegradableLanding = () => {
                   <AnimatePresence mode="wait">
                     <motion.div
                       key={activeBandIdx}
-                      initial={{ opacity: 0, scale: 0.92, rotate: -2 }}
-                      animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                      exit={{ opacity: 0, scale: 0.94 }}
-                      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                      initial={{ opacity: 0, scale: 0.94 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.96 }}
+                      transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
                       className="kmb-af-urn-stage"
                       onClick={() =>
                         navigate(`/product/${bandShowcase[activeBandIdx].slug}`)
@@ -763,14 +755,14 @@ export const UrnaBiodegradableLanding = () => {
               </div>
             </StickyCardWrapper>
 
-            {/* STICKY CARD 3: Apple Block 3 Style ("Todo lo que buscas. Por menos." + Fan of Urns) */}
+            {/* STICKY CARD 3: Apple Block 3 Style ("Todo lo que buscas. Por menos." + Clean 2x2 Studio Grid) */}
             <StickyCardWrapper index={2} total={3}>
               <div className="kmb-apple-pack-card">
                 <div className="kmb-ap-copy">
                   <div className="kmb-brand-lockup kmb-lockup-left">
                     <span className="kmb-brand-leaf">✦</span>
                     <span className="kmb-brand-word">KAMIBI</span>
-                    <span className="kmb-brand-series">KIT CEREMONIAL</span>
+                    <span className="kmb-brand-series">COLECCIÓN COMPLETA</span>
                   </div>
 
                   <h2 className="kmb-ap-headline">
@@ -779,9 +771,8 @@ export const UrnaBiodegradableLanding = () => {
                   </h2>
 
                   <p className="kmb-ap-sub">
-                    Desde <strong>$76.50 USD</strong> con Kit de Despedida
-                    (hojas biodegradables y lápiz compostable) o Mini Sets por{' '}
-                    <strong>$49.99 USD</strong>.
+                    Urnas Adulto desde <strong>$76.50 USD</strong> o Sets de 4 Mini
+                    Urnas para compartir en familia por <strong>$49.99 USD</strong>.
                   </p>
 
                   <div className="kmb-ap-actions">
@@ -800,33 +791,46 @@ export const UrnaBiodegradableLanding = () => {
                   </div>
                 </div>
 
-                {/* Multi-Urn Fan Collage (Like the 6 Apple Watches in Block 3) */}
-                <div className="kmb-ap-collage">
-                  <img
-                    src="/images/caja-terra.png"
-                    alt="Caja Kamibi"
-                    className="kmb-collage-box"
-                  />
-                  <img
-                    src="https://static.wixstatic.com/media/45119e_812f09d2732e4e2db45a354383159ac9~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png"
-                    alt="Aqua Urn"
-                    className="kmb-collage-urn kmb-cu-1"
-                  />
-                  <img
-                    src="https://static.wixstatic.com/media/45119e_92232e8c88c94935befe3b0b088a83a7~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png"
-                    alt="Flore Urn"
-                    className="kmb-collage-urn kmb-cu-2"
-                  />
-                  <img
-                    src="https://static.wixstatic.com/media/45119e_7e8106db1e1645e6a982b82f45d3deeb~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png"
-                    alt="Iris Urn"
-                    className="kmb-collage-urn kmb-cu-3"
-                  />
-                  <img
-                    src="https://static.wixstatic.com/media/45119e_d62bb5591c674265a6deee5eb3fa4985~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png"
-                    alt="Mini Urn Set"
-                    className="kmb-collage-urn kmb-cu-4"
-                  />
+                {/* Clean 2x2 Aligned Studio Showcase (Zero messy overlaps) */}
+                <div className="kmb-ap-studio-grid">
+                  {[
+                    {
+                      name: 'Kamibi Aqua',
+                      price: '$76.50',
+                      slug: 'aqua-urn',
+                      img: 'https://static.wixstatic.com/media/45119e_48478600018f46ffb3f1ac569e733471~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+                    },
+                    {
+                      name: 'Kamibi Flore',
+                      price: '$76.50',
+                      slug: 'flore-urns',
+                      img: 'https://static.wixstatic.com/media/45119e_44f8f91ccd1b439098bf5760374cc702~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+                    },
+                    {
+                      name: 'Kamibi Iris',
+                      price: '$76.50',
+                      slug: 'iris-urn',
+                      img: 'https://static.wixstatic.com/media/45119e_4515ed8dce4f4ea28b7bfeb68eac9066~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+                    },
+                    {
+                      name: 'Mini Set (×4)',
+                      price: '$49.99',
+                      slug: 'mini-biodegradables-urn-set',
+                      img: 'https://static.wixstatic.com/media/45119e_d62bb5591c674265a6deee5eb3fa4985~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+                    },
+                  ].map((item, i) => (
+                    <div
+                      key={i}
+                      className="kmb-ap-studio-tile"
+                      onClick={() => navigate(`/product/${item.slug}`)}
+                    >
+                      <img src={item.img} alt={item.name} />
+                      <div className="kmb-ap-tile-meta">
+                        <strong>{item.name}</strong>
+                        <span>{item.price}</span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </StickyCardWrapper>
@@ -1023,7 +1027,7 @@ export const UrnaBiodegradableLanding = () => {
                         }}
                       >
                         <img
-                          src={prod.images?.[0]}
+                          src={CLEAN_URN_CUTOUTS[prod.slug] || prod.images?.[0]}
                           alt={prod.name}
                           className="kmb-prod-img"
                           draggable={false}

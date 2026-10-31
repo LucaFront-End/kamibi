@@ -634,81 +634,210 @@ export const UrnaBiodegradableLanding = () => {
 
           {/* Giant Dual-Urn Studio Stage + Minimalist Ambient SVGs + Hover Detail Popovers */}
           <div className="kmb-dual-urn-stage">
-            {/* Minimalist Ambient Background SVGs per Environment (Water / Forest / Minis) */}
+            {/* Delicate Botanical & Landscape Line-Art SVGs per Environment */}
             <div className="kmb-hero-ambient-svg-wrap" aria-hidden="true">
               <AnimatePresence mode="wait">
                 {heroPair === 'urns' && (
                   <motion.svg
                     key="svg-water"
-                    viewBox="0 0 900 420"
+                    viewBox="0 0 1100 440"
                     fill="none"
-                    initial={{ opacity: 0, scale: 0.96 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 1.03 }}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -6 }}
                     transition={{ duration: 0.6 }}
                     className="kmb-ambient-svg kmb-svg-water"
                   >
-                    {/* Concentric Water Ripples */}
-                    <ellipse cx="450" cy="215" rx="220" ry="88" stroke="currentColor" strokeWidth="1" strokeDasharray="4 6" opacity="0.45" />
-                    <ellipse cx="450" cy="215" rx="320" ry="126" stroke="currentColor" strokeWidth="1" opacity="0.3" />
-                    <ellipse cx="450" cy="215" rx="410" ry="164" stroke="currentColor" strokeWidth="0.75" opacity="0.18" />
-                    {/* Flowing Ocean Topographic Waves */}
-                    <path d="M 40 165 Q 245 110, 450 165 T 860 165" stroke="currentColor" strokeWidth="1.2" opacity="0.35" />
-                    <path d="M 20 245 Q 235 300, 450 245 T 880 245" stroke="currentColor" strokeWidth="1.2" opacity="0.35" />
-                    <path d="M 80 310 Q 265 265, 450 310 T 820 310" stroke="currentColor" strokeWidth="0.9" strokeDasharray="3 5" opacity="0.28" />
-                    {/* Minimalist Water Droplet & Wave Accents */}
-                    <circle cx="135" cy="120" r="4" fill="currentColor" opacity="0.35" />
-                    <circle cx="765" cy="135" r="3.5" fill="currentColor" opacity="0.35" />
-                    <path d="M 755 95 C 765 80, 775 80, 785 95" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" opacity="0.4" />
+                    {/* Left Coastal Reeds, Water Grasses & Gentle Shore */}
+                    <g opacity="0.52" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
+                      {/* Shore contour */}
+                      <path d="M 15 365 Q 115 352, 235 368 T 420 375" strokeWidth="1.1" />
+                      <path d="M 35 382 Q 145 372, 265 384" strokeWidth="0.85" opacity="0.65" />
+                      {/* Tall swaying reed 1 */}
+                      <path d="M 78 364 Q 88 250, 128 142" strokeWidth="1.2" />
+                      <path d="M 88 285 Q 62 252, 42 238" strokeWidth="0.95" />
+                      <path d="M 96 245 Q 124 218, 148 205" strokeWidth="0.95" />
+                      <path d="M 108 198 Q 84 172, 68 158" strokeWidth="0.9" />
+                      <ellipse cx="131" cy="135" rx="3.2" ry="11" transform="rotate(18 131 135)" strokeWidth="1" />
+                      {/* Tall swaying reed 2 */}
+                      <path d="M 112 365 Q 130 272, 176 185" strokeWidth="1.1" />
+                      <path d="M 128 295 Q 156 270, 178 258" strokeWidth="0.9" />
+                      <path d="M 145 245 Q 122 220, 108 205" strokeWidth="0.9" />
+                      <ellipse cx="180" cy="178" rx="2.8" ry="9.5" transform="rotate(24 180 178)" strokeWidth="0.95" />
+                      {/* Delicate left sea-grasses */}
+                      <path d="M 55 363 Q 48 295, 26 245" strokeWidth="1" />
+                      <path d="M 64 364 Q 68 310, 56 268" strokeWidth="0.85" />
+                      <path d="M 142 366 Q 162 315, 192 282" strokeWidth="0.95" />
+                    </g>
+
+                    {/* Right Botanical Sea Kelp, Graceful Sea Turtle & Ocean Waves */}
+                    <g opacity="0.52" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
+                      {/* Right ocean wave lines */}
+                      <path d="M 690 374 Q 810 358, 925 370 T 1085 364" strokeWidth="1.1" />
+                      <path d="M 745 388 Q 855 376, 965 386" strokeWidth="0.85" opacity="0.65" />
+                      {/* Delicate swaying sea-kelp / botanical coral */}
+                      <path d="M 995 366 C 982 310, 1012 255, 988 195 C 975 162, 995 135, 985 112" strokeWidth="1.15" />
+                      <path d="M 992 310 C 968 298, 964 278, 988 284" strokeWidth="0.95" />
+                      <path d="M 996 268 C 1020 255, 1024 235, 998 242" strokeWidth="0.95" />
+                      <path d="M 991 225 C 968 212, 965 192, 988 198" strokeWidth="0.95" />
+                      <path d="M 988 178 C 1012 165, 1014 146, 990 152" strokeWidth="0.9" />
+                      {/* Second smaller kelp stem */}
+                      <path d="M 1032 365 C 1024 320, 1045 278, 1030 232" strokeWidth="0.95" />
+                      <path d="M 1032 315 C 1050 304, 1052 288, 1034 294" strokeWidth="0.85" />
+                      <path d="M 1035 275 C 1016 265, 1016 250, 1034 255" strokeWidth="0.85" />
+                      {/* Delicate Sea Turtle silhouette gliding */}
+                      <g transform="translate(865, 148) rotate(-18)">
+                        <ellipse cx="0" cy="0" rx="18" ry="13" strokeWidth="1.1" />
+                        <ellipse cx="0" cy="0" rx="13" ry="9" strokeWidth="0.75" opacity="0.7" />
+                        <path d="M 18 0 C 24 -2, 26 0, 24 3 C 22 4, 19 3, 18 0 Z" strokeWidth="0.95" />
+                        <path d="M 8 -11 C 16 -24, 24 -22, 18 -8" strokeWidth="1" />
+                        <path d="M 8 11 C 16 24, 24 22, 18 8" strokeWidth="1" />
+                        <path d="M -14 -8 C -22 -14, -24 -10, -17 -5" strokeWidth="0.9" />
+                        <path d="M -14 8 C -22 14, -24 10, -17 5" strokeWidth="0.9" />
+                      </g>
+                      {/* Distant Seabirds */}
+                      <path d="M 215 92 Q 223 83, 231 91 Q 239 83, 247 92" strokeWidth="1" opacity="0.65" />
+                      <path d="M 252 76 Q 258 69, 264 75 Q 270 69, 276 76" strokeWidth="0.85" opacity="0.5" />
+                      <path d="M 825 84 Q 832 76, 839 83 Q 846 76, 853 84" strokeWidth="0.95" opacity="0.6" />
+                    </g>
                   </motion.svg>
                 )}
 
                 {heroPair === 'earth' && (
                   <motion.svg
                     key="svg-earth"
-                    viewBox="0 0 900 420"
+                    viewBox="0 0 1100 440"
                     fill="none"
-                    initial={{ opacity: 0, scale: 0.96 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 1.03 }}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -6 }}
                     transition={{ duration: 0.6 }}
                     className="kmb-ambient-svg kmb-svg-earth"
                   >
-                    {/* Organic Tree Growth Rings */}
-                    <circle cx="450" cy="205" r="145" stroke="currentColor" strokeWidth="1" strokeDasharray="6 6" opacity="0.38" />
-                    <circle cx="450" cy="205" r="215" stroke="currentColor" strokeWidth="1" opacity="0.26" />
-                    <circle cx="450" cy="205" r="290" stroke="currentColor" strokeWidth="0.8" opacity="0.16" />
-                    {/* Left Minimal Botanical Leaf Branch */}
-                    <path d="M 110 290 Q 155 200, 215 115" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" opacity="0.42" />
-                    <path d="M 140 240 C 115 225, 118 198, 152 212" stroke="currentColor" strokeWidth="1.1" opacity="0.38" />
-                    <path d="M 172 185 C 148 168, 152 142, 184 158" stroke="currentColor" strokeWidth="1.1" opacity="0.38" />
-                    <path d="M 155 222 C 182 215, 192 238, 162 245" stroke="currentColor" strokeWidth="1.1" opacity="0.38" />
-                    {/* Right Minimal Botanical Leaf Branch */}
-                    <path d="M 790 290 Q 745 200, 685 115" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" opacity="0.42" />
-                    <path d="M 760 240 C 785 225, 782 198, 748 212" stroke="currentColor" strokeWidth="1.1" opacity="0.38" />
-                    <path d="M 728 185 C 752 168, 748 142, 716 158" stroke="currentColor" strokeWidth="1.1" opacity="0.38" />
+                    {/* Left Delicate Forest Grove: Tall Pine, Young Pine & Branching Tree */}
+                    <g opacity="0.55" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
+                      {/* Mossy woodland ground */}
+                      <path d="M 15 368 Q 130 342, 265 368 T 430 376" strokeWidth="1.15" />
+                      {/* Tall Delicate Pine Tree (x=95) */}
+                      <path d="M 95 92 L 95 358" strokeWidth="1.3" />
+                      <path d="M 95 108 C 82 122, 74 126, 66 130 M 95 108 C 108 122, 116 126, 124 130" strokeWidth="1" />
+                      <path d="M 95 136 C 78 154, 66 160, 54 165 M 95 136 C 112 154, 124 160, 136 165" strokeWidth="1.05" />
+                      <path d="M 95 168 C 74 188, 58 196, 44 202 M 95 168 C 116 188, 132 196, 146 202" strokeWidth="1.05" />
+                      <path d="M 95 202 C 70 225, 52 234, 36 240 M 95 202 C 120 225, 138 234, 154 240" strokeWidth="1.1" />
+                      <path d="M 95 238 C 66 264, 46 272, 28 280 M 95 238 C 124 264, 144 272, 162 280" strokeWidth="1.1" />
+                      <path d="M 95 276 C 64 302, 42 312, 24 318 M 95 276 C 126 302, 148 312, 166 318" strokeWidth="1.1" />
+                      {/* Smaller Background Pine (x=48) */}
+                      <path d="M 48 185 L 48 362" strokeWidth="1" opacity="0.7" />
+                      <path d="M 48 202 L 30 222 M 48 202 L 66 222" strokeWidth="0.85" opacity="0.7" />
+                      <path d="M 48 232 L 24 256 M 48 232 L 72 256" strokeWidth="0.85" opacity="0.7" />
+                      <path d="M 48 265 L 20 292 M 48 265 L 76 292" strokeWidth="0.85" opacity="0.7" />
+                      {/* Delicate Deciduous / Olive Tree with Fine Branches & Leaves (x=188) */}
+                      <path d="M 188 360 C 188 315, 184 275, 190 225" strokeWidth="1.25" />
+                      <path d="M 188 275 C 170 250, 154 232, 142 212" strokeWidth="1" />
+                      <path d="M 189 252 C 208 232, 224 215, 238 195" strokeWidth="1" />
+                      <path d="M 190 225 C 178 198, 170 176, 164 156" strokeWidth="0.95" />
+                      <path d="M 190 225 C 202 198, 212 180, 220 162" strokeWidth="0.95" />
+                      {/* Delicate canopy leaf clusters */}
+                      <ellipse cx="140" cy="206" rx="8" ry="4" transform="rotate(-25 140 206)" strokeWidth="0.85" />
+                      <ellipse cx="162" cy="150" rx="9" ry="4.5" transform="rotate(-15 162 150)" strokeWidth="0.85" />
+                      <ellipse cx="222" cy="156" rx="9" ry="4.5" transform="rotate(20 222 156)" strokeWidth="0.85" />
+                      <ellipse cx="242" cy="190" rx="8" ry="4" transform="rotate(30 242 190)" strokeWidth="0.85" />
+                      <ellipse cx="192" cy="144" rx="10" ry="4.5" strokeWidth="0.85" />
+                    </g>
+
+                    {/* Right Delicate Forest Grove: Twin Pines, Eucalyptus & Floating Leaves */}
+                    <g opacity="0.55" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
+                      {/* Right mossy hill */}
+                      <path d="M 670 376 Q 825 344, 965 364 T 1085 368" strokeWidth="1.15" />
+                      {/* Tall Right Pine Tree (x=995) */}
+                      <path d="M 995 102 L 995 362" strokeWidth="1.3" />
+                      <path d="M 995 118 C 982 132, 974 136, 966 140 M 995 118 C 1008 132, 1016 136, 1024 140" strokeWidth="1" />
+                      <path d="M 995 148 C 976 166, 964 172, 952 178 M 995 148 C 1014 166, 1026 172, 1038 178" strokeWidth="1.05" />
+                      <path d="M 995 182 C 972 204, 956 212, 940 218 M 995 182 C 1018 204, 1034 212, 1050 218" strokeWidth="1.05" />
+                      <path d="M 995 218 C 968 242, 948 252, 932 258 M 995 218 C 1022 242, 1042 252, 1058 258" strokeWidth="1.1" />
+                      <path d="M 995 256 C 964 282, 942 292, 924 298 M 995 256 C 1026 282, 1048 292, 1066 298" strokeWidth="1.1" />
+                      <path d="M 995 294 C 962 320, 940 328, 920 335 M 995 294 C 1028 320, 1050 328, 1070 335" strokeWidth="1.1" />
+                      {/* Slender Birch / Eucalyptus Sapling (x=905) */}
+                      <path d="M 905 358 Q 898 265, 882 168" strokeWidth="1.15" />
+                      <path d="M 898 295 Q 872 276, 858 262" strokeWidth="0.95" />
+                      <path d="M 894 252 Q 918 232, 932 216" strokeWidth="0.95" />
+                      <path d="M 888 210 Q 864 192, 850 176" strokeWidth="0.95" />
+                      <circle cx="854" cy="258" r="6" strokeWidth="0.85" />
+                      <circle cx="935" cy="212" r="6.5" strokeWidth="0.85" />
+                      <circle cx="846" cy="172" r="5.5" strokeWidth="0.85" />
+                      <circle cx="880" cy="160" r="6" strokeWidth="0.85" />
+                      {/* Floating botanical leaves in the breeze */}
+                      <path d="M 275 112 C 282 104, 292 106, 286 116 C 280 122, 272 118, 275 112 Z" strokeWidth="0.9" opacity="0.65" />
+                      <path d="M 812 105 C 820 98, 828 100, 822 110 C 816 116, 808 112, 812 105 Z" strokeWidth="0.9" opacity="0.65" />
+                    </g>
                   </motion.svg>
                 )}
 
                 {heroPair === 'minis' && (
                   <motion.svg
                     key="svg-minis"
-                    viewBox="0 0 900 420"
+                    viewBox="0 0 1100 440"
                     fill="none"
-                    initial={{ opacity: 0, scale: 0.96 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 1.03 }}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -6 }}
                     transition={{ duration: 0.6 }}
                     className="kmb-ambient-svg kmb-svg-minis"
                   >
-                    {/* Four Interconnected Family Tribute Orbits */}
-                    <circle cx="340" cy="195" r="130" stroke="currentColor" strokeWidth="1" opacity="0.3" />
-                    <circle cx="560" cy="195" r="130" stroke="currentColor" strokeWidth="1" opacity="0.3" />
-                    <circle cx="450" cy="145" r="110" stroke="currentColor" strokeWidth="0.9" strokeDasharray="4 6" opacity="0.28" />
-                    <circle cx="450" cy="245" r="110" stroke="currentColor" strokeWidth="0.9" strokeDasharray="4 6" opacity="0.28" />
-                    {/* 4 Cardinal Botanical Stars */}
-                    <path d="M 165 135 L 170 148 L 183 153 L 170 158 L 165 171 L 160 158 L 147 153 L 160 148 Z" stroke="currentColor" strokeWidth="1" opacity="0.4" />
-                    <path d="M 735 135 L 740 148 L 753 153 L 740 158 L 735 171 L 730 158 L 717 153 L 730 148 Z" stroke="currentColor" strokeWidth="1" opacity="0.4" />
+                    {/* Delicate Wildflower Meadow, Ginkgo Stems & Butterflies */}
+                    <g opacity="0.55" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
+                      {/* Left Meadow Stems & Blossoms */}
+                      <path d="M 25 368 Q 145 352, 285 372" strokeWidth="1.05" />
+                      {/* Wildflower stem 1 */}
+                      <path d="M 88 362 Q 102 258, 142 152" strokeWidth="1.15" />
+                      <circle cx="145" cy="145" r="4" strokeWidth="1" />
+                      <ellipse cx="145" cy="133" rx="3" ry="6" strokeWidth="0.85" />
+                      <ellipse cx="145" cy="157" rx="3" ry="6" strokeWidth="0.85" />
+                      <ellipse cx="133" cy="145" rx="6" ry="3" strokeWidth="0.85" />
+                      <ellipse cx="157" cy="145" rx="6" ry="3" strokeWidth="0.85" />
+                      {/* Wildflower stem 2 (Lavender / Botanical spike) */}
+                      <path d="M 132 364 Q 152 275, 196 192" strokeWidth="1.1" />
+                      <ellipse cx="182" cy="218" rx="3" ry="6" transform="rotate(-30 182 218)" strokeWidth="0.85" />
+                      <ellipse cx="192" cy="208" rx="3" ry="6" transform="rotate(45 192 208)" strokeWidth="0.85" />
+                      <ellipse cx="190" cy="198" rx="3" ry="6" transform="rotate(-25 190 198)" strokeWidth="0.85" />
+                      <ellipse cx="200" cy="188" rx="3" ry="6" transform="rotate(40 200 188)" strokeWidth="0.85" />
+                      {/* Slender sapling on left */}
+                      <path d="M 56 362 L 56 210" strokeWidth="1" />
+                      <path d="M 56 235 L 38 252 M 56 235 L 74 252" strokeWidth="0.85" />
+                      <path d="M 56 268 L 34 288 M 56 268 L 78 288" strokeWidth="0.85" />
+                      <path d="M 56 302 L 30 324 M 56 302 L 82 324" strokeWidth="0.85" />
+
+                      {/* Right Meadow Stems & Blossoms */}
+                      <path d="M 815 372 Q 955 352, 1075 368" strokeWidth="1.05" />
+                      <path d="M 1012 362 Q 998 258, 958 152" strokeWidth="1.15" />
+                      <circle cx="955" cy="145" r="4" strokeWidth="1" />
+                      <ellipse cx="955" cy="133" rx="3" ry="6" strokeWidth="0.85" />
+                      <ellipse cx="955" cy="157" rx="3" ry="6" strokeWidth="0.85" />
+                      <ellipse cx="943" cy="145" rx="6" ry="3" strokeWidth="0.85" />
+                      <ellipse cx="967" cy="145" rx="6" ry="3" strokeWidth="0.85" />
+                      {/* Right Lavender spike */}
+                      <path d="M 968 364 Q 948 275, 904 192" strokeWidth="1.1" />
+                      <ellipse cx="918" cy="218" rx="3" ry="6" transform="rotate(30 918 218)" strokeWidth="0.85" />
+                      <ellipse cx="908" cy="208" rx="3" ry="6" transform="rotate(-45 908 208)" strokeWidth="0.85" />
+                      <ellipse cx="910" cy="198" rx="3" ry="6" transform="rotate(25 910 198)" strokeWidth="0.85" />
+                      {/* Slender sapling on right */}
+                      <path d="M 1044 362 L 1044 210" strokeWidth="1" />
+                      <path d="M 1044 235 L 1026 252 M 1044 235 L 1062 252" strokeWidth="0.85" />
+                      <path d="M 1044 268 L 1022 288 M 1044 268 L 1066 288" strokeWidth="0.85" />
+                      <path d="M 1044 302 L 1018 324 M 1044 302 L 1070 324" strokeWidth="0.85" />
+
+                      {/* Two Delicate Line-Art Butterflies */}
+                      <g transform="translate(225, 112) rotate(-15)">
+                        <path d="M 0 -6 L 0 8" strokeWidth="1" />
+                        <path d="M 0 0 C -12 -10, -16 2, 0 5 C -10 8, -8 14, 0 7" strokeWidth="0.9" />
+                        <path d="M 0 0 C 12 -10, 16 2, 0 5 C 10 8, 8 14, 0 7" strokeWidth="0.9" />
+                      </g>
+                      <g transform="translate(875, 108) rotate(18)">
+                        <path d="M 0 -6 L 0 8" strokeWidth="1" />
+                        <path d="M 0 0 C -12 -10, -16 2, 0 5 C -10 8, -8 14, 0 7" strokeWidth="0.9" />
+                        <path d="M 0 0 C 12 -10, 16 2, 0 5 C 10 8, 8 14, 0 7" strokeWidth="0.9" />
+                      </g>
+                    </g>
                   </motion.svg>
                 )}
               </AnimatePresence>

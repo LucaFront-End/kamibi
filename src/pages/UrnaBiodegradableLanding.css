@@ -161,7 +161,7 @@
 /* Giant Dual-Urn Studio Showcase + Ambient SVGs + Hover Detail Popovers */
 .kmb-dual-urn-stage {
   position: relative;
-  max-width: 920px;
+  max-width: 1080px;
   margin: 0 auto;
   padding: 1.25rem 0 0.5rem;
   display: flex;
@@ -181,7 +181,7 @@
 
 .kmb-ambient-svg {
   width: 100%;
-  max-width: 880px;
+  max-width: 1080px;
   height: auto;
   overflow: visible;
 }

@@ -54,16 +54,31 @@ export const CartProvider = ({ children }) => {
     }
     setIsLoading(true);
     try {
-      // Resolve the real Wix variant UUID from the text label
-      let resolvedVariantId = null;
+      // Resolve the real Wix variant UUID from explicitVariantId or the text label
+      let resolvedVariantId = product.explicitVariantId || null;
 
-      if (product.wixVariants && product.wixVariants.length > 0) {
+      if (!resolvedVariantId && selectedVariant && Array.isArray(product.variantObjects)) {
+        const targetLabel = String(selectedVariant).trim().toLowerCase();
+        const matchedVo = product.variantObjects.find(
+          (vo) =>
+            vo.label?.trim().toLowerCase() === targetLabel ||
+            vo.value?.trim().toLowerCase() === targetLabel
+        );
+        if (matchedVo?.variantId) {
+          resolvedVariantId = matchedVo.variantId;
+        }
+      }
+
+      if (!resolvedVariantId && product.wixVariants && product.wixVariants.length > 0) {
         if (selectedVariant) {
-          // Find the wixVariant whose choice value matches the selected text
-          const matched = product.wixVariants.find(v => {
+          const targetLabel = String(selectedVariant).trim().toLowerCase();
+          // Find the wixVariant whose choice value matches the selected text (case-insensitive)
+          const matched = product.wixVariants.find((v) => {
             if (!v.choices) return false;
             return Object.values(v.choices).some(
-              choiceVal => choiceVal === selectedVariant
+              (choiceVal) =>
+                typeof choiceVal === 'string' &&
+                choiceVal.trim().toLowerCase() === targetLabel
             );
           });
           if (matched) {
@@ -71,14 +86,9 @@ export const CartProvider = ({ children }) => {
           }
         }
 
-        // If no match found but product has only one variant, use it
-        if (!resolvedVariantId && product.wixVariants.length === 1) {
-          resolvedVariantId = product.wixVariants[0]._id;
-        }
-
-        // If still no match, use the first variant as fallback
+        // If no match found, prefer defaultVariantId (which matches images[0]) over wixVariants[0]
         if (!resolvedVariantId) {
-          resolvedVariantId = product.wixVariants[0]._id;
+          resolvedVariantId = product.defaultVariantId || product.wixVariants[0]._id;
         }
       }
 

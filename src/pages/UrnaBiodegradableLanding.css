@@ -1338,6 +1338,39 @@
   flex: 1;
 }
 
+.kmb-prod-swatch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+}
+
+.kmb-prod-swatch-dots {
+  display: flex;
+  align-items: center;
+  gap: 0.32rem;
+}
+
+.kmb-prod-swatch-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(45, 45, 45, 0.18);
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.kmb-prod-swatch-dot:hover {
+  transform: scale(1.16);
+}
+
+.kmb-prod-swatch-dot.active {
+  transform: scale(1.15);
+  box-shadow: 0 0 0 2px #FFFDF9, 0 0 0 3.5px var(--color-charcoal, #2D2D2D);
+}
+
 .kmb-prod-color-name {
   font-size: 0.68rem;
   text-transform: uppercase;
@@ -1345,6 +1378,10 @@
   color: var(--color-deep-sage, #4A664A);
   font-weight: 600;
   margin-bottom: 0.25rem;
+}
+
+.kmb-prod-swatch-row .kmb-prod-color-name {
+  margin-bottom: 0;
 }
 
 .kmb-prod-title {

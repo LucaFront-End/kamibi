@@ -541,11 +541,16 @@ export function PolaroidLineCarousel({
   string = '#B59E7A',
   background = 'transparent',
   ink = '#2D2D2D',
+  locale = 'en',
   onChange,
   className,
   style,
-  ariaLabel = 'Carrusel de recuerdos y reseñas Kamibi',
+  ariaLabel,
 }) {
+  const isEs = locale === 'es';
+  const resolvedAriaLabel =
+    ariaLabel ||
+    (isEs ? 'Carrusel de recuerdos y reseñas Kamibi' : 'Kamibi memories and reviews carousel');
   const n = slides.length;
   const srcs = useSlideImages(slides);
   const [active, setActive] = useState(0);
@@ -781,7 +786,7 @@ export function PolaroidLineCarousel({
       }}
       role="region"
       aria-roledescription="carousel"
-      aria-label={ariaLabel}
+      aria-label={resolvedAriaLabel}
       tabIndex={0}
       onKeyDown={onKey}
     >
@@ -853,7 +858,9 @@ export function PolaroidLineCarousel({
             {s.edition && (
               <>
                 <span className="pl-quote-sep" />
-                <span className="pl-quote-edition-tag">Edición {s.edition}</span>
+                <span className="pl-quote-edition-tag">
+                  {isEs ? `Edición ${s.edition}` : `${s.edition} Edition`}
+                </span>
               </>
             )}
           </div>
@@ -867,7 +874,9 @@ export function PolaroidLineCarousel({
           <div className="pl-author-signature">
             {s.author && <strong>{s.author}</strong>}
             {s.location && <span>— {s.location}</span>}
-            <span className="pl-verified-pill">✓ Familia Kamibi Verificada</span>
+            <span className="pl-verified-pill">
+              {isEs ? '✓ Familia Kamibi Verificada' : '✓ Verified Kamibi Family'}
+            </span>
           </div>
         </div>
 
@@ -876,7 +885,7 @@ export function PolaroidLineCarousel({
           <button
             type="button"
             className="pl-btn"
-            aria-label="Reseña anterior"
+            aria-label={isEs ? 'Reseña anterior' : 'Previous review'}
             onClick={() => step(-1)}
           >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -884,14 +893,18 @@ export function PolaroidLineCarousel({
             </svg>
           </button>
 
-          <div className="pl-dots" role="tablist" aria-label="Seleccionar recuerdo">
+          <div
+            className="pl-dots"
+            role="tablist"
+            aria-label={isEs ? 'Seleccionar recuerdo' : 'Select memory'}
+          >
             {slides.map((_, idx) => (
               <button
                 key={idx}
                 type="button"
                 role="tab"
                 aria-selected={idx === active}
-                aria-label={`Recuerdo ${idx + 1}`}
+                aria-label={isEs ? `Recuerdo ${idx + 1}` : `Memory ${idx + 1}`}
                 className={`pl-dot ${idx === active ? 'active' : ''}`}
                 onClick={() => {
                   lastTouch.current = performance.now();
@@ -908,7 +921,7 @@ export function PolaroidLineCarousel({
           <button
             type="button"
             className="pl-btn"
-            aria-label="Siguiente reseña"
+            aria-label={isEs ? 'Siguiente reseña' : 'Next review'}
             onClick={() => step(1)}
           >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -919,7 +932,11 @@ export function PolaroidLineCarousel({
       </div>
 
       <div className="pl-sr" aria-live="polite">
-        {'Recuerdo ' + (active + 1) + ' de ' + n + (s.title ? ': ' + s.title : '')}
+        {(isEs ? 'Recuerdo ' : 'Memory ') +
+          (active + 1) +
+          (isEs ? ' de ' : ' of ') +
+          n +
+          (s.title ? ': ' + s.title : '')}
       </div>
     </div>
   );

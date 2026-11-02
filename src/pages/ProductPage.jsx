@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import { useTranslation } from '../context/LanguageContext';
 import { useCart } from '../context/CartContext';
 import { useWixProduct } from '../hooks/useWixProducts';
@@ -18,6 +18,7 @@ import './ProductPage.css';
 
 export const ProductPage = () => {
   const { slug } = useParams();
+  const location = useLocation();
   const { t, locale } = useTranslation();
   const { addToCart, isLoading: cartLoading } = useCart();
   const { product, loading, error } = useWixProduct(slug);
@@ -110,15 +111,38 @@ export const ProductPage = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Reset state when product loads
+  // Reset state when product loads or URL ?variant= query changes
   useEffect(() => {
     if (product) {
-      // Pre-select first variant
-      const firstVariant = product.variantObjects?.[0] ?? (product.variants?.[0] ? { label: product.variants[0], image: null } : null);
-      setSelectedVariant(firstVariant ? firstVariant.label : null);
-      // If first variant has an image, jump to it; otherwise start at 0
-      if (firstVariant?.image) {
-        const idx = product.images.indexOf(firstVariant.image);
+      const params = new URLSearchParams(location.search);
+      const requestedVariant = params.get('variant');
+      const variantList = product.variantObjects || [];
+
+      let chosenVo = null;
+      if (requestedVariant && variantList.length > 0) {
+        const target = requestedVariant.trim().toLowerCase();
+        chosenVo = variantList.find(
+          (v) =>
+            v.label?.trim().toLowerCase() === target ||
+            v.value?.trim().toLowerCase() === target
+        );
+      }
+
+      if (!chosenVo && product.defaultVariant && variantList.length > 0) {
+        chosenVo = variantList.find((v) => v.label === product.defaultVariant);
+      }
+
+      if (!chosenVo) {
+        chosenVo =
+          variantList[0] ??
+          (product.variants?.[0] ? { label: product.variants[0], image: null } : null);
+      }
+
+      setSelectedVariant(chosenVo ? chosenVo.label : null);
+
+      // Jump gallery to the chosen variant's image if available
+      if (chosenVo?.image) {
+        const idx = product.images.indexOf(chosenVo.image);
         setGalleryActiveIdx(idx !== -1 ? idx : 0);
       } else {
         setGalleryActiveIdx(0);
@@ -127,7 +151,20 @@ export const ProductPage = () => {
       setAddSharingSet(false);
     }
     window.scrollTo(0, 0);
-  }, [product]);
+  }, [product, location.search]);
+
+  // Keep selectedVariant synced when user clicks a thumbnail in ProductGallery
+  const handleGalleryIdxChange = (idx) => {
+    setGalleryActiveIdx(idx);
+    if (!product?.images?.[idx] || !Array.isArray(product?.variantObjects)) return;
+    const imgUrl = product.images[idx];
+    const matchedVo = product.variantObjects.find(
+      (vo) => vo.image === imgUrl || (Array.isArray(vo.allImages) && vo.allImages.includes(imgUrl))
+    );
+    if (matchedVo?.label) {
+      setSelectedVariant(matchedVo.label);
+    }
+  };
 
   const handleAddToCart = async () => {
     if (!product) return;
@@ -180,9 +217,13 @@ export const ProductPage = () => {
   if (error) {
     return (
       <div className="product-not-found container section-padding text-center">
-        <h2 className="heading-section">⚠️ Error loading product</h2>
+        <h2 className="heading-section">
+          ⚠️ {locale === 'es' ? 'Error al cargar el producto' : 'Error loading product'}
+        </h2>
         <p className="text-body">{error}</p>
-        <Link to="/store" className="back-link">Return to Collection</Link>
+        <Link to="/store" className="back-link">
+          {locale === 'es' ? 'Volver a la Colección' : 'Return to Collection'}
+        </Link>
       </div>
     );
   }
@@ -190,8 +231,12 @@ export const ProductPage = () => {
   if (!product) {
     return (
       <div className="product-not-found container section-padding text-center">
-        <h2 className="heading-section">Product not found</h2>
-        <Link to="/store" className="back-link">Return to Collection</Link>
+        <h2 className="heading-section">
+          {locale === 'es' ? 'Producto no encontrado' : 'Product not found'}
+        </h2>
+        <Link to="/store" className="back-link">
+          {locale === 'es' ? 'Volver a la Colección' : 'Return to Collection'}
+        </Link>
       </div>
     );
   }
@@ -209,7 +254,7 @@ export const ProductPage = () => {
                   images={product.images}
                   name={product.name}
                   activeIdx={galleryActiveIdx}
-                  onActiveIdxChange={setGalleryActiveIdx}
+                  onActiveIdxChange={handleGalleryIdxChange}
                 />
               </div>
             </div>

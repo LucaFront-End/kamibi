@@ -15,7 +15,7 @@ export const ProductCard = ({ product }) => {
 
   const handleAddToCartClick = (e) => {
     e.stopPropagation(); // Avoid navigating when clicking the buy button
-    const defaultVariant = product.variants ? product.variants[0] : null;
+    const defaultVariant = product.defaultVariant || (product.variants ? product.variants[0] : null);
     addToCart(product, 1, defaultVariant);
   };
 

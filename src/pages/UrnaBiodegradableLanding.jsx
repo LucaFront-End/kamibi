@@ -53,6 +53,7 @@ const StickyCardWrapper = ({ index, total, children }) => {
 
 export const UrnaBiodegradableLanding = () => {
   const { locale } = useTranslation();
+  const isEs = locale === 'es';
   const { addToCart } = useCart();
   const navigate = useNavigate();
   const { products, loading: productsLoading } = useWixProducts();
@@ -86,6 +87,8 @@ export const UrnaBiodegradableLanding = () => {
     col2: 0,
     col3: 0,
   });
+  // Per-card variant selection inside the #catalogo carousel
+  const [carouselVariantMap, setCarouselVariantMap] = useState({});
 
   // Hero scroll parallax for the two clean studio urns (NO rotation so isometric 3D lines stay parallel)
   const heroRef = useRef(null);
@@ -114,11 +117,39 @@ export const UrnaBiodegradableLanding = () => {
       'https://static.wixstatic.com/media/45119e_b29071730d57411e80628960675d4a04~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
   };
 
-  // Hero Dual-Product Visual Pairs with Hover Detail Metadata
+  // Exact Wix variant choice corresponding to each CLEAN_URN_CUTOUTS default studio render
+  const CLEAN_URN_DEFAULT_VARIANT = {
+    'flore-urns': 'TURTLE',
+    'aqua-urn': 'GOLD',
+    'iris-urn': 'PINK',
+    'terra-urn': 'PURPLE',
+    'angel-urn': 'GOLD',
+  };
+
+  // Color hex map for Wix variant choice labels
+  const VARIANT_HEX_MAP = {
+    'GOLD': '#C4A97D',
+    'GINKGO GOLD': '#D4B475',
+    'GINKGO GLOD': '#D4B475',
+    'GINKO GOLD': '#D4B475',
+    'GINKGO': '#E5A9A9',
+    'GINKO': '#E5A9A9',
+    'TURTLE': '#2B9EB3',
+    'OCEAN': '#5B9AA9',
+    'SOFT BLUE': '#8BB8C9',
+    'DEEP BLUE': '#1C7C9C',
+    'PINK': '#E08FA3',
+    'SOFT PINK': '#E8BBC5',
+    'PURPLE': '#9B84B3',
+  };
+
+  // Hero Dual-Product Visual Pairs with Hover Detail Metadata + Real Wix Variant Linking
   const heroVisualPairs = {
     urns: {
-      label: 'Agua & Mar',
-      caption: 'Pasa el cursor sobre cada urna para ver sus detalles',
+      label: isEs ? 'Agua & Mar' : 'Water & Sea',
+      caption: isEs
+        ? 'Pasa el cursor sobre cada urna para ver sus detalles'
+        : 'Hover over each urn to explore its details',
       slug: 'aqua-urn',
       leftImg:
         'https://static.wixstatic.com/media/45119e_48478600018f46ffb3f1ac569e733471~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
@@ -129,58 +160,78 @@ export const UrnaBiodegradableLanding = () => {
       leftDetail: {
         id: '4d71b043-1af4-8fa4-4a2c-c30289462282',
         slug: 'aqua-urn',
+        variantChoice: 'GOLD',
+        variantId: '4e430585-a945-4f93-a893-4d89e63e35bf',
         name: 'Kamibi Aqua',
-        band: 'Banda Golden Leaf',
+        band: isEs ? 'Banda Golden Leaf (GOLD)' : 'Golden Leaf Band (GOLD)',
         hex: '#C4A97D',
         price: 76.5,
         oldPrice: 90.0,
-        chips: ['Flotación + Mar', '14" × 12" × 3"', 'Cabina TSA'],
+        chips: isEs
+          ? ['Flotación + Mar', '14" × 12" × 3"', 'Cabina TSA']
+          : ['Sea Floatation', '14" × 12" × 3"', 'TSA Carry-On'],
       },
       rightDetail: {
         id: 'f9c09eac-dee0-50ec-1fd8-e591754fdb0a',
         slug: 'flore-urns',
+        variantChoice: 'TURTLE',
+        variantId: '69dda58d-b0fd-46b2-a287-0e8abe362c73',
         name: 'Kamibi Flore',
-        band: 'Banda Turtle Floral',
+        band: isEs ? 'Banda Turtle Floral (TURTLE)' : 'Turtle Floral Band (TURTLE)',
         hex: '#2B9EB3',
         price: 76.5,
         oldPrice: 90.0,
-        chips: ['Agua & Tierra', 'Pétalos Reales', 'Kit Ritual'],
+        chips: isEs
+          ? ['Agua & Tierra', 'Pétalos Reales', 'Kit Ritual']
+          : ['Water & Earth', 'Real Petals', 'Ritual Kit'],
       },
     },
     earth: {
-      label: 'Tierra & Bosque',
-      caption: 'Pasa el cursor sobre cada urna para ver sus detalles',
+      label: isEs ? 'Tierra & Bosque' : 'Earth & Forest',
+      caption: isEs
+        ? 'Pasa el cursor sobre cada urna para ver sus detalles'
+        : 'Hover over each urn to explore its details',
       slug: 'terra-urn',
       leftImg:
         'https://static.wixstatic.com/media/45119e_277f4849b55642b1a9c570a911f20d37~mv2.png/v1/fit/w_1000,h_1000,q_90/file.png',
       rightImg:
         'https://static.wixstatic.com/media/45119e_4515ed8dce4f4ea28b7bfeb68eac9066~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
       leftName: 'Kamibi Terra (Botanical)',
-      rightName: 'Kamibi Iris (Sakura)',
+      rightName: 'Kamibi Iris (Pink)',
       leftDetail: {
         id: 'b4fd86df-d446-0993-f324-d5d13eface16',
         slug: 'terra-urn',
+        variantChoice: 'PURPLE',
+        variantId: '4be466fd-4b58-496e-aaee-04274dfa7d7f',
         name: 'Kamibi Terra',
-        band: 'Eucalyptus Botanical',
+        band: isEs ? 'Banda Botánica (PURPLE)' : 'Botanical Band (PURPLE)',
         hex: '#8B9E8B',
         price: 90.0,
         oldPrice: null,
-        chips: ['Suelo 2–4 sem', 'Fibras Puras', 'Nutre Raíces'],
+        chips: isEs
+          ? ['Suelo 2–4 sem', 'Fibras Puras', 'Nutre Raíces']
+          : ['Soil 2–4 wks', 'Pure Fibers', 'Nourishes Roots'],
       },
       rightDetail: {
         id: '4d9511b1-1f04-1057-e379-1d7f2030933c',
         slug: 'iris-urn',
+        variantChoice: 'PINK',
+        variantId: 'be0fed5b-d2e4-4752-b154-d05c5374b127',
         name: 'Kamibi Iris',
-        band: 'Sakura Blossom',
-        hex: '#E2B4BD',
+        band: isEs ? 'Banda Sakura Rose (PINK)' : 'Sakura Rose Band (PINK)',
+        hex: '#E08FA3',
         price: 76.5,
         oldPrice: 90.0,
-        chips: ['Tierra & Agua', '100% Orgánica', 'Cabina TSA'],
+        chips: isEs
+          ? ['Tierra & Agua', '100% Orgánica', 'Cabina TSA']
+          : ['Earth & Water', '100% Organic', 'TSA Carry-On'],
       },
     },
     minis: {
-      label: 'Mini Sets (×4)',
-      caption: 'Pasa el cursor sobre cada set para ver sus detalles',
+      label: isEs ? 'Mini Sets (×4)' : 'Mini Sets (×4)',
+      caption: isEs
+        ? 'Pasa el cursor sobre cada set para ver sus detalles'
+        : 'Hover over each set to explore its details',
       slug: 'mini-biodegradables-urn-set',
       leftImg:
         'https://static.wixstatic.com/media/45119e_d62bb5591c674265a6deee5eb3fa4985~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
@@ -191,34 +242,44 @@ export const UrnaBiodegradableLanding = () => {
       leftDetail: {
         id: 'f843aff9-c2d4-5a9f-a272-9fddf64c68e5',
         slug: 'mini-biodegradables-urn-set',
+        variantChoice: null,
+        variantId: '00000000-0000-0000-0000-000000000000',
         name: 'Mini Set Flore',
-        band: 'Set Familiar × 4 Urnas',
+        band: isEs ? 'Set Familiar × 4 Urnas' : 'Family Sharing Set × 4 Urns',
         hex: '#8B9E8B',
         price: 49.99,
         oldPrice: null,
-        chips: ['4 Mini Urnas', 'Para Compartir', 'Kit Incluido'],
+        chips: isEs
+          ? ['4 Mini Urnas', 'Para Compartir', 'Kit Incluido']
+          : ['4 Mini Urns', 'For Sharing', 'Kit Included'],
       },
       rightDetail: {
         id: '25f910fe-08a8-3004-4b99-579d88e4e240',
         slug: 'mini-urn-set-ocean-biodegradables',
+        variantChoice: null,
+        variantId: '00000000-0000-0000-0000-000000000000',
         name: 'Mini Set Ocean',
-        band: 'Set Marino × 4 Urnas',
+        band: isEs ? 'Set Marino × 4 Urnas' : 'Ocean Sharing Set × 4 Urns',
         hex: '#7BA7B5',
         price: 49.99,
         oldPrice: null,
-        chips: ['4 Mini Urnas', 'Agua y Tierra', 'Cabina TSA'],
+        chips: isEs
+          ? ['4 Mini Urnas', 'Agua y Tierra', 'Cabina TSA']
+          : ['4 Mini Urns', 'Water & Earth', 'TSA Carry-On'],
       },
     },
   };
 
   const activeHero = heroVisualPairs[heroPair];
 
-  // Card 2 Interactive Band Showcase (100% Pure Clean Urn Cutouts)
+  // Card 2 Interactive Band Showcase (100% Pure Clean Urn Cutouts + Exact Variant Linking)
   const bandShowcase = [
     {
-      name: 'Eucalyptus Botanical',
+      name: isEs ? 'Botánica Purple' : 'Botanical Purple',
       model: 'Terra Urn • $90.00 USD',
       slug: 'terra-urn',
+      variantChoice: 'PURPLE',
+      variantId: '4be466fd-4b58-496e-aaee-04274dfa7d7f',
       hex: '#8B9E8B',
       img: 'https://static.wixstatic.com/media/45119e_277f4849b55642b1a9c570a911f20d37~mv2.png/v1/fit/w_1000,h_1000,q_90/file.png',
     },
@@ -226,6 +287,8 @@ export const UrnaBiodegradableLanding = () => {
       name: 'Turtle Floral',
       model: 'Flore Urn • $76.50 USD',
       slug: 'flore-urns',
+      variantChoice: 'TURTLE',
+      variantId: '69dda58d-b0fd-46b2-a287-0e8abe362c73',
       hex: '#2B9EB3',
       img: 'https://static.wixstatic.com/media/45119e_44f8f91ccd1b439098bf5760374cc702~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
     },
@@ -233,20 +296,26 @@ export const UrnaBiodegradableLanding = () => {
       name: 'Golden Leaf',
       model: 'Aqua Urn • $76.50 USD',
       slug: 'aqua-urn',
+      variantChoice: 'GOLD',
+      variantId: '4e430585-a945-4f93-a893-4d89e63e35bf',
       hex: '#C4A97D',
       img: 'https://static.wixstatic.com/media/45119e_48478600018f46ffb3f1ac569e733471~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
     },
     {
-      name: 'Sakura Blossom',
+      name: isEs ? 'Sakura Rose (Pink)' : 'Sakura Rose (Pink)',
       model: 'Iris Urn • $76.50 USD',
       slug: 'iris-urn',
-      hex: '#E2B4BD',
+      variantChoice: 'PINK',
+      variantId: 'be0fed5b-d2e4-4752-b154-d05c5374b127',
+      hex: '#E08FA3',
       img: 'https://static.wixstatic.com/media/45119e_4515ed8dce4f4ea28b7bfeb68eac9066~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
     },
     {
-      name: 'Deep Ocean',
+      name: 'Deep Blue',
       model: 'Aqua Urn • $76.50 USD',
       slug: 'aqua-urn',
+      variantChoice: 'DEEP BLUE',
+      variantId: '173b161b-7848-42a7-abbb-3027a177af5c',
       hex: '#1C7C9C',
       img: 'https://static.wixstatic.com/media/45119e_5d507d8460784c628298d2c49edaac3e~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
     },
@@ -254,6 +323,8 @@ export const UrnaBiodegradableLanding = () => {
       name: 'Angel Gold',
       model: 'Angel Urn • $90.00 USD',
       slug: 'angel-urn',
+      variantChoice: 'GOLD',
+      variantId: '743614c3-9a2a-41d0-95b7-7ac74c23cc58',
       hex: '#D4BC94',
       img: 'https://static.wixstatic.com/media/45119e_6fee7c273f3f487aba1e9f9e8aee9a72~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
     },
@@ -264,65 +335,101 @@ export const UrnaBiodegradableLanding = () => {
     {
       key: 'col1',
       indexNum: '01',
-      envTag: 'Agua & Mar',
+      envTag: isEs ? 'Agua & Mar' : 'Water & Sea',
       theme: 'water',
       badge: '−15% OFF',
-      subtitle: 'Inmersión serena en mar, río o lago y entierro orgánico',
+      subtitle: isEs
+        ? 'Inmersión serena en mar, río o lago y entierro orgánico'
+        : 'Serene immersion in ocean, river, or lake and organic burial',
       price: 76.5,
       originalPrice: 90.0,
       specs: [
-        { val: '3–5 min', label: 'Biodegradación' },
-        { val: '220 in³', label: 'Capacidad Adulto' },
-        { val: 'Cabina OK', label: 'Vuelo TSA' },
+        { val: '3–5 min', label: isEs ? 'Biodegradación' : 'Water Dissolution' },
+        { val: '220 in³', label: isEs ? 'Capacidad Adulto' : 'Adult Capacity' },
+        { val: isEs ? 'Cabina OK' : 'Carry-On', label: isEs ? 'Vuelo TSA' : 'TSA Approved' },
       ],
       swatches: [
         {
           label: 'Aqua Gold',
           modelTitle: 'Kamibi Aqua',
-          editionSub: 'Banda Golden Leaf · Agua y Tierra',
+          editionSub: isEs
+            ? 'Banda Gold · Agua y Tierra'
+            : 'Gold Band · Water & Earth',
           hex: '#C4A97D',
           slug: 'aqua-urn',
           id: '4d71b043-1af4-8fa4-4a2c-c30289462282',
+          variantChoice: 'GOLD',
+          variantId: '4e430585-a945-4f93-a893-4d89e63e35bf',
           name: 'AQUA BIODEGRADABLE URN',
           img: 'https://static.wixstatic.com/media/45119e_48478600018f46ffb3f1ac569e733471~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
         },
         {
           label: 'Flore Turtle',
           modelTitle: 'Kamibi Flore',
-          editionSub: 'Banda Turtle Floral · Agua y Tierra',
+          editionSub: isEs
+            ? 'Banda Turtle · Agua y Tierra'
+            : 'Turtle Band · Water & Earth',
           hex: '#2B9EB3',
           slug: 'flore-urns',
           id: 'f9c09eac-dee0-50ec-1fd8-e591754fdb0a',
+          variantChoice: 'TURTLE',
+          variantId: '69dda58d-b0fd-46b2-a287-0e8abe362c73',
           name: 'FLORE BIODEGRADABLE URNS',
           img: 'https://static.wixstatic.com/media/45119e_44f8f91ccd1b439098bf5760374cc702~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
         },
         {
-          label: 'Iris Sakura',
+          label: 'Iris Pink',
           modelTitle: 'Kamibi Iris',
-          editionSub: 'Banda Sakura Blossom · Agua y Tierra',
-          hex: '#E2B4BD',
+          editionSub: isEs
+            ? 'Banda Rosa (Pink) · Agua y Tierra'
+            : 'Pink Band · Water & Earth',
+          hex: '#E08FA3',
           slug: 'iris-urn',
           id: '4d9511b1-1f04-1057-e379-1d7f2030933c',
+          variantChoice: 'PINK',
+          variantId: 'be0fed5b-d2e4-4752-b154-d05c5374b127',
           name: 'IRIS BIODEGRADABLE URN',
           img: 'https://static.wixstatic.com/media/45119e_4515ed8dce4f4ea28b7bfeb68eac9066~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
         },
         {
+          label: 'Aqua Soft Pink',
+          modelTitle: 'Kamibi Aqua',
+          editionSub: isEs
+            ? 'Banda Rosa Suave (Soft Pink) · Agua y Tierra'
+            : 'Soft Pink Band · Water & Earth',
+          hex: '#E8BBC5',
+          slug: 'aqua-urn',
+          id: '4d71b043-1af4-8fa4-4a2c-c30289462282',
+          variantChoice: 'SOFT PINK',
+          variantId: 'e869e857-d2dd-40c8-a4f5-49cad8a901bd',
+          name: 'AQUA BIODEGRADABLE URN',
+          img: 'https://static.wixstatic.com/media/45119e_45fcd46337e3476c95debccbd733f914~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+        },
+        {
           label: 'Aqua Deep Blue',
           modelTitle: 'Kamibi Aqua',
-          editionSub: 'Banda Deep Ocean · Agua y Tierra',
+          editionSub: isEs
+            ? 'Banda Deep Blue · Agua y Tierra'
+            : 'Deep Blue Band · Water & Earth',
           hex: '#1C7C9C',
           slug: 'aqua-urn',
           id: '4d71b043-1af4-8fa4-4a2c-c30289462282',
+          variantChoice: 'DEEP BLUE',
+          variantId: '173b161b-7848-42a7-abbb-3027a177af5c',
           name: 'AQUA BIODEGRADABLE URN',
           img: 'https://static.wixstatic.com/media/45119e_5d507d8460784c628298d2c49edaac3e~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
         },
         {
           label: 'Iris Ginkgo',
           modelTitle: 'Kamibi Iris',
-          editionSub: 'Banda Ginkgo Leaf · Agua y Tierra',
-          hex: '#E5A9A9',
+          editionSub: isEs
+            ? 'Banda Ginkgo · Agua y Tierra'
+            : 'Ginkgo Band · Water & Earth',
+          hex: '#D8A384',
           slug: 'iris-urn',
           id: '4d9511b1-1f04-1057-e379-1d7f2030933c',
+          variantChoice: 'GINKGO',
+          variantId: '9029f582-f02a-4b91-9e04-192bf4641ec1',
           name: 'IRIS BIODEGRADABLE URN',
           img: 'https://static.wixstatic.com/media/45119e_30cc2647cbfa4613b55c9c180bd8be22~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
         },
@@ -331,65 +438,101 @@ export const UrnaBiodegradableLanding = () => {
     {
       key: 'col2',
       indexNum: '02',
-      envTag: 'Tierra & Bosque',
+      envTag: isEs ? 'Tierra & Bosque' : 'Earth & Forest',
       theme: 'earth',
-      badge: '10 Bandas',
-      subtitle: 'Fibras botánicas prensadas a mano para jardín o bosque',
+      badge: isEs ? '10 Bandas' : '10 Bands',
+      subtitle: isEs
+        ? 'Fibras botánicas prensadas a mano para jardín o bosque'
+        : 'Hand-pressed botanical fibers for forest or garden burial',
       price: 90.0,
       originalPrice: null,
       specs: [
-        { val: '2–4 sem', label: 'Integración Suelo' },
-        { val: '220 in³', label: 'Capacidad Adulto' },
-        { val: 'Cabina OK', label: 'Vuelo TSA' },
+        { val: isEs ? '2–4 sem' : '2–4 wks', label: isEs ? 'Integración Suelo' : 'Soil Return' },
+        { val: '220 in³', label: isEs ? 'Capacidad Adulto' : 'Adult Capacity' },
+        { val: isEs ? 'Cabina OK' : 'Carry-On', label: isEs ? 'Vuelo TSA' : 'TSA Approved' },
       ],
       swatches: [
         {
           label: 'Terra Botanical',
           modelTitle: 'Kamibi Terra',
-          editionSub: 'Banda Eucalyptus · Tierra y Bosque',
+          editionSub: isEs
+            ? 'Banda Botánica (Purple) · Tierra y Bosque'
+            : 'Botanical Band (Purple) · Earth & Forest',
           hex: '#8B9E8B',
           slug: 'terra-urn',
           id: 'b4fd86df-d446-0993-f324-d5d13eface16',
+          variantChoice: 'PURPLE',
+          variantId: '4be466fd-4b58-496e-aaee-04274dfa7d7f',
           name: 'TERRA BIODEGRADABLE URN',
           img: 'https://static.wixstatic.com/media/45119e_277f4849b55642b1a9c570a911f20d37~mv2.png/v1/fit/w_1000,h_1000,q_90/file.png',
         },
         {
           label: 'Angel Gold',
           modelTitle: 'Kamibi Angel',
-          editionSub: 'Banda Golden Leaf · Tierra y Agua',
+          editionSub: isEs
+            ? 'Banda Gold · Tierra y Agua'
+            : 'Gold Band · Earth & Water',
           hex: '#D4BC94',
           slug: 'angel-urn',
           id: 'a09f394c-67bf-476b-f1a9-e3d576ce6505',
+          variantChoice: 'GOLD',
+          variantId: '743614c3-9a2a-41d0-95b7-7ac74c23cc58',
           name: 'ANGEL BIODEGRADABLE URN',
           img: 'https://static.wixstatic.com/media/45119e_6fee7c273f3f487aba1e9f9e8aee9a72~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
         },
         {
           label: 'Angel Ocean',
           modelTitle: 'Kamibi Angel',
-          editionSub: 'Banda Ocean Wave · Tierra y Agua',
+          editionSub: isEs
+            ? 'Banda Ocean · Tierra y Agua'
+            : 'Ocean Band · Earth & Water',
           hex: '#7BA7B5',
           slug: 'angel-urn',
           id: 'a09f394c-67bf-476b-f1a9-e3d576ce6505',
+          variantChoice: 'OCEAN',
+          variantId: '3603a353-e46e-43c5-a70c-58c582d56ebb',
           name: 'ANGEL BIODEGRADABLE URN',
           img: 'https://static.wixstatic.com/media/45119e_055fa3d6159a47a8b60de621c43b90e1~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
         },
         {
           label: 'Angel Soft Pink',
           modelTitle: 'Kamibi Angel',
-          editionSub: 'Banda Sakura Rose · Tierra y Agua',
-          hex: '#E2B4BD',
+          editionSub: isEs
+            ? 'Banda Rosa Suave (Soft Pink) · Tierra y Agua'
+            : 'Soft Pink Band · Earth & Water',
+          hex: '#E8BBC5',
           slug: 'angel-urn',
           id: 'a09f394c-67bf-476b-f1a9-e3d576ce6505',
+          variantChoice: 'SOFT PINK',
+          variantId: '07131476-b57f-47b2-a262-d92835940506',
           name: 'ANGEL BIODEGRADABLE URN',
           img: 'https://static.wixstatic.com/media/45119e_8d3df7b505f7458a98c95c0fc4ea293e~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
         },
         {
+          label: 'Terra Pink',
+          modelTitle: 'Kamibi Terra',
+          editionSub: isEs
+            ? 'Banda Rosa (Pink) · Tierra y Bosque'
+            : 'Pink Band · Earth & Forest',
+          hex: '#E08FA3',
+          slug: 'terra-urn',
+          id: 'b4fd86df-d446-0993-f324-d5d13eface16',
+          variantChoice: 'PINK',
+          variantId: '09cda8fa-f4ec-4b33-a62a-25674fb7b695',
+          name: 'TERRA BIODEGRADABLE URN',
+          img: 'https://static.wixstatic.com/media/45119e_7a1c94ae780545e5a741810a8d7df6a2~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+        },
+        {
           label: 'Angel Deep Blue',
           modelTitle: 'Kamibi Angel',
-          editionSub: 'Banda Deep Indigo · Tierra y Agua',
+          editionSub: isEs
+            ? 'Banda Deep Blue · Tierra y Agua'
+            : 'Deep Blue Band · Earth & Water',
           hex: '#1C7C9C',
           slug: 'angel-urn',
           id: 'a09f394c-67bf-476b-f1a9-e3d576ce6505',
+          variantChoice: 'DEEP BLUE',
+          variantId: '63db2879-3485-44bd-ad5d-64fbde59d2fc',
           name: 'ANGEL BIODEGRADABLE URN',
           img: 'https://static.wixstatic.com/media/45119e_06646d5f8f6c4200aa02c9052fe7b168~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
         },
@@ -398,25 +541,31 @@ export const UrnaBiodegradableLanding = () => {
     {
       key: 'col3',
       indexNum: '03',
-      envTag: 'Set Familiar ×4',
+      envTag: isEs ? 'Set Familiar ×4' : 'Family Set ×4',
       theme: 'minis',
-      badge: 'Compartir',
-      subtitle: 'Sets de 4 mini urnas individuales para compartir el homenaje',
+      badge: isEs ? 'Compartir' : 'Sharing',
+      subtitle: isEs
+        ? 'Sets de 4 mini urnas individuales para compartir el homenaje'
+        : 'Sets of 4 individual mini urns to share the tribute with family',
       price: 49.99,
       originalPrice: null,
       specs: [
-        { val: 'Pack ×4', label: 'Para Compartir' },
-        { val: '4 × 55 in³', label: 'Capacidad Set' },
-        { val: 'Cabina OK', label: 'Vuelo TSA' },
+        { val: 'Pack ×4', label: isEs ? 'Para Compartir' : 'Sharing Set' },
+        { val: '4 × 55 in³', label: isEs ? 'Capacidad Set' : 'Set Capacity' },
+        { val: isEs ? 'Cabina OK' : 'Carry-On', label: isEs ? 'Vuelo TSA' : 'TSA Approved' },
       ],
       swatches: [
         {
           label: 'Mini Set Flore (×4)',
           modelTitle: 'Kamibi Mini Set',
-          editionSub: 'Edición Flore · 4 Mini Urnas Orgánicas',
+          editionSub: isEs
+            ? 'Edición Flore · 4 Mini Urnas Orgánicas'
+            : 'Flore Edition · 4 Organic Mini Urns',
           hex: '#8B9E8B',
           slug: 'mini-biodegradables-urn-set',
           id: 'f843aff9-c2d4-5a9f-a272-9fddf64c68e5',
+          variantChoice: null,
+          variantId: '00000000-0000-0000-0000-000000000000',
           name: 'MINI URN SET FLORE BIODEGRADABLES',
           priceOverride: 49.99,
           img: 'https://static.wixstatic.com/media/45119e_d62bb5591c674265a6deee5eb3fa4985~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
@@ -424,10 +573,14 @@ export const UrnaBiodegradableLanding = () => {
         {
           label: 'Mini Set Ocean (×4)',
           modelTitle: 'Kamibi Mini Ocean',
-          editionSub: 'Edición Ocean · 4 Mini Urnas Agua y Tierra',
+          editionSub: isEs
+            ? 'Edición Ocean · 4 Mini Urnas Agua y Tierra'
+            : 'Ocean Edition · 4 Water & Earth Mini Urns',
           hex: '#7BA7B5',
           slug: 'mini-urn-set-ocean-biodegradables',
           id: '25f910fe-08a8-3004-4b99-579d88e4e240',
+          variantChoice: null,
+          variantId: '00000000-0000-0000-0000-000000000000',
           name: 'MINI URN SET OCEAN BIODEGRADABLES',
           priceOverride: 49.99,
           img: 'https://static.wixstatic.com/media/45119e_b29071730d57411e80628960675d4a04~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
@@ -435,10 +588,14 @@ export const UrnaBiodegradableLanding = () => {
         {
           label: 'Tree of Life Bags (×2)',
           modelTitle: 'Kamibi Ash Bags',
-          editionSub: 'Pack ×2 Bolsas Solubles · Árbol de la Vida',
+          editionSub: isEs
+            ? 'Pack ×2 Bolsas Solubles · Árbol de la Vida'
+            : 'Pack ×2 Water-Soluble Bags · Tree of Life',
           hex: '#C49A6C',
           slug: 'cremation-burial-bags-tree-of-life-design-pack-of-2',
           id: 'f1d9e4d3-6ad7-70e4-cb1a-3e2999ae3818',
+          variantChoice: null,
+          variantId: '00000000-0000-0000-0000-000000000000',
           name: 'ASH BURIAL BAGS TREE OF LIFE DESIGN - Pack of 2',
           priceOverride: 12.99,
           img: 'https://static.wixstatic.com/media/45119e_b515104a49a642a1945b922955493527~mv2.png/v1/fit/w_1000,h_1000,q_90/file.png',
@@ -549,6 +706,15 @@ export const UrnaBiodegradableLanding = () => {
     if (el) el.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const navigateToProduct = (slug, variantChoice = null) => {
+    if (!slug) return;
+    if (variantChoice) {
+      navigate(`/product/${slug}?variant=${encodeURIComponent(variantChoice)}`);
+    } else {
+      navigate(`/product/${slug}`);
+    }
+  };
+
   const handleDirectBuy = (productData) => {
     const matched = products.find(
       (p) =>
@@ -556,59 +722,85 @@ export const UrnaBiodegradableLanding = () => {
         p.id === productData.id ||
         p._wixId === productData._wixId
     );
-    const itemToAdd = matched || {
-      id: productData._wixId || productData.id,
-      _wixId: productData._wixId || productData.id,
-      name: productData.name || productData.title,
-      price: productData.priceOverride ?? productData.price,
-      slug: productData.slug,
-      images: [productData.img || productData.image],
-    };
+    const chosenVariant =
+      productData.variantChoice ||
+      productData.selectedVariant ||
+      CLEAN_URN_DEFAULT_VARIANT[productData.slug] ||
+      matched?.defaultVariant ||
+      matched?.variants?.[0] ||
+      null;
 
-    addToCart(itemToAdd, 1);
-    const feedbackKey = productData.slug || productData.id;
+    const itemToAdd = matched
+      ? {
+          ...matched,
+          explicitVariantId: productData.variantId || null,
+        }
+      : {
+          id: productData._wixId || productData.id,
+          _wixId: productData._wixId || productData.id,
+          name: productData.name || productData.title,
+          price: productData.priceOverride ?? productData.price,
+          slug: productData.slug,
+          images: [productData.img || productData.image],
+          explicitVariantId: productData.variantId || null,
+        };
+
+    addToCart(itemToAdd, 1, chosenVariant);
+    const feedbackKey =
+      productData.feedbackKey ||
+      (chosenVariant ? `${productData.slug}:${chosenVariant}` : productData.slug || productData.id);
     setAddedProductId(feedbackKey);
     setTimeout(() => setAddedProductId(null), 2200);
   };
 
-  // Concise Polaroid Reviews
+  // Concise Polaroid Reviews (Bilingual ES / EN)
   const polaroidReviews = [
     {
       image: '/images/review-polaroid-1.png',
-      title: 'Paz infinita en el mar',
-      quote: 'Flotó al amanecer antes de integrarse en el océano con una calma única.',
+      title: isEs ? 'Paz infinita en el mar' : 'Infinite peace at sea',
+      quote: isEs
+        ? 'Flotó al amanecer antes de integrarse en el océano con una calma única.'
+        : 'It floated at dawn before gently dissolving into the ocean with unique serenity.',
       author: 'Elena R.',
       location: 'San Diego, CA',
       edition: 'Aqua Urn',
     },
     {
       image: '/images/review-polaroid-2.png',
-      title: 'Regresó a la tierra',
-      quote: 'Escribir nuestras cartas en las hojas biodegradables fue profundamente sanador.',
+      title: isEs ? 'Regresó a la tierra' : 'Returned to the earth',
+      quote: isEs
+        ? 'Escribir nuestras cartas en las hojas biodegradables fue profundamente sanador.'
+        : 'Writing our farewell notes on the biodegradable cards was deeply healing.',
       author: 'Marcus & Claudia',
       location: 'Austin, TX',
       edition: 'Terra Urn',
     },
     {
       image: '/images/review-polaroid-3.png',
-      title: 'Un lago en calma',
-      quote: 'Una despedida digna, silenciosa y 100% libre de químicos.',
+      title: isEs ? 'Un lago en calma' : 'A calm mountain lake',
+      quote: isEs
+        ? 'Una despedida digna, silenciosa y 100% libre de químicos.'
+        : 'A dignified, quiet, and 100% chemical-free farewell.',
       author: 'Javier L.',
       location: 'Vancouver, BC',
       edition: 'Angel Urn',
     },
     {
       image: '/images/review-polaroid-4.png',
-      title: 'Cuatro hogares unidos',
-      quote: 'El Mini Set nos permitió a mis hermanos compartir su recuerdo en cada ciudad.',
+      title: isEs ? 'Cuatro hogares unidos' : 'Four homes united',
+      quote: isEs
+        ? 'El Mini Set nos permitió a mis hermanos compartir su recuerdo en cada ciudad.'
+        : 'The Mini Set allowed my siblings and me to share her memory across cities.',
       author: 'Sofía V.',
       location: 'Miami, FL',
       edition: 'Mini Set Flore',
     },
     {
       image: '/images/hero-earth-ceremony.png',
-      title: 'Belleza artesanal',
-      quote: 'Parece una escultura orgánica. La banda Turtle es aún más linda en persona.',
+      title: isEs ? 'Belleza artesanal' : 'Handcrafted beauty',
+      quote: isEs
+        ? 'Parece una escultura orgánica. La banda Turtle es aún más linda en persona.'
+        : 'It looks like an organic sculpture. The Turtle band is even lovelier in person.',
       author: 'Valentina M.',
       location: 'Toronto, ON',
       edition: 'Flore Urn',
@@ -632,17 +824,28 @@ export const UrnaBiodegradableLanding = () => {
             <div className="kmb-brand-lockup">
               <span className="kmb-brand-leaf">✦</span>
               <span className="kmb-brand-word">KAMIBI</span>
-              <span className="kmb-brand-series">COLECCIÓN ORGÁNICA</span>
+              <span className="kmb-brand-series">
+                {isEs ? 'COLECCIÓN ORGÁNICA' : 'ORGANIC COLLECTION'}
+              </span>
             </div>
 
             <h1 className="kmb-apple-h1">
-              Regresa a la naturaleza.
-              <span>Nada menos.</span>
+              {isEs ? 'Regresa a la naturaleza.' : 'Return to nature.'}
+              <span>{isEs ? 'Nada menos.' : 'Nothing less.'}</span>
             </h1>
 
             <p className="kmb-apple-price-line">
-              Desde <strong>$76.50 USD</strong> en Urnas Adulto o{' '}
-              <strong>$49.99 USD</strong> en Mini Sets. Envío gratis.
+              {isEs ? (
+                <>
+                  Desde <strong>$76.50 USD</strong> en Urnas Adulto o{' '}
+                  <strong>$49.99 USD</strong> en Mini Sets. Envío gratis.
+                </>
+              ) : (
+                <>
+                  From <strong>$76.50 USD</strong> on Adult Urns or{' '}
+                  <strong>$49.99 USD</strong> on Mini Sets. Free shipping.
+                </>
+              )}
             </p>
 
             <div className="kmb-apple-cta-group">
@@ -650,7 +853,7 @@ export const UrnaBiodegradableLanding = () => {
                 onClick={() => scrollToSection('comparativa')}
                 className="kmb-pill-cta-solid"
               >
-                Comprar
+                {isEs ? 'Comprar' : 'Buy'}
               </button>
 
               <div className="kmb-apple-sublinks">
@@ -658,13 +861,13 @@ export const UrnaBiodegradableLanding = () => {
                   onClick={() => scrollToSection('catalogo')}
                   className="kmb-apple-link"
                 >
-                  Ver todos los modelos <span>›</span>
+                  {isEs ? 'Ver todos los modelos' : 'View all models'} <span>›</span>
                 </button>
                 <button
                   onClick={() => setActiveModal('how-it-works')}
                   className="kmb-apple-link"
                 >
-                  Cómo funciona <span>ⓘ</span>
+                  {isEs ? 'Cómo funciona' : 'How it works'} <span>ⓘ</span>
                 </button>
               </div>
             </div>
@@ -904,7 +1107,12 @@ export const UrnaBiodegradableLanding = () => {
                   }`}
                   onMouseEnter={() => setHoveredHeroUrn('left')}
                   onMouseLeave={() => setHoveredHeroUrn(null)}
-                  onClick={() => navigate(`/product/${activeHero.leftDetail.slug}`)}
+                  onClick={() =>
+                    navigateToProduct(
+                      activeHero.leftDetail.slug,
+                      activeHero.leftDetail.variantChoice
+                    )
+                  }
                 >
                   <img
                     src={activeHero.leftImg}
@@ -961,22 +1169,30 @@ export const UrnaBiodegradableLanding = () => {
                               handleDirectBuy({
                                 ...activeHero.leftDetail,
                                 img: activeHero.leftImg,
+                                feedbackKey: `hero-left-${activeHero.leftDetail.slug}`,
                               })
                             }
                             className="kmb-uhc-buy"
                           >
-                            {addedProductId === activeHero.leftDetail.slug
-                              ? '✓ Añadido'
-                              : '+ Comprar'}
+                            {addedProductId === `hero-left-${activeHero.leftDetail.slug}`
+                              ? isEs
+                                ? '✓ Añadido'
+                                : '✓ Added'
+                              : isEs
+                              ? '+ Comprar'
+                              : '+ Buy'}
                           </button>
                           <button
                             type="button"
                             onClick={() =>
-                              navigate(`/product/${activeHero.leftDetail.slug}`)
+                              navigateToProduct(
+                                activeHero.leftDetail.slug,
+                                activeHero.leftDetail.variantChoice
+                              )
                             }
                             className="kmb-uhc-link"
                           >
-                            Ver <span>→</span>
+                            {isEs ? 'Ver' : 'View'} <span>→</span>
                           </button>
                         </div>
                       </motion.div>
@@ -996,7 +1212,12 @@ export const UrnaBiodegradableLanding = () => {
                   }`}
                   onMouseEnter={() => setHoveredHeroUrn('right')}
                   onMouseLeave={() => setHoveredHeroUrn(null)}
-                  onClick={() => navigate(`/product/${activeHero.rightDetail.slug}`)}
+                  onClick={() =>
+                    navigateToProduct(
+                      activeHero.rightDetail.slug,
+                      activeHero.rightDetail.variantChoice
+                    )
+                  }
                 >
                   <img
                     src={activeHero.rightImg}
@@ -1053,22 +1274,30 @@ export const UrnaBiodegradableLanding = () => {
                               handleDirectBuy({
                                 ...activeHero.rightDetail,
                                 img: activeHero.rightImg,
+                                feedbackKey: `hero-right-${activeHero.rightDetail.slug}`,
                               })
                             }
                             className="kmb-uhc-buy"
                           >
-                            {addedProductId === activeHero.rightDetail.slug
-                              ? '✓ Añadido'
-                              : '+ Comprar'}
+                            {addedProductId === `hero-right-${activeHero.rightDetail.slug}`
+                              ? isEs
+                                ? '✓ Añadido'
+                                : '✓ Added'
+                              : isEs
+                              ? '+ Comprar'
+                              : '+ Buy'}
                           </button>
                           <button
                             type="button"
                             onClick={() =>
-                              navigate(`/product/${activeHero.rightDetail.slug}`)
+                              navigateToProduct(
+                                activeHero.rightDetail.slug,
+                                activeHero.rightDetail.variantChoice
+                              )
                             }
                             className="kmb-uhc-link"
                           >
-                            Ver <span>→</span>
+                            {isEs ? 'Ver' : 'View'} <span>→</span>
                           </button>
                         </div>
                       </motion.div>
@@ -1125,7 +1354,7 @@ export const UrnaBiodegradableLanding = () => {
                             ? 'https://static.wixstatic.com/media/45119e_48478600018f46ffb3f1ac569e733471~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png'
                             : 'https://static.wixstatic.com/media/45119e_277f4849b55642b1a9c570a911f20d37~mv2.png/v1/fit/w_1000,h_1000,q_90/file.png'
                         }
-                        alt="Urna Biodegradable Kamibi"
+                        alt={isEs ? 'Urna Biodegradable Kamibi' : 'Kamibi Biodegradable Urn'}
                         className="kmb-af-big-urn"
                       />
                     </motion.div>
@@ -1133,11 +1362,23 @@ export const UrnaBiodegradableLanding = () => {
                 </div>
 
                 <div className="kmb-af-copy">
-                  <span className="kmb-af-eyebrow">Diseñada para florecer.</span>
+                  <span className="kmb-af-eyebrow">
+                    {isEs ? 'Diseñada para florecer.' : 'Designed to bloom.'}
+                  </span>
                   <h2 className="kmb-af-headline">
-                    Se integra con el{' '}
-                    <em>{cardBioMode === 'water' ? 'océano' : 'bosque'}</em> sin dejar
-                    rastro químico.
+                    {isEs ? (
+                      <>
+                        Se integra con el{' '}
+                        <em>{cardBioMode === 'water' ? 'océano' : 'bosque'}</em> sin dejar
+                        rastro químico.
+                      </>
+                    ) : (
+                      <>
+                        Integrates with the{' '}
+                        <em>{cardBioMode === 'water' ? 'ocean' : 'forest'}</em> leaving
+                        zero chemical trace.
+                      </>
+                    )}
                   </h2>
 
                   <div className="kmb-af-pills">
@@ -1146,14 +1387,14 @@ export const UrnaBiodegradableLanding = () => {
                       onClick={() => setCardBioMode('water')}
                       className={`kmb-af-pill ${cardBioMode === 'water' ? 'active' : ''}`}
                     >
-                      Agua & Mar
+                      {isEs ? 'Agua & Mar' : 'Water & Sea'}
                     </button>
                     <button
                       type="button"
                       onClick={() => setCardBioMode('earth')}
                       className={`kmb-af-pill ${cardBioMode === 'earth' ? 'active' : ''}`}
                     >
-                      Tierra & Árbol
+                      {isEs ? 'Tierra & Árbol' : 'Earth & Tree'}
                     </button>
                   </div>
                 </div>
@@ -1173,7 +1414,10 @@ export const UrnaBiodegradableLanding = () => {
                       transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
                       className="kmb-af-urn-stage"
                       onClick={() =>
-                        navigate(`/product/${bandShowcase[activeBandIdx].slug}`)
+                        navigateToProduct(
+                          bandShowcase[activeBandIdx].slug,
+                          bandShowcase[activeBandIdx].variantChoice
+                        )
                       }
                       style={{ cursor: 'pointer' }}
                     >
@@ -1187,10 +1431,21 @@ export const UrnaBiodegradableLanding = () => {
                 </div>
 
                 <div className="kmb-af-copy">
-                  <span className="kmb-af-eyebrow">100% Fibras Orgánicas.</span>
+                  <span className="kmb-af-eyebrow">
+                    {isEs ? '100% Fibras Orgánicas.' : '100% Organic Fibers.'}
+                  </span>
                   <h2 className="kmb-af-headline">
-                    Diez bandas botánicas.{' '}
-                    <em>Cero plásticos ni metales.</em>
+                    {isEs ? (
+                      <>
+                        Diez bandas botánicas.{' '}
+                        <em>Cero plásticos ni metales.</em>
+                      </>
+                    ) : (
+                      <>
+                        Ten botanical bands.{' '}
+                        <em>Zero plastics or metals.</em>
+                      </>
+                    )}
                   </h2>
 
                   <div className="kmb-band-swatch-row">
@@ -1224,17 +1479,28 @@ export const UrnaBiodegradableLanding = () => {
                   <div className="kmb-brand-lockup kmb-lockup-left">
                     <span className="kmb-brand-leaf">✦</span>
                     <span className="kmb-brand-word">KAMIBI</span>
-                    <span className="kmb-brand-series">COLECCIÓN COMPLETA</span>
+                    <span className="kmb-brand-series">
+                      {isEs ? 'COLECCIÓN COMPLETA' : 'COMPLETE COLLECTION'}
+                    </span>
                   </div>
 
                   <h2 className="kmb-ap-headline">
-                    Todo lo que buscas.
-                    <span>Por menos.</span>
+                    {isEs ? 'Todo lo que buscas.' : 'Everything you need.'}
+                    <span>{isEs ? 'Por menos.' : 'For less.'}</span>
                   </h2>
 
                   <p className="kmb-ap-sub">
-                    Urnas Adulto desde <strong>$76.50 USD</strong> o Sets de 4 Mini
-                    Urnas para compartir en familia por <strong>$49.99 USD</strong>.
+                    {isEs ? (
+                      <>
+                        Urnas Adulto desde <strong>$76.50 USD</strong> o Sets de 4 Mini
+                        Urnas para compartir en familia por <strong>$49.99 USD</strong>.
+                      </>
+                    ) : (
+                      <>
+                        Adult Urns from <strong>$76.50 USD</strong> or Sets of 4 Mini
+                        Urns for family sharing at <strong>$49.99 USD</strong>.
+                      </>
+                    )}
                   </p>
 
                   <div className="kmb-ap-actions">
@@ -1242,13 +1508,13 @@ export const UrnaBiodegradableLanding = () => {
                       onClick={() => scrollToSection('comparativa')}
                       className="kmb-pill-cta-solid"
                     >
-                      Comprar
+                      {isEs ? 'Comprar' : 'Buy'}
                     </button>
                     <button
                       onClick={() => setActiveModal('how-it-works')}
                       className="kmb-apple-link"
                     >
-                      Más información <span>›</span>
+                      {isEs ? 'Más información' : 'Learn more'} <span>›</span>
                     </button>
                   </div>
                 </div>
@@ -1260,31 +1526,35 @@ export const UrnaBiodegradableLanding = () => {
                       name: 'Kamibi Aqua',
                       price: '$76.50',
                       slug: 'aqua-urn',
+                      variantChoice: 'GOLD',
                       img: 'https://static.wixstatic.com/media/45119e_48478600018f46ffb3f1ac569e733471~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
                     },
                     {
                       name: 'Kamibi Flore',
                       price: '$76.50',
                       slug: 'flore-urns',
+                      variantChoice: 'TURTLE',
                       img: 'https://static.wixstatic.com/media/45119e_44f8f91ccd1b439098bf5760374cc702~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
                     },
                     {
                       name: 'Kamibi Iris',
                       price: '$76.50',
                       slug: 'iris-urn',
+                      variantChoice: 'PINK',
                       img: 'https://static.wixstatic.com/media/45119e_4515ed8dce4f4ea28b7bfeb68eac9066~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
                     },
                     {
                       name: 'Mini Set (×4)',
                       price: '$49.99',
                       slug: 'mini-biodegradables-urn-set',
+                      variantChoice: null,
                       img: 'https://static.wixstatic.com/media/45119e_d62bb5591c674265a6deee5eb3fa4985~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
                     },
                   ].map((item, i) => (
                     <div
                       key={i}
                       className="kmb-ap-studio-tile"
-                      onClick={() => navigate(`/product/${item.slug}`)}
+                      onClick={() => navigateToProduct(item.slug, item.variantChoice)}
                     >
                       <img src={item.img} alt={item.name} />
                       <div className="kmb-ap-tile-meta">
@@ -1306,8 +1576,12 @@ export const UrnaBiodegradableLanding = () => {
       <section className="kmb-visual-trio-section" id="comparativa">
         <div className="kmb-container">
           <div className="kmb-vt-header">
-            <span className="kmb-vt-eyebrow">Tres ediciones orgánicas</span>
-            <h2 className="kmb-compare-main-title">¿Qué Kamibi elegir?</h2>
+            <span className="kmb-vt-eyebrow">
+              {isEs ? 'Tres ediciones orgánicas' : 'Three organic editions'}
+            </span>
+            <h2 className="kmb-compare-main-title">
+              {isEs ? '¿Qué Kamibi elegir?' : 'Which Kamibi is right for you?'}
+            </h2>
           </div>
 
           <div className="kmb-visual-trio-grid">
@@ -1315,6 +1589,7 @@ export const UrnaBiodegradableLanding = () => {
               const activeIdx = compSwatchIdx[col.key] || 0;
               const activeSwatch = col.swatches[activeIdx] || col.swatches[0];
               const displayPrice = activeSwatch.priceOverride ?? col.price;
+              const swatchFeedbackKey = `${activeSwatch.slug}:${activeSwatch.variantChoice || ''}`;
 
               return (
                 <div
@@ -1325,7 +1600,9 @@ export const UrnaBiodegradableLanding = () => {
                   {/* TOP STUDIO PEDESTAL STAGE: ORGANIC ATMOSPHERE + DELICATE SVG + FLOATING 3D URN */}
                   <div
                     className={`kmb-vt-stage kmb-vt-stage--${col.theme}`}
-                    onClick={() => navigate(`/product/${activeSwatch.slug}`)}
+                    onClick={() =>
+                      navigateToProduct(activeSwatch.slug, activeSwatch.variantChoice)
+                    }
                   >
                     {/* Dynamic Swatch Aura + Delicate Botanical/Coastal SVG Watermark */}
                     <div className="kmb-vt-ambient-glow" />
@@ -1460,7 +1737,9 @@ export const UrnaBiodegradableLanding = () => {
                     <div className="kmb-vt-heading-block">
                       <h3
                         className="kmb-vt-title"
-                        onClick={() => navigate(`/product/${activeSwatch.slug}`)}
+                        onClick={() =>
+                          navigateToProduct(activeSwatch.slug, activeSwatch.variantChoice)
+                        }
                       >
                         {activeSwatch.modelTitle}
                       </h3>
@@ -1482,7 +1761,9 @@ export const UrnaBiodegradableLanding = () => {
                     {/* Price Lockup + Action Buttons */}
                     <div className="kmb-vt-cta-row">
                       <div className="kmb-vt-price-block">
-                        <span className="kmb-vt-price-caption">Precio</span>
+                        <span className="kmb-vt-price-caption">
+                          {isEs ? 'Precio' : 'Price'}
+                        </span>
                         <div className="kmb-vt-price-values">
                           <strong>${Number(displayPrice).toFixed(2)}</strong>
                           <small>USD</small>
@@ -1499,23 +1780,30 @@ export const UrnaBiodegradableLanding = () => {
                             handleDirectBuy({
                               ...activeSwatch,
                               price: displayPrice,
+                              feedbackKey: swatchFeedbackKey,
                             })
                           }
                           className={`kmb-pill-cta-solid kmb-vt-buy-btn ${
-                            addedProductId === activeSwatch.slug ? 'added' : ''
+                            addedProductId === swatchFeedbackKey ? 'added' : ''
                           }`}
                         >
-                          {addedProductId === activeSwatch.slug
-                            ? '✓ Añadido'
-                            : 'Comprar'}
+                          {addedProductId === swatchFeedbackKey
+                            ? isEs
+                              ? '✓ Añadido'
+                              : '✓ Added'
+                            : isEs
+                            ? 'Comprar'
+                            : 'Buy'}
                         </button>
 
                         <button
                           type="button"
-                          onClick={() => navigate(`/product/${activeSwatch.slug}`)}
+                          onClick={() =>
+                            navigateToProduct(activeSwatch.slug, activeSwatch.variantChoice)
+                          }
                           className="kmb-vt-detail-btn"
-                          title="Ver ficha completa"
-                          aria-label="Ver detalles del producto"
+                          title={isEs ? 'Ver ficha completa' : 'View full details'}
+                          aria-label={isEs ? 'Ver detalles del producto' : 'View product details'}
                         >
                           ↗
                         </button>
@@ -1535,13 +1823,15 @@ export const UrnaBiodegradableLanding = () => {
       <section className="kmb-carousel-section" id="catalogo">
         <div className="kmb-container">
           <div className="kmb-carousel-header">
-            <h2 className="kmb-carousel-title">Toda la colección.</h2>
+            <h2 className="kmb-carousel-title">
+              {isEs ? 'Toda la colección.' : 'The full collection.'}
+            </h2>
 
             <div className="kmb-carousel-controls-row">
               <div className="kmb-carousel-filters">
                 {[
-                  { id: 'all', label: 'Todos' },
-                  { id: 'urns', label: 'Urnas ($76.50 – $90)' },
+                  { id: 'all', label: isEs ? 'Todos' : 'All' },
+                  { id: 'urns', label: isEs ? 'Urnas ($76.50 – $90)' : 'Urns ($76.50 – $90)' },
                   { id: 'minis', label: 'Mini Sets ($49.99)' },
                   { id: 'bags', label: 'Bags ($12.99)' },
                 ].map((f) => (
@@ -1562,7 +1852,7 @@ export const UrnaBiodegradableLanding = () => {
                   onClick={() => slideCarouselBy(-1)}
                   disabled={carouselProgress <= 0.02 && maxScroll > 0}
                   className="kmb-arrow-btn"
-                  aria-label="Anterior"
+                  aria-label={isEs ? 'Anterior' : 'Previous'}
                 >
                   ‹
                 </button>
@@ -1570,7 +1860,7 @@ export const UrnaBiodegradableLanding = () => {
                   onClick={() => slideCarouselBy(1)}
                   disabled={carouselProgress >= 0.98 && maxScroll > 0}
                   className="kmb-arrow-btn"
-                  aria-label="Siguiente"
+                  aria-label={isEs ? 'Siguiente' : 'Next'}
                 >
                   ›
                 </button>
@@ -1589,7 +1879,9 @@ export const UrnaBiodegradableLanding = () => {
             onPointerLeave={handleCarouselPointerUp}
           >
             {productsLoading ? (
-              <div className="kmb-carousel-loading">Cargando colección...</div>
+              <div className="kmb-carousel-loading">
+                {isEs ? 'Cargando colección...' : 'Loading collection...'}
+              </div>
             ) : (
               <motion.div
                 ref={trackRef}
@@ -1597,84 +1889,151 @@ export const UrnaBiodegradableLanding = () => {
                 className="kmb-spring-carousel-track"
               >
                 <AnimatePresence mode="popLayout">
-                  {filteredCarouselProducts.map((prod, idx) => (
-                    <motion.div
-                      layout
-                      key={prod.id}
-                      initial={{ opacity: 0, scale: 0.94 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.9 }}
-                      transition={{
-                        duration: 0.5,
-                        delay: idx * 0.04,
-                        ease: [0.16, 1, 0.3, 1],
-                      }}
-                      className="kmb-product-card"
-                    >
-                      <div
-                        className="kmb-prod-img-wrap"
-                        onClick={() => {
-                          if (!isDraggingCarousel) navigate(`/product/${prod.slug}`);
+                  {filteredCarouselProducts.map((prod, idx) => {
+                    const activeVarLabel =
+                      carouselVariantMap[prod.slug] ||
+                      CLEAN_URN_DEFAULT_VARIANT[prod.slug] ||
+                      prod.defaultVariant ||
+                      prod.variants?.[0] ||
+                      null;
+                    const activeVo =
+                      prod.variantObjects?.find((v) => v.label === activeVarLabel) ||
+                      null;
+                    const cardDisplayImg =
+                      activeVo?.cutoutImage ||
+                      CLEAN_URN_CUTOUTS[prod.slug] ||
+                      activeVo?.image ||
+                      prod.images?.[0];
+                    const catFeedbackKey = `cat-${prod.slug}-${activeVarLabel || 'default'}`;
+
+                    return (
+                      <motion.div
+                        layout
+                        key={prod.id}
+                        initial={{ opacity: 0, scale: 0.94 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{
+                          duration: 0.5,
+                          delay: idx * 0.04,
+                          ease: [0.16, 1, 0.3, 1],
                         }}
+                        className="kmb-product-card"
                       >
-                        <img
-                          src={CLEAN_URN_CUTOUTS[prod.slug] || prod.images?.[0]}
-                          alt={prod.name}
-                          className="kmb-prod-img"
-                          draggable={false}
-                          loading="lazy"
-                        />
-                        {prod.originalPrice && prod.originalPrice > prod.price && (
-                          <span className="kmb-prod-sale-pill">15% OFF</span>
-                        )}
-                      </div>
-
-                      <div className="kmb-prod-body">
-                        <span className="kmb-prod-color-name">
-                          {prod.variants?.length > 0
-                            ? `${prod.variants.length} bandas disponibles`
-                            : prod.category === 'minis'
-                            ? 'Set Familiar'
-                            : 'Pack × 2'}
-                        </span>
-
-                        <h3
-                          className="kmb-prod-title"
+                        <div
+                          className="kmb-prod-img-wrap"
                           onClick={() => {
-                            if (!isDraggingCarousel) navigate(`/product/${prod.slug}`);
+                            if (!isDraggingCarousel) {
+                              navigateToProduct(prod.slug, activeVarLabel);
+                            }
                           }}
                         >
-                          {prod.name}
-                        </h3>
-
-                        <div className="kmb-prod-footer">
-                          <div className="kmb-prod-price-col">
-                            <span className="kmb-prod-price">
-                              ${Number(prod.price).toFixed(2)}
-                            </span>
-                            {prod.originalPrice && (
-                              <span className="kmb-prod-old-price">
-                                ${Number(prod.originalPrice).toFixed(2)}
-                              </span>
-                            )}
-                          </div>
-
-                          <button
-                            onClick={() => handleDirectBuy(prod)}
-                            className={`kmb-prod-buy-btn ${
-                              addedProductId === prod.slug || addedProductId === prod.id
-                                ? 'added'
-                                : ''
-                            }`}
-                          >
-                            {addedProductId === prod.slug || addedProductId === prod.id
-                              ? '✓ Añadido'
-                              : 'Comprar'}
-                          </button>
+                          <img
+                            src={cardDisplayImg}
+                            alt={prod.name}
+                            className="kmb-prod-img"
+                            draggable={false}
+                            loading="lazy"
+                          />
+                          {prod.originalPrice && prod.originalPrice > prod.price && (
+                            <span className="kmb-prod-sale-pill">15% OFF</span>
+                          )}
                         </div>
-                      </div>
-                    </motion.div>
-                  ))}
+
+                        <div className="kmb-prod-body">
+                          {prod.variantObjects?.length > 0 ? (
+                            <div
+                              className="kmb-prod-swatch-row"
+                              onClick={(e) => e.stopPropagation()}
+                              onPointerDown={(e) => e.stopPropagation()}
+                            >
+                              <div className="kmb-prod-swatch-dots">
+                                {prod.variantObjects.map((vo) => (
+                                  <button
+                                    key={vo.label}
+                                    type="button"
+                                    onClick={() =>
+                                      setCarouselVariantMap((prev) => ({
+                                        ...prev,
+                                        [prod.slug]: vo.label,
+                                      }))
+                                    }
+                                    className={`kmb-prod-swatch-dot ${
+                                      activeVarLabel === vo.label ? 'active' : ''
+                                    }`}
+                                    style={{
+                                      backgroundColor:
+                                        VARIANT_HEX_MAP[vo.label] || '#8FA68E',
+                                    }}
+                                    title={vo.label}
+                                    aria-label={vo.label}
+                                  />
+                                ))}
+                              </div>
+                              <span className="kmb-prod-color-name">
+                                {activeVarLabel}
+                              </span>
+                            </div>
+                          ) : (
+                            <span className="kmb-prod-color-name">
+                              {prod.category === 'minis'
+                                ? isEs
+                                  ? 'Set Familiar × 4'
+                                  : 'Family Set × 4'
+                                : 'Pack × 2'}
+                            </span>
+                          )}
+
+                          <h3
+                            className="kmb-prod-title"
+                            onClick={() => {
+                              if (!isDraggingCarousel) {
+                                navigateToProduct(prod.slug, activeVarLabel);
+                              }
+                            }}
+                          >
+                            {prod.name}
+                          </h3>
+
+                          <div className="kmb-prod-footer">
+                            <div className="kmb-prod-price-col">
+                              <span className="kmb-prod-price">
+                                ${Number(prod.price).toFixed(2)}
+                              </span>
+                              {prod.originalPrice && (
+                                <span className="kmb-prod-old-price">
+                                  ${Number(prod.originalPrice).toFixed(2)}
+                                </span>
+                              )}
+                            </div>
+
+                            <button
+                              onClick={() =>
+                                handleDirectBuy({
+                                  ...prod,
+                                  variantChoice: activeVarLabel,
+                                  variantId: activeVo?.variantId || null,
+                                  img: cardDisplayImg,
+                                  feedbackKey: catFeedbackKey,
+                                })
+                              }
+                              className={`kmb-prod-buy-btn ${
+                                addedProductId === catFeedbackKey ? 'added' : ''
+                              }`}
+                            >
+                              {addedProductId === catFeedbackKey
+                                ? isEs
+                                  ? '✓ Añadido'
+                                  : '✓ Added'
+                                : isEs
+                                ? 'Comprar'
+                                : 'Buy'}
+                            </button>
+                          </div>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
                 </AnimatePresence>
               </motion.div>
             )}
@@ -1703,15 +2062,20 @@ export const UrnaBiodegradableLanding = () => {
           <div className="kmb-section-intro kmb-reviews-intro">
             <div className="kmb-rating-pill">
               <span className="kmb-stars">★★★★★</span>
-              <span>4.9 / 5 • Familias Kamibi</span>
+              <span>
+                {isEs ? '4.9 / 5 • Familias Kamibi' : '4.9 / 5 • Kamibi Families'}
+              </span>
             </div>
-            <h2 className="kmb-section-heading">Recuerdos que permanecen.</h2>
+            <h2 className="kmb-section-heading">
+              {isEs ? 'Recuerdos que permanecen.' : 'Memories that endure.'}
+            </h2>
           </div>
         </div>
 
         <div className="kmb-polaroid-stage-wrap">
           <PolaroidLineCarousel
             slides={polaroidReviews}
+            locale={locale}
             height={560}
             cardWidth={345}
             sag={50}
@@ -1747,40 +2111,60 @@ export const UrnaBiodegradableLanding = () => {
               <button
                 className="kmb-modal-close"
                 onClick={() => setActiveModal(null)}
-                aria-label="Cerrar"
+                aria-label={isEs ? 'Cerrar' : 'Close'}
               >
                 ✕
               </button>
 
               <div className="kmb-modal-body">
-                <span className="kmb-section-eyebrow">EL RITUAL KAMIBI</span>
-                <h3 className="kmb-modal-title">Tres pasos simples.</h3>
+                <span className="kmb-section-eyebrow">
+                  {isEs ? 'EL RITUAL KAMIBI' : 'THE KAMIBI RITUAL'}
+                </span>
+                <h3 className="kmb-modal-title">
+                  {isEs ? 'Tres pasos simples.' : 'Three simple steps.'}
+                </h3>
 
                 <div className="kmb-modal-steps">
                   <div className="kmb-modal-step">
                     <span className="kmb-step-num">01</span>
                     <div>
-                      <h4>Mensajes de despedida</h4>
+                      <h4>
+                        {isEs ? 'Mensajes de despedida' : 'Farewell messages'}
+                      </h4>
                       <p>
-                        Escribe tus palabras en las hojas biodegradables con el lápiz compostable incluido y colócalas junto a las cenizas.
+                        {isEs
+                          ? 'Escribe tus palabras en las hojas biodegradables con el lápiz compostable incluido y colócalas junto a las cenizas.'
+                          : 'Write your thoughts on the biodegradable note cards using the included compostable pencil and place them beside the ashes.'}
                       </p>
                     </div>
                   </div>
                   <div className="kmb-modal-step">
                     <span className="kmb-step-num">02</span>
                     <div>
-                      <h4>Ceremonia en Agua o Tierra</h4>
+                      <h4>
+                        {isEs
+                          ? 'Ceremonia en Agua o Tierra'
+                          : 'Water or Earth ceremony'}
+                      </h4>
                       <p>
-                        Deposita la urna en el mar, lago o jardín natural.
+                        {isEs
+                          ? 'Deposita la urna en el mar, lago o jardín natural.'
+                          : 'Gently place the urn on the ocean, lake, or natural garden.'}
                       </p>
                     </div>
                   </div>
                   <div className="kmb-modal-step">
                     <span className="kmb-step-num">03</span>
                     <div>
-                      <h4>Reintegración 100% orgánica</h4>
+                      <h4>
+                        {isEs
+                          ? 'Reintegración 100% orgánica'
+                          : '100% organic return'}
+                      </h4>
                       <p>
-                        Se funde con la naturaleza sin plásticos, pegamentos ni metales.
+                        {isEs
+                          ? 'Se funde con la naturaleza sin plásticos, pegamentos ni metales.'
+                          : 'Blends gently back into nature with zero plastics, glues, or metals.'}
                       </p>
                     </div>
                   </div>
@@ -1794,7 +2178,7 @@ export const UrnaBiodegradableLanding = () => {
                     }}
                     className="kmb-pill-cta-solid"
                   >
-                    Elegir mi Kamibi
+                    {isEs ? 'Elegir mi Kamibi' : 'Choose my Kamibi'}
                   </button>
                 </div>
               </div>

@@ -138,25 +138,72 @@ export function normalizeProduct(wixProduct) {
     : 'urns';
 
   // Extract variants from productOptions (e.g., "Sleeve / Band" choices)
-  // variantObjects: [{label, image}] — each choice with its associated image (if set in Wix)
+  // variantObjects: [{label, value, image, cutoutImage, allImages, variantId}] — each choice with its associated images & Wix variant UUID
   // variants: string[] — backward-compat text labels
   const variants = [];
   const variantObjects = [];
+  const rawVariantsList = Array.isArray(wixVariants) ? wixVariants : [];
+
   if (productOptions && productOptions.length > 0) {
     // Use the first option's choices as variants
     const firstOption = productOptions[0];
     if (firstOption.choices) {
       firstOption.choices.forEach((choice) => {
         const label = choice.description || choice.value || '';
+        const value = choice.value || label;
+        const allChoiceImages = (choice.media?.items || [])
+          .map((m) => m.image?.url || m.thumbnail?.url)
+          .filter(Boolean);
         // Wix stores per-choice media in choice.media (set via "Connect images" in dashboard)
         const choiceImage =
           choice.media?.mainMedia?.image?.url ||
-          choice.media?.items?.[0]?.image?.url ||
+          allChoiceImages[0] ||
           choice.media?.mainMedia?.thumbnail?.url ||
           null;
+        // Clean cutout image is typically the second item in choice.media.items (if available), otherwise choiceImage
+        const cutoutImage = allChoiceImages[1] || choiceImage;
+
+        // Resolve the corresponding Wix variant UUID from wixVariants
+        const matchedWixVar = rawVariantsList.find((v) => {
+          if (!v.choices) return false;
+          return Object.values(v.choices).some(
+            (cVal) =>
+              typeof cVal === 'string' &&
+              (cVal.trim().toLowerCase() === value.trim().toLowerCase() ||
+                cVal.trim().toLowerCase() === label.trim().toLowerCase())
+          );
+        });
+
         variants.push(label);
-        variantObjects.push({ label, image: choiceImage });
+        variantObjects.push({
+          label,
+          value,
+          image: choiceImage,
+          cutoutImage,
+          allImages: allChoiceImages.length > 0 ? allChoiceImages : choiceImage ? [choiceImage] : [],
+          variantId: matchedWixVar?._id || null,
+        });
       });
+    }
+  }
+
+  // Determine defaultVariant and defaultVariantId that match the product's primary image (images[0] or images[1])
+  let defaultVariant = variantObjects[0]?.label || variants[0] || null;
+  let defaultVariantId = variantObjects[0]?.variantId || rawVariantsList[0]?._id || null;
+  if (variantObjects.length > 0 && images.length > 0) {
+    const matchByImg0 = variantObjects.find(
+      (vo) => vo.image === images[0] || vo.allImages.includes(images[0])
+    );
+    const matchByImg1 =
+      !matchByImg0 && images[1]
+        ? variantObjects.find(
+            (vo) => vo.image === images[1] || vo.allImages.includes(images[1])
+          )
+        : null;
+    const bestMatch = matchByImg0 || matchByImg1;
+    if (bestMatch) {
+      defaultVariant = bestMatch.label;
+      defaultVariantId = bestMatch.variantId || defaultVariantId;
     }
   }
 
@@ -281,7 +328,9 @@ export function normalizeProduct(wixProduct) {
     featuresEn,
     images: images.length > 0 ? images : ['/products/placeholder.png'],
     variants,                               // Text labels for UI swatches (backward-compat)
-    variantObjects,                         // [{label, image}] — with per-variant Wix images
+    variantObjects,                         // [{label, value, image, cutoutImage, allImages, variantId}]
+    defaultVariant,                         // Variant label matching images[0]
+    defaultVariantId,                       // Variant UUID matching images[0]
     wixVariants: wixVariants || [],         // Raw Wix variant objects with real UUIDs
     numericId: numericId || '',
     stock: wixProduct.stock || { inStock: true, inventoryStatus: 'IN_STOCK' },

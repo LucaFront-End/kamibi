@@ -4,7 +4,7 @@ import { ScrollReveal } from '../ui/ScrollReveal';
 import './BenefitsSection.css';
 
 export const BenefitsSection = () => {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
 
   const benefits = [
     {
@@ -57,10 +57,10 @@ export const BenefitsSection = () => {
 
   // Eco statistics
   const stats = [
-    { label: "100%", detail: "Compostable" },
-    { label: "0%", detail: "Chemicals" },
-    { label: "TSA", detail: "Approved" },
-    { label: "Zero", detail: "Plastic" }
+    { label: "100%", detail: locale === 'es' ? "Compostable" : "Compostable" },
+    { label: "0%", detail: locale === 'es' ? "Químicos" : "Chemicals" },
+    { label: "TSA", detail: locale === 'es' ? "Aprobado" : "Approved" },
+    { label: "Zero", detail: locale === 'es' ? "Plástico" : "Plastic" }
   ];
 
   return (

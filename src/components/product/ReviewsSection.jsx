@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import './ReviewsSection.css';
 
 export const ReviewsSection = () => {
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
   const [reviewsList, setReviewsList] = useState([
     {
       id: 1,
@@ -91,7 +91,7 @@ export const ReviewsSection = () => {
         </div>
 
         <button onClick={() => setShowForm(!showForm)} className="write-review-toggle-btn text-label">
-          {showForm ? "Cancel" : t('product.reviewsSec.write')}
+          {showForm ? (locale === 'es' ? "Cancelar" : "Cancel") : t('product.reviewsSec.write')}
         </button>
       </div>
 

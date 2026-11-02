@@ -16,7 +16,7 @@ export const CartDrawer = () => {
     isLoading,
     checkoutLoading,
   } = useCart();
-  const { t } = useTranslation();
+  const { t, locale } = useTranslation();
 
   /**
    * Extract display-friendly info from a Wix cart line item.
@@ -190,7 +190,11 @@ export const CartDrawer = () => {
                   <span>{t('cart.subtotal')}</span>
                   <span className="cart-subtotal-val">${getSubtotal().toFixed(2)}</span>
                 </div>
-                <p className="cart-shipping-notice">Shipping and taxes calculated at checkout.</p>
+                <p className="cart-shipping-notice">
+                  {locale === 'es'
+                    ? 'Envío e impuestos calculados al finalizar la compra.'
+                    : 'Shipping and taxes calculated at checkout.'}
+                </p>
                 <button
                   onClick={handleCheckout}
                   className="cart-checkout-btn"

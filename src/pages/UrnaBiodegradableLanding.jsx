@@ -509,18 +509,18 @@ export const UrnaBiodegradableLanding = () => {
           img: 'https://static.wixstatic.com/media/45119e_8d3df7b505f7458a98c95c0fc4ea293e~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
         },
         {
-          label: 'Terra Pink',
-          modelTitle: 'Kamibi Terra',
+          label: 'Angel Pink',
+          modelTitle: 'Kamibi Angel',
           editionSub: isEs
-            ? 'Banda Rosa (Pink) · Tierra y Bosque'
-            : 'Pink Band · Earth & Forest',
-          hex: '#E08FA3',
-          slug: 'terra-urn',
-          id: 'b4fd86df-d446-0993-f324-d5d13eface16',
+            ? 'Banda Rosa (Pink) · Tierra y Agua'
+            : 'Pink Band · Earth & Water',
+          hex: '#E06088',
+          slug: 'angel-urn',
+          id: 'a09f394c-67bf-476b-f1a9-e3d576ce6505',
           variantChoice: 'PINK',
-          variantId: '09cda8fa-f4ec-4b33-a62a-25674fb7b695',
-          name: 'TERRA BIODEGRADABLE URN',
-          img: 'https://static.wixstatic.com/media/45119e_7a1c94ae780545e5a741810a8d7df6a2~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+          variantId: 'a4f1d078-18fc-429b-96d1-9099f08bf484',
+          name: 'ANGEL BIODEGRADABLE URN',
+          img: 'https://static.wixstatic.com/media/45119e_0b3c807faff94f52b37dc194dff7c837~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
         },
         {
           label: 'Angel Deep Blue',

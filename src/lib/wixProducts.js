@@ -144,6 +144,15 @@ export function normalizeProduct(wixProduct) {
   const variantObjects = [];
   const rawVariantsList = Array.isArray(wixVariants) ? wixVariants : [];
 
+  // Studio cutout images in Wix product galleries that correspond to specific variants
+  const extraCutoutHashes = {
+    'flore-urns:TURTLE': '45119e_330d57ad813c4b1a8216dfa5bb59dc98',
+    'aqua-urn:GOLD': '45119e_a29a519f4c904e1a84e6d7ffc6c80bcd',
+    'angel-urn:SOFT PINK': '45119e_da682a60bd214c8f9b3a100f545edd65',
+    'iris-urn:PURPLE': '45119e_b02b10e7408d4273ac65fb980cec7a8e',
+    'terra-urn:PURPLE': '45119e_277f4849b55642b1a9c570a911f20d37',
+  };
+
   if (productOptions && productOptions.length > 0) {
     // Use the first option's choices as variants
     const firstOption = productOptions[0];
@@ -160,8 +169,21 @@ export function normalizeProduct(wixProduct) {
           allChoiceImages[0] ||
           choice.media?.mainMedia?.thumbnail?.url ||
           null;
+
+        const extraHash = extraCutoutHashes[`${slug}:${label.toUpperCase()}`];
+        const extraGalleryImg = extraHash
+          ? images.find((u) => u.includes(extraHash))
+          : null;
+        if (extraGalleryImg && !allChoiceImages.includes(extraGalleryImg)) {
+          allChoiceImages.push(extraGalleryImg);
+        }
+
         // Clean cutout image is typically the second item in choice.media.items (if available), otherwise choiceImage
-        const cutoutImage = allChoiceImages[1] || choiceImage;
+        // For terra-urn PURPLE, prefer the pure studio box cutout (extraGalleryImg) over the kit cutout
+        const cutoutImage =
+          slug === 'terra-urn' && label.toUpperCase() === 'PURPLE' && extraGalleryImg
+            ? extraGalleryImg
+            : allChoiceImages[1] || choiceImage;
 
         // Resolve the corresponding Wix variant UUID from wixVariants
         const matchedWixVar = rawVariantsList.find((v) => {

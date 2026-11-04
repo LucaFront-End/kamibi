@@ -769,13 +769,31 @@ export const UrnaBiodegradableLanding = ({
           slug: 'cremation-burial-bags-tree-of-life-design-pack-of-2',
           id: 'f1d9e4d3-6ad7-70e4-cb1a-3e2999ae3818',
           variantChoice: null,
-          variantId: '00000000-0000-0000-0000-000000000000',
+          variantId: null,
           name: 'ASH BURIAL BAGS TREE OF LIFE DESIGN - Pack of 2',
           priceOverride: 12.99,
           primaryImg:
             'https://static.wixstatic.com/media/45119e_b515104a49a642a1945b922955493527~mv2.png/v1/fit/w_1000,h_1000,q_90/file.png',
           cutoutImg:
             'https://static.wixstatic.com/media/45119e_b515104a49a642a1945b922955493527~mv2.png/v1/fit/w_1000,h_1000,q_90/file.png',
+        },
+        {
+          label: 'Turtle Bags (×2)',
+          modelTitle: 'Kamibi Turtle Bags',
+          editionSub: isEs
+            ? 'Pack ×2 Bolsas Solubles · Diseño Tortuga'
+            : 'Pack ×2 Water-Soluble Bags · Turtle Design',
+          hex: '#2B9EB3',
+          slug: 'ash-burial-bags-pack-of-2',
+          id: 'b4541dfb-ca30-bd14-05cd-1fc896b768b0',
+          variantChoice: null,
+          variantId: null,
+          name: 'ASH BURIAL BAGS – TURTLE DESIGN - Pack of 2',
+          priceOverride: 12.99,
+          primaryImg:
+            'https://static.wixstatic.com/media/45119e_ad28a8d9c43544cb848d89f1f473fce3~mv2.png/v1/fit/w_1000,h_1000,q_90/file.png',
+          cutoutImg:
+            'https://static.wixstatic.com/media/45119e_ad28a8d9c43544cb848d89f1f473fce3~mv2.png/v1/fit/w_1000,h_1000,q_90/file.png',
         },
       ],
     },
@@ -801,10 +819,8 @@ export const UrnaBiodegradableLanding = ({
   const filteredCarouselProducts = useMemo(() => {
     return products.filter((p) => {
       if (carouselCategory === 'all') return true;
-      if (carouselCategory === 'urns') return p.category === 'urns';
-      if (carouselCategory === 'minis') return p.category === 'minis';
-      if (carouselCategory === 'bags') return p.category === 'bags';
-      return true;
+      const cats = p.categories && p.categories.length > 0 ? p.categories : [p.category];
+      return cats.includes(carouselCategory);
     });
   }, [products, carouselCategory]);
 
@@ -1227,15 +1243,33 @@ export const UrnaBiodegradableLanding = ({
     const chosenVariant =
       productData.variantChoice ||
       productData.selectedVariant ||
-      CLEAN_URN_DEFAULT_VARIANT[productData.slug] ||
+      (cleanCutoutsOnly ? CLEAN_URN_DEFAULT_VARIANT[productData.slug] : matched?.defaultVariant) ||
       matched?.defaultVariant ||
       matched?.variants?.[0] ||
       null;
 
+    const matchedVo =
+      chosenVariant && Array.isArray(matched?.variantObjects)
+        ? matched.variantObjects.find(
+            (v) =>
+              v.label?.trim().toUpperCase() === String(chosenVariant).trim().toUpperCase()
+          )
+        : null;
+
+    const rawExplicitVarId =
+      matchedVo?.variantId ||
+      productData.variantId ||
+      matched?.defaultVariantId ||
+      null;
+    const cleanExplicitVarId =
+      rawExplicitVarId && rawExplicitVarId !== '00000000-0000-0000-0000-000000000000'
+        ? rawExplicitVarId
+        : null;
+
     const itemToAdd = matched
       ? {
           ...matched,
-          explicitVariantId: productData.variantId || null,
+          explicitVariantId: cleanExplicitVarId,
         }
       : {
           id: productData._wixId || productData.id,
@@ -1244,7 +1278,7 @@ export const UrnaBiodegradableLanding = ({
           price: productData.priceOverride ?? productData.price,
           slug: productData.slug,
           images: [productData.img || productData.image],
-          explicitVariantId: productData.variantId || null,
+          explicitVariantId: cleanExplicitVarId,
         };
 
     addToCart(itemToAdd, 1, chosenVariant);
@@ -1254,6 +1288,60 @@ export const UrnaBiodegradableLanding = ({
     setAddedProductId(feedbackKey);
     setTimeout(() => setAddedProductId(null), 2200);
   };
+
+  // Resolve live Wix product + variant metadata for any static showcase item
+  const resolveLiveProductDetail = useCallback(
+    (detail) => {
+      if (!detail) return detail;
+      const liveProd = products.find(
+        (p) => p.slug === detail.slug || p.id === detail.id
+      );
+      if (!liveProd) return detail;
+      const liveVo = detail.variantChoice
+        ? liveProd.variantObjects?.find(
+            (v) =>
+              v.label?.trim().toUpperCase() ===
+              String(detail.variantChoice).trim().toUpperCase()
+          )
+        : null;
+      return {
+        ...detail,
+        id: liveProd.id || detail.id,
+        price: Number(liveProd.price ?? detail.price),
+        oldPrice:
+          liveProd.originalPrice && liveProd.originalPrice > liveProd.price
+            ? Number(liveProd.originalPrice)
+            : null,
+        variantId:
+          liveVo?.variantId || liveProd.defaultVariantId || detail.variantId,
+        liveImg: liveVo?.image || liveProd.images?.[0] || null,
+      };
+    },
+    [products]
+  );
+
+  const heroLeftDetail = useMemo(
+    () => resolveLiveProductDetail(activeHero.leftDetail),
+    [activeHero, resolveLiveProductDetail]
+  );
+  const heroRightDetail = useMemo(
+    () => resolveLiveProductDetail(activeHero.rightDetail),
+    [activeHero, resolveLiveProductDetail]
+  );
+
+  const lowestUrnPrice = useMemo(() => {
+    const urnPrices = products
+      .filter((p) => (p.categories || [p.category]).includes('urns') && p.price > 0)
+      .map((p) => p.price);
+    return urnPrices.length > 0 ? Math.min(...urnPrices) : 76.5;
+  }, [products]);
+
+  const lowestMiniPrice = useMemo(() => {
+    const miniPrices = products
+      .filter((p) => (p.categories || [p.category]).includes('minis') && p.price > 0)
+      .map((p) => p.price);
+    return miniPrices.length > 0 ? Math.min(...miniPrices) : 49.99;
+  }, [products]);
 
   // Concise Polaroid Reviews (Bilingual ES / EN)
   const polaroidReviews = [
@@ -1349,18 +1437,20 @@ export const UrnaBiodegradableLanding = ({
               </h1>
             )}
 
+            {cmsLanding?.excerpt && (
+              <p className="kmb-apple-cms-excerpt">{cmsLanding.excerpt}</p>
+            )}
+
             <p className="kmb-apple-price-line">
-              {cmsLanding?.excerpt ? (
-                cmsLanding.excerpt
-              ) : isEs ? (
+              {isEs ? (
                 <>
-                  Desde <strong>$76.50 USD</strong> en Urnas Adulto o{' '}
-                  <strong>$49.99 USD</strong> en Mini Sets. Envío gratis.
+                  Desde <strong>${lowestUrnPrice.toFixed(2)} USD</strong> en Urnas Adulto o{' '}
+                  <strong>${lowestMiniPrice.toFixed(2)} USD</strong> en Mini Sets. Envío gratis.
                 </>
               ) : (
                 <>
-                  From <strong>$76.50 USD</strong> on Adult Urns or{' '}
-                  <strong>$49.99 USD</strong> on Mini Sets. Free shipping.
+                  From <strong>${lowestUrnPrice.toFixed(2)} USD</strong> on Adult Urns or{' '}
+                  <strong>${lowestMiniPrice.toFixed(2)} USD</strong> on Mini Sets. Free shipping.
                 </>
               )}
             </p>
@@ -1626,8 +1716,8 @@ export const UrnaBiodegradableLanding = ({
                   onMouseLeave={() => setHoveredHeroUrn(null)}
                   onClick={() =>
                     navigateToProduct(
-                      activeHero.leftDetail.slug,
-                      activeHero.leftDetail.variantChoice
+                      heroLeftDetail.slug,
+                      heroLeftDetail.variantChoice
                     )
                   }
                 >
@@ -1654,25 +1744,25 @@ export const UrnaBiodegradableLanding = ({
                         <div className="kmb-uhc-top">
                           <span
                             className="kmb-uhc-dot"
-                            style={{ backgroundColor: activeHero.leftDetail.hex }}
+                            style={{ backgroundColor: heroLeftDetail.hex }}
                           />
                           <span className="kmb-uhc-band">
-                            {activeHero.leftDetail.band}
+                            {heroLeftDetail.band}
                           </span>
                         </div>
 
                         <div className="kmb-uhc-title-row">
-                          <strong>{activeHero.leftDetail.name}</strong>
+                          <strong>{heroLeftDetail.name}</strong>
                           <span className="kmb-uhc-price">
-                            ${activeHero.leftDetail.price.toFixed(2)}
-                            {activeHero.leftDetail.oldPrice && (
-                              <s>${activeHero.leftDetail.oldPrice.toFixed(2)}</s>
+                            ${heroLeftDetail.price.toFixed(2)}
+                            {heroLeftDetail.oldPrice && (
+                              <s>${heroLeftDetail.oldPrice.toFixed(2)}</s>
                             )}
                           </span>
                         </div>
 
                         <div className="kmb-uhc-chips">
-                          {activeHero.leftDetail.chips.map((c, idx) => (
+                          {heroLeftDetail.chips.map((c, idx) => (
                             <span key={idx} className="kmb-uhc-chip">
                               {c}
                             </span>
@@ -1684,14 +1774,14 @@ export const UrnaBiodegradableLanding = ({
                             type="button"
                             onClick={() =>
                               handleDirectBuy({
-                                ...activeHero.leftDetail,
-                                img: activeHero.leftImg,
-                                feedbackKey: `hero-left-${activeHero.leftDetail.slug}`,
+                                ...heroLeftDetail,
+                                img: heroLeftDetail.liveImg || activeHero.leftImg,
+                                feedbackKey: `hero-left-${heroLeftDetail.slug}`,
                               })
                             }
                             className="kmb-uhc-buy"
                           >
-                            {addedProductId === `hero-left-${activeHero.leftDetail.slug}`
+                            {addedProductId === `hero-left-${heroLeftDetail.slug}`
                               ? isEs
                                 ? '✓ Añadido'
                                 : '✓ Added'
@@ -1703,8 +1793,8 @@ export const UrnaBiodegradableLanding = ({
                             type="button"
                             onClick={() =>
                               navigateToProduct(
-                                activeHero.leftDetail.slug,
-                                activeHero.leftDetail.variantChoice
+                                heroLeftDetail.slug,
+                                heroLeftDetail.variantChoice
                               )
                             }
                             className="kmb-uhc-link"
@@ -1731,8 +1821,8 @@ export const UrnaBiodegradableLanding = ({
                   onMouseLeave={() => setHoveredHeroUrn(null)}
                   onClick={() =>
                     navigateToProduct(
-                      activeHero.rightDetail.slug,
-                      activeHero.rightDetail.variantChoice
+                      heroRightDetail.slug,
+                      heroRightDetail.variantChoice
                     )
                   }
                 >
@@ -1759,25 +1849,25 @@ export const UrnaBiodegradableLanding = ({
                         <div className="kmb-uhc-top">
                           <span
                             className="kmb-uhc-dot"
-                            style={{ backgroundColor: activeHero.rightDetail.hex }}
+                            style={{ backgroundColor: heroRightDetail.hex }}
                           />
                           <span className="kmb-uhc-band">
-                            {activeHero.rightDetail.band}
+                            {heroRightDetail.band}
                           </span>
                         </div>
 
                         <div className="kmb-uhc-title-row">
-                          <strong>{activeHero.rightDetail.name}</strong>
+                          <strong>{heroRightDetail.name}</strong>
                           <span className="kmb-uhc-price">
-                            ${activeHero.rightDetail.price.toFixed(2)}
-                            {activeHero.rightDetail.oldPrice && (
-                              <s>${activeHero.rightDetail.oldPrice.toFixed(2)}</s>
+                            ${heroRightDetail.price.toFixed(2)}
+                            {heroRightDetail.oldPrice && (
+                              <s>${heroRightDetail.oldPrice.toFixed(2)}</s>
                             )}
                           </span>
                         </div>
 
                         <div className="kmb-uhc-chips">
-                          {activeHero.rightDetail.chips.map((c, idx) => (
+                          {heroRightDetail.chips.map((c, idx) => (
                             <span key={idx} className="kmb-uhc-chip">
                               {c}
                             </span>
@@ -1789,14 +1879,14 @@ export const UrnaBiodegradableLanding = ({
                             type="button"
                             onClick={() =>
                               handleDirectBuy({
-                                ...activeHero.rightDetail,
-                                img: activeHero.rightImg,
-                                feedbackKey: `hero-right-${activeHero.rightDetail.slug}`,
+                                ...heroRightDetail,
+                                img: heroRightDetail.liveImg || activeHero.rightImg,
+                                feedbackKey: `hero-right-${heroRightDetail.slug}`,
                               })
                             }
                             className="kmb-uhc-buy"
                           >
-                            {addedProductId === `hero-right-${activeHero.rightDetail.slug}`
+                            {addedProductId === `hero-right-${heroRightDetail.slug}`
                               ? isEs
                                 ? '✓ Añadido'
                                 : '✓ Added'
@@ -1808,8 +1898,8 @@ export const UrnaBiodegradableLanding = ({
                             type="button"
                             onClick={() =>
                               navigateToProduct(
-                                activeHero.rightDetail.slug,
-                                activeHero.rightDetail.variantChoice
+                                heroRightDetail.slug,
+                                heroRightDetail.variantChoice
                               )
                             }
                             className="kmb-uhc-link"
@@ -1981,9 +2071,29 @@ export const UrnaBiodegradableLanding = ({
                     ))}
                   </div>
 
-                  <div className="kmb-band-active-caption">
+                  <div
+                    className="kmb-band-active-caption"
+                    onClick={() =>
+                      navigateToProduct(
+                        bandShowcase[activeBandIdx].slug,
+                        bandShowcase[activeBandIdx].variantChoice
+                      )
+                    }
+                    style={{ cursor: 'pointer' }}
+                  >
                     <strong>{bandShowcase[activeBandIdx].name}</strong>
-                    <span>• {bandShowcase[activeBandIdx].model}</span>
+                    <span>
+                      •{' '}
+                      {(() => {
+                        const activeBand = bandShowcase[activeBandIdx];
+                        const liveProd = products.find(
+                          (p) => p.slug === activeBand.slug
+                        );
+                        if (!liveProd) return activeBand.model;
+                        const modelPrefix = activeBand.model.split('•')[0].trim();
+                        return `${modelPrefix} • $${Number(liveProd.price).toFixed(2)} USD`;
+                      })()}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -2063,7 +2173,6 @@ export const UrnaBiodegradableLanding = ({
                     <div className="kmb-kit-stage-badge">
                       <span>0{activeIncludedIdx + 1} / 05</span>
                       <strong>{kitIncludedItems[activeIncludedIdx].shortTag}</strong>
-                      <em>{isEs ? 'Real + Dibujo' : 'Real + Sketch'}</em>
                     </div>
 
                     <AnimatePresence mode="wait">
@@ -2301,7 +2410,6 @@ export const UrnaBiodegradableLanding = ({
             {appleComparisonCols.map((col) => {
               const activeIdx = compSwatchIdx[col.key] || 0;
               const activeSwatch = col.swatches[activeIdx] || col.swatches[0];
-              const displayPrice = activeSwatch.priceOverride ?? col.price;
               const swatchFeedbackKey = `${activeSwatch.slug}:${activeSwatch.variantChoice || ''}`;
               const matchedProd = products.find(
                 (p) => p.slug === activeSwatch.slug || p.id === activeSwatch.id
@@ -2313,6 +2421,13 @@ export const UrnaBiodegradableLanding = ({
                       activeSwatch.variantChoice.trim().toUpperCase()
                   )
                 : null;
+              const displayPrice =
+                matchedProd?.price ?? activeSwatch.priceOverride ?? col.price;
+              const displayOriginalPrice = matchedProd
+                ? matchedProd.originalPrice
+                : activeSwatch.priceOverride
+                ? null
+                : col.originalPrice;
               const resolvedSwatchImg = cleanCutoutsOnly
                 ? activeSwatch.cutoutImg ||
                   matchedVo?.cutoutImage ||
@@ -2501,8 +2616,8 @@ export const UrnaBiodegradableLanding = ({
                         <div className="kmb-vt-price-values">
                           <strong>${Number(displayPrice).toFixed(2)}</strong>
                           <small>USD</small>
-                          {col.originalPrice && !activeSwatch.priceOverride && (
-                            <s>${Number(col.originalPrice).toFixed(2)}</s>
+                          {displayOriginalPrice && displayOriginalPrice > displayPrice && (
+                            <s>${Number(displayOriginalPrice).toFixed(2)}</s>
                           )}
                         </div>
                       </div>
@@ -2681,7 +2796,9 @@ export const UrnaBiodegradableLanding = ({
                             loading="lazy"
                           />
                           {prod.originalPrice && prod.originalPrice > prod.price && (
-                            <span className="kmb-prod-sale-pill">15% OFF</span>
+                            <span className="kmb-prod-sale-pill">
+                              {Math.round((1 - prod.price / prod.originalPrice) * 100)}% OFF
+                            </span>
                           )}
                         </div>
 

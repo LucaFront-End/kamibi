@@ -3,9 +3,39 @@ import { useWixClient } from '../context/WixContext';
 
 const LANDINGS_COLLECTION = 'LandingsdeCiudad';
 const STORES_COLLECTION = 'TiendasDinamicas';
-// New CMS collection for Ads Landings under /zonas/:slug (configurable when CMS ID is provided)
+// New CMS collection for Ads Landings under /zonas/:slug (auto-discovers common Wix collection IDs)
 export const ADS_LANDINGS_COLLECTION =
   import.meta.env.VITE_WIX_ADS_CMS_COLLECTION || 'LandingsAnuncios';
+
+const ADS_COLLECTION_CANDIDATES = [
+  import.meta.env.VITE_WIX_ADS_CMS_COLLECTION,
+  'LandingsAnuncios',
+  'LandingsdeAnuncios',
+  'LandingsDeAnuncios',
+  'Zonas',
+  'ZonasdeAnuncios',
+  'ZonasDeAnuncios',
+  'LandingsZonas',
+  'LandingsdeZonas',
+  'LandingsDeZonas',
+  'Anuncios',
+].filter(Boolean);
+
+let resolvedAdsCollectionName = null;
+
+async function resolveAdsCollection(wixClient) {
+  if (resolvedAdsCollectionName) return resolvedAdsCollectionName;
+  for (const colName of ADS_COLLECTION_CANDIDATES) {
+    try {
+      await wixClient.items.query(colName).limit(1).find();
+      resolvedAdsCollectionName = colName;
+      return colName;
+    } catch {
+      // Try next candidate
+    }
+  }
+  return ADS_LANDINGS_COLLECTION;
+}
 
 // ── Generate slug from title ─────────────────────────────────────────────
 function generateSlug(text) {
@@ -19,7 +49,7 @@ function generateSlug(text) {
     .replace(/^-|-$/g, '');         // trim leading/trailing hyphens
 }
 
-// ── Shared normalizer (collections share the same field structure) ────────
+// ── Shared normalizer (supports both Wix accent-stripped keys and clean keys) ──
 function normalizeCMSItem(item, useGeneratedSlug = false) {
   const data = item.data || item;
   const title = data.title || '';
@@ -27,12 +57,13 @@ function normalizeCMSItem(item, useGeneratedSlug = false) {
     _id: data._id,
     title,
     slug: useGeneratedSlug ? generateSlug(title) : (data.slug || generateSlug(title)),
-    city: data.ciudadOEstado || '',
-    country: data.pas || '',
-    pageTitle: data.tituloPgina || title || '',
-    excerpt: data.excerptPgina || '',
-    seoTitle: data.tituloSeo || '',
-    seoDescription: data.metadescripcinSeo || '',
+    city: data.ciudadOEstado || data.ciudad || data.city || '',
+    country: data.pas || data.pais || data.country || '',
+    pageTitle: data.tituloPgina || data.tituloPagina || data.pageTitle || title || '',
+    excerpt: data.excerptPgina || data.excerptPagina || data.excerpt || '',
+    seoTitle: data.tituloSeo || data.seoTitle || '',
+    seoDescription:
+      data.metadescripcinSeo || data.metadescripcionSeo || data.seoDescription || '',
     status: data._publishStatus || 'PUBLISHED',
     createdDate: data._createdDate || '',
     updatedDate: data._updatedDate || '',
@@ -185,7 +216,8 @@ export function useWixAdLandings() {
       setLoading(true);
       setError(null);
       try {
-        let res = await wixClient.items.query(ADS_LANDINGS_COLLECTION).limit(100).find();
+        const colName = await resolveAdsCollection(wixClient);
+        let res = await wixClient.items.query(colName).limit(100).find();
         let items = (res.items || []).map(i => normalizeCMSItem(i));
         if (!cancelled) {
           setAdLandings(items);
@@ -194,7 +226,7 @@ export function useWixAdLandings() {
 
         if (res.hasNext && res.hasNext()) {
           let fullList = [...items];
-          let nextRes = await wixClient.items.query(ADS_LANDINGS_COLLECTION).skip(100).limit(1000).find();
+          let nextRes = await wixClient.items.query(colName).skip(100).limit(1000).find();
           fullList = fullList.concat((nextRes.items || []).map(i => normalizeCMSItem(i)));
           while (nextRes.hasNext && nextRes.hasNext()) {
             nextRes = await nextRes.next();
@@ -245,30 +277,47 @@ export function useWixAdLandingBySlug(slug) {
       setLoading(true);
       setError(null);
       try {
-        // 1. Try querying by native slug field in ADS_LANDINGS_COLLECTION
-        const res = await wixClient.items
-          .query(ADS_LANDINGS_COLLECTION)
-          .eq('slug', slug)
-          .limit(1)
-          .find();
+        const colName = await resolveAdsCollection(wixClient);
+        // 1. Try querying by native slug field in the Ads collection
+        try {
+          const res = await wixClient.items
+            .query(colName)
+            .eq('slug', slug)
+            .limit(1)
+            .find();
 
-        if (!cancelled) {
-          if (res.items?.length > 0) {
+          if (!cancelled && res.items?.length > 0) {
             const normalized = normalizeCMSItem(res.items[0]);
             adLandingCache.set(slug, normalized);
             setLanding(normalized);
             return;
           }
-        }
 
-        // 2. Fallback: if collection uses generated slug from title
-        const allRes = await wixClient.items.query(ADS_LANDINGS_COLLECTION).limit(1000).find();
-        const allNormalized = (allRes.items || []).map(i => normalizeCMSItem(i));
-        const match = allNormalized.find(item => item.slug === slug);
-        if (!cancelled) {
-          if (match) {
+          // 2. Fallback: if Ads collection uses generated slug from title
+          const allRes = await wixClient.items.query(colName).limit(1000).find();
+          const allNormalized = (allRes.items || []).map(i => normalizeCMSItem(i));
+          const match = allNormalized.find(item => item.slug === slug);
+          if (!cancelled && match) {
             adLandingCache.set(slug, match);
             setLanding(match);
+            return;
+          }
+        } catch {
+          // Ads collection not yet created; proceed to LandingsdeCiudad fallback
+        }
+
+        // 3. Fallback to LandingsdeCiudad so shared slugs work immediately on /zonas/:slug
+        const cityRes = await wixClient.items
+          .query(LANDINGS_COLLECTION)
+          .eq('slug', slug)
+          .limit(1)
+          .find();
+
+        if (!cancelled) {
+          if (cityRes.items?.length > 0) {
+            const normalized = normalizeCMSItem(cityRes.items[0]);
+            adLandingCache.set(slug, normalized);
+            setLanding(normalized);
           } else {
             setLanding(null);
             setError('Ad landing not found in CMS');

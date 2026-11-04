@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { useWixLandings, useWixStores } from '../hooks/useWixCMS';
+import { useWixLandings, useWixAdLandings, useWixStores } from '../hooks/useWixCMS';
 import { useTranslation } from '../context/LanguageContext';
 import { PageTransition } from '../components/layout/PageTransition';
 import { ScrollReveal } from '../components/ui/ScrollReveal';
@@ -12,6 +12,7 @@ const ITEMS_PER_PAGE = 24;
 export const ZonasPage = () => {
   const { locale } = useTranslation();
   const { landings, loading: landingsLoading } = useWixLandings();
+  const { adLandings } = useWixAdLandings();
   const { stores, loading: storesLoading } = useWixStores();
   const loading = landingsLoading && landings.length === 0;
 
@@ -269,6 +270,40 @@ export const ZonasPage = () => {
               <button onClick={clearSearch} className="zonas-reset-search-btn">
                 {locale === 'es' ? 'Ver todas las zonas' : 'View all locations'}
               </button>
+            </div>
+          </section>
+        )}
+
+        {/* Dynamic Ad Landings Section (/zonas/:slug) */}
+        {!loading && adLandings.length > 0 && (
+          <section className="zonas-section zonas-ads-section">
+            <div className="container">
+              <div className="zonas-section-header">
+                <span className="text-label">
+                  {locale === 'es' ? 'CAMPAÑAS Y ZONAS' : 'CAMPAIGNS & ZONES'}
+                </span>
+                <h2 className="heading-section">
+                  {locale === 'es' ? 'Landings por Zona (/zonas)' : 'Zone Landings (/zonas)'}
+                </h2>
+              </div>
+              <div className="zonas-grid">
+                {adLandings.map((ad, i) => (
+                  <div key={ad._id || ad.slug || i} className="zona-card">
+                    <div className="zona-card-icon">🌿</div>
+                    <div className="zona-card-content">
+                      <h3 className="zona-card-city">{ad.pageTitle || ad.city || ad.title}</h3>
+                      <span className="zona-card-country">{ad.country || 'USA'}</span>
+                      <p className="zona-card-excerpt">{ad.excerpt}</p>
+                    </div>
+                    <div className="zona-card-actions">
+                      <Link to={`/zonas/${ad.slug}`} className="zona-card-btn primary">
+                        {locale === 'es' ? 'Ver Zona' : 'View Zone'}
+                        <span className="btn-arrow">→</span>
+                      </Link>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </section>
         )}

@@ -131,6 +131,15 @@
   color: var(--color-deep-sage, #4A664A);
 }
 
+.kmb-apple-cms-excerpt {
+  font-size: 0.98rem;
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--color-stone, #6B6560);
+  max-width: 580px;
+  margin: 0 auto 0.6rem;
+}
+
 .kmb-apple-price-line {
   font-size: 1rem;
   font-weight: 400;

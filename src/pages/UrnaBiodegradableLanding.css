@@ -743,6 +743,537 @@
 }
 
 /* ==========================================================================
+   STICKY CARD 3: KAMIBI TODO INCLUIDO (REAL PRODUCT + HAND-DRAWN INK SKETCH)
+   ========================================================================== */
+.kmb-kit-included-card {
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 2.4rem;
+  align-items: center;
+}
+
+.kmb-kit-headline {
+  font-size: clamp(2rem, 3.1vw, 2.75rem);
+  margin-bottom: 0.65rem;
+}
+
+.kmb-kit-headline span {
+  font-size: clamp(1.55rem, 2.35vw, 2.1rem);
+  margin-top: 0.15rem;
+}
+
+.kmb-kit-lead {
+  font-size: 0.86rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-deep-sage, #4A664A);
+  margin: 0 0 0.55rem;
+}
+
+.kmb-kit-checklist {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.36rem;
+  width: 100%;
+}
+
+.kmb-kit-check-item {
+  display: flex;
+  align-items: center;
+  gap: 0.62rem;
+  padding: 0.42rem 0.75rem;
+  border-radius: 13px;
+  background: rgba(255, 253, 249, 0.55);
+  border: 1px solid rgba(139, 158, 139, 0.22);
+  cursor: pointer;
+  transition: all 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.kmb-kit-check-item:hover,
+.kmb-kit-check-item.active {
+  background: #FFFDF9;
+  border-color: rgba(74, 102, 74, 0.55);
+  box-shadow: 0 8px 20px rgba(45, 45, 45, 0.06);
+  transform: translateX(4px);
+}
+
+.kmb-kit-check-emoji {
+  font-size: 1rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.kmb-kit-check-text {
+  font-size: 0.86rem;
+  line-height: 1.32;
+  color: var(--color-charcoal, #2D2D2D);
+  font-weight: 500;
+}
+
+.kmb-kit-check-item.active .kmb-kit-check-text {
+  font-weight: 600;
+}
+
+.kmb-kit-closing {
+  font-family: var(--font-display, 'Cormorant Garamond', Georgia, serif);
+  font-style: italic;
+  font-size: 1.08rem;
+  line-height: 1.35;
+  color: var(--color-stone, #5B554F);
+  margin: 0 0 1.05rem;
+}
+
+/* Right Column: Real Product + Hand-Drawn Ink Stage */
+.kmb-kit-visual-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.kmb-kit-spotlight-stage {
+  position: relative;
+  background: radial-gradient(
+    circle at 50% 44%,
+    #FFFDF9 0%,
+    #F3EFE6 72%,
+    #EAE3D5 100%
+  );
+  border: 1px solid rgba(139, 158, 139, 0.32);
+  border-radius: 26px;
+  padding: 1rem 1.2rem 0.95rem;
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    0 18px 36px rgba(32, 30, 26, 0.06);
+}
+
+.kmb-kit-stage-badge {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-bottom: 0.45rem;
+  border-bottom: 1px dashed rgba(139, 158, 139, 0.35);
+}
+
+.kmb-kit-stage-badge span {
+  font-family: var(--font-display, 'Cormorant Garamond', Georgia, serif);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-deep-sage, #4A664A);
+}
+
+.kmb-kit-stage-badge strong {
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-charcoal, #2D2D2D);
+}
+
+.kmb-kit-stage-badge em {
+  font-size: 0.7rem;
+  font-style: normal;
+  font-weight: 600;
+  padding: 0.18rem 0.58rem;
+  border-radius: 999px;
+  background: rgba(74, 102, 74, 0.12);
+  color: var(--color-deep-sage, #4A664A);
+}
+
+.kmb-kit-hybrid-canvas {
+  position: relative;
+  height: 195px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kmb-kit-real-wrap {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.kmb-kit-real-img {
+  max-width: 225px;
+  max-height: 170px;
+  object-fit: contain;
+  filter: drop-shadow(0 16px 24px rgba(25, 22, 18, 0.16));
+  transition: transform 0.35s ease;
+}
+
+.kmb-kit-img--bag .kmb-kit-real-img {
+  max-height: 162px;
+}
+
+.kmb-kit-img--cards .kmb-kit-real-img,
+.kmb-kit-img--pen .kmb-kit-real-img {
+  max-width: 245px;
+  max-height: 178px;
+}
+
+.kmb-kit-sketch-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 3;
+  color: #384939;
+  pointer-events: none;
+}
+
+.kmb-kit-stage-caption {
+  position: relative;
+  z-index: 4;
+  text-align: center;
+  padding-top: 0.45rem;
+  border-top: 1px solid rgba(212, 198, 179, 0.45);
+}
+
+.kmb-kit-stage-caption p {
+  margin: 0;
+  font-size: 0.79rem;
+  line-height: 1.4;
+  color: var(--color-stone, #5F5953);
+}
+
+.kmb-kit-mini-strip {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.42rem;
+}
+
+.kmb-kit-mini-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.22rem;
+  padding: 0.45rem 0.25rem;
+  border-radius: 12px;
+  background: rgba(255, 253, 249, 0.72);
+  border: 1px solid rgba(139, 158, 139, 0.25);
+  cursor: pointer;
+  transition: all 0.22s ease;
+}
+
+.kmb-kit-mini-btn:hover,
+.kmb-kit-mini-btn.active {
+  background: #FFFDF9;
+  border-color: var(--color-deep-sage, #4A664A);
+  box-shadow: 0 6px 14px rgba(45, 45, 45, 0.07);
+  transform: translateY(-2px);
+}
+
+.kmb-kit-mini-icon {
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+.kmb-kit-mini-label {
+  font-size: 0.64rem;
+  font-weight: 600;
+  color: var(--color-charcoal, #2D2D2D);
+  text-align: center;
+  line-height: 1.15;
+}
+
+/* ==========================================================================
+   2.5 PROCESO DE USO PASO A PASO — HORIZONTAL SCROLL (AGUA & TIERRA)
+       REAL PRODUCT CUTOUT + HAND-DRAWN INK HANDS (IMG2)
+   ========================================================================== */
+.kmb-process-scroll-section {
+  padding: 5rem 0 4.5rem;
+  background: linear-gradient(180deg, #FAF7F2 0%, #F4EFE6 52%, #FAF7F2 100%);
+  border-top: 1px solid rgba(218, 206, 188, 0.55);
+  border-bottom: 1px solid rgba(218, 206, 188, 0.55);
+  overflow: hidden;
+}
+
+.kmb-proc-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 2.4rem;
+  flex-wrap: wrap;
+}
+
+.kmb-proc-title-group {
+  max-width: 560px;
+}
+
+.kmb-proc-main-title {
+  font-family: var(--font-display, 'Cormorant Garamond', Georgia, serif);
+  font-size: clamp(2.2rem, 3.8vw, 3.25rem);
+  font-weight: 400;
+  line-height: 1.08;
+  color: var(--color-charcoal, #2D2D2D);
+  margin: 0;
+}
+
+.kmb-proc-main-title em {
+  font-style: italic;
+  color: var(--color-deep-sage, #4A664A);
+}
+
+.kmb-proc-controls-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.kmb-proc-env-switch {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem;
+  border-radius: 999px;
+  background: rgba(255, 253, 249, 0.9);
+  border: 1px solid rgba(196, 182, 162, 0.7);
+  box-shadow: 0 8px 20px rgba(32, 28, 22, 0.05);
+}
+
+.kmb-proc-env-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.58rem 1.25rem;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--color-stone, #6B6560);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.kmb-proc-env-btn.active {
+  background: var(--color-charcoal, #2D2D2D);
+  color: #FFFDF9;
+  box-shadow: 0 4px 12px rgba(28, 25, 21, 0.16);
+}
+
+.kmb-proc-viewport {
+  overflow: visible;
+  cursor: grab;
+  user-select: none;
+  padding: 0.5rem 0 1.25rem;
+}
+
+.kmb-proc-viewport.is-dragging {
+  cursor: grabbing;
+}
+
+.kmb-proc-track {
+  display: flex;
+  gap: 1.35rem;
+  width: max-content;
+}
+
+.kmb-proc-card {
+  width: 332px;
+  flex-shrink: 0;
+  background: #FFFDF9;
+  border: 1px solid rgba(212, 198, 179, 0.8);
+  border-radius: 26px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 16px 36px rgba(28, 25, 21, 0.05);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.35s ease,
+    border-color 0.3s ease;
+}
+
+.kmb-proc-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 24px 48px rgba(28, 25, 21, 0.09);
+  border-color: rgba(139, 158, 139, 0.75);
+}
+
+.kmb-proc-visual-stage {
+  position: relative;
+  height: 232px;
+  overflow: hidden;
+  border-bottom: 1px dashed rgba(196, 182, 162, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kmb-proc-card--water .kmb-proc-visual-stage {
+  background: radial-gradient(
+    circle at 50% 48%,
+    #FFFDF9 0%,
+    #EEF5F6 68%,
+    #E3EEF0 100%
+  );
+  color: #2B5B6C;
+}
+
+.kmb-proc-card--earth .kmb-proc-visual-stage {
+  background: radial-gradient(
+    circle at 50% 48%,
+    #FFFDF9 0%,
+    #EFF3EC 68%,
+    #E4ECE0 100%
+  );
+  color: #3B543B;
+}
+
+.kmb-proc-step-badge {
+  position: absolute;
+  top: 0.85rem;
+  left: 0.95rem;
+  right: 0.95rem;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.kmb-proc-step-num {
+  padding: 0.26rem 0.68rem;
+  border-radius: 999px;
+  background: rgba(255, 253, 249, 0.92);
+  border: 1px solid rgba(196, 182, 162, 0.65);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--color-charcoal, #2D2D2D);
+}
+
+.kmb-proc-step-phase {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: currentColor;
+  opacity: 0.85;
+}
+
+/* Real Product Layer inside Step Card */
+.kmb-proc-real-layer {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 1.2rem;
+}
+
+.kmb-proc-real-primary {
+  max-width: 182px;
+  max-height: 136px;
+  object-fit: contain;
+  filter: drop-shadow(0 14px 20px rgba(24, 22, 18, 0.16));
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.kmb-proc-card:hover .kmb-proc-real-primary {
+  transform: scale(1.04);
+}
+
+.kmb-proc-real--bag-into-urn .kmb-proc-real-primary {
+  max-width: 96px;
+  max-height: 104px;
+  transform: translateY(-28px);
+  z-index: 3;
+}
+
+.kmb-proc-real-secondary {
+  position: absolute;
+  bottom: 16px;
+  width: 155px;
+  height: 98px;
+  object-fit: contain;
+  opacity: 0.82;
+  filter: drop-shadow(0 10px 16px rgba(24, 22, 18, 0.12));
+  z-index: 1;
+}
+
+.kmb-proc-real--notes-zoom .kmb-proc-real-primary {
+  max-width: 196px;
+  max-height: 142px;
+  transform: translate(22px, 12px);
+}
+
+.kmb-proc-real--urn-cradled .kmb-proc-real-primary {
+  transform: translateY(-10px);
+}
+
+.kmb-proc-real--urn-water-float .kmb-proc-real-primary {
+  transform: translateY(-8px);
+}
+
+/* Hand-Drawn Ink Hands Overlay SVG */
+.kmb-proc-sketch-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 3;
+  pointer-events: none;
+  color: currentColor;
+}
+
+.kmb-proc-body {
+  padding: 1.25rem 1.35rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  flex: 1;
+}
+
+.kmb-proc-card-title {
+  font-family: var(--font-display, 'Cormorant Garamond', Georgia, serif);
+  font-size: 1.42rem;
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--color-charcoal, #2D2D2D);
+  margin: 0;
+}
+
+.kmb-proc-card-desc {
+  font-size: 0.85rem;
+  line-height: 1.52;
+  color: var(--color-stone, #6B6560);
+  margin: 0;
+}
+
+.kmb-proc-footer-bar {
+  margin-top: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.kmb-proc-drag-hint {
+  font-size: 0.78rem;
+  color: var(--color-stone, #6B6560);
+  font-weight: 500;
+}
+
+/* ==========================================================================
    3. SECCIÓN 3 PRODUCTOS: SCULPTURAL EDITORIAL CARDS (STUDIO PEDESTAL + SVG)
    ========================================================================== */
 .kmb-visual-trio-section {
@@ -1679,5 +2210,23 @@
   .kmb-ap-studio-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 0.75rem;
+  }
+
+  .kmb-kit-check-item {
+    text-align: left;
+  }
+
+  .kmb-kit-mini-strip {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.25rem;
+  }
+
+  .kmb-proc-card {
+    width: 288px;
+  }
+
+  .kmb-proc-env-btn {
+    padding: 0.5rem 0.9rem;
+    font-size: 0.78rem;
   }
 }

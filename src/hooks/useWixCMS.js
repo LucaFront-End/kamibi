@@ -3,6 +3,9 @@ import { useWixClient } from '../context/WixContext';
 
 const LANDINGS_COLLECTION = 'LandingsdeCiudad';
 const STORES_COLLECTION = 'TiendasDinamicas';
+// New CMS collection for Ads Landings under /zonas/:slug (configurable when CMS ID is provided)
+export const ADS_LANDINGS_COLLECTION =
+  import.meta.env.VITE_WIX_ADS_CMS_COLLECTION || 'LandingsAnuncios';
 
 // ── Generate slug from title ─────────────────────────────────────────────
 function generateSlug(text) {
@@ -16,14 +19,14 @@ function generateSlug(text) {
     .replace(/^-|-$/g, '');         // trim leading/trailing hyphens
 }
 
-// ── Shared normalizer (both collections have the same field structure) ────
+// ── Shared normalizer (collections share the same field structure) ────────
 function normalizeCMSItem(item, useGeneratedSlug = false) {
   const data = item.data || item;
   const title = data.title || '';
   return {
     _id: data._id,
     title,
-    slug: useGeneratedSlug ? generateSlug(title) : (data.slug || ''),
+    slug: useGeneratedSlug ? generateSlug(title) : (data.slug || generateSlug(title)),
     city: data.ciudadOEstado || '',
     country: data.pas || '',
     pageTitle: data.tituloPgina || title || '',
@@ -37,7 +40,7 @@ function normalizeCMSItem(item, useGeneratedSlug = false) {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// Landings de Ciudad — has native slug field
+// Landings de Ciudad (SEO: /ciudades/:slug) — untouched
 // ═══════════════════════════════════════════════════════════════════════════
 let allLandingsCache = null;
 
@@ -144,6 +147,140 @@ export function useWixLandingBySlug(slug) {
       } catch (err) {
         console.error('[CMS] Error fetching landing:', err);
         if (!cancelled) { setError(err?.message || 'Error'); setLanding(null); }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    fetch();
+    return () => { cancelled = true; };
+  }, [wixClient, isReady, slug]);
+
+  return { landing, loading, error };
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// Landings de Anuncios (/zonas/:slug) — Duplicate structure for Ads CMS
+// ═══════════════════════════════════════════════════════════════════════════
+let allAdLandingsCache = null;
+const adLandingCache = new Map();
+
+export function useWixAdLandings() {
+  const { wixClient, isReady } = useWixClient();
+  const [adLandings, setAdLandings] = useState(allAdLandingsCache || []);
+  const [loading, setLoading] = useState(allAdLandingsCache ? false : true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (allAdLandingsCache && allAdLandingsCache.length > 0) {
+      setAdLandings(allAdLandingsCache);
+      setLoading(false);
+      return;
+    }
+
+    if (!isReady) return;
+    let cancelled = false;
+
+    async function fetch() {
+      setLoading(true);
+      setError(null);
+      try {
+        let res = await wixClient.items.query(ADS_LANDINGS_COLLECTION).limit(100).find();
+        let items = (res.items || []).map(i => normalizeCMSItem(i));
+        if (!cancelled) {
+          setAdLandings(items);
+          setLoading(false);
+        }
+
+        if (res.hasNext && res.hasNext()) {
+          let fullList = [...items];
+          let nextRes = await wixClient.items.query(ADS_LANDINGS_COLLECTION).skip(100).limit(1000).find();
+          fullList = fullList.concat((nextRes.items || []).map(i => normalizeCMSItem(i)));
+          while (nextRes.hasNext && nextRes.hasNext()) {
+            nextRes = await nextRes.next();
+            fullList = fullList.concat((nextRes.items || []).map(i => normalizeCMSItem(i)));
+          }
+          allAdLandingsCache = fullList;
+          if (!cancelled) {
+            setAdLandings(fullList);
+          }
+        } else {
+          allAdLandingsCache = items;
+        }
+      } catch (err) {
+        console.warn('[CMS] Ads collection not yet connected or empty:', err?.message);
+        if (!cancelled) setError(err?.message || 'Could not load ad landings.');
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    fetch();
+    return () => { cancelled = true; };
+  }, [wixClient, isReady]);
+
+  return { adLandings, loading, error };
+}
+
+export function useWixAdLandingBySlug(slug) {
+  const { wixClient, isReady } = useWixClient();
+  const cached = slug ? adLandingCache.get(slug) : null;
+  const [landing, setLanding] = useState(cached || null);
+  const [loading, setLoading] = useState(cached ? false : true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (!slug) return;
+
+    if (adLandingCache.has(slug)) {
+      setLanding(adLandingCache.get(slug));
+      setLoading(false);
+      return;
+    }
+
+    if (!isReady) return;
+    let cancelled = false;
+
+    async function fetch() {
+      setLoading(true);
+      setError(null);
+      try {
+        // 1. Try querying by native slug field in ADS_LANDINGS_COLLECTION
+        const res = await wixClient.items
+          .query(ADS_LANDINGS_COLLECTION)
+          .eq('slug', slug)
+          .limit(1)
+          .find();
+
+        if (!cancelled) {
+          if (res.items?.length > 0) {
+            const normalized = normalizeCMSItem(res.items[0]);
+            adLandingCache.set(slug, normalized);
+            setLanding(normalized);
+            return;
+          }
+        }
+
+        // 2. Fallback: if collection uses generated slug from title
+        const allRes = await wixClient.items.query(ADS_LANDINGS_COLLECTION).limit(1000).find();
+        const allNormalized = (allRes.items || []).map(i => normalizeCMSItem(i));
+        const match = allNormalized.find(item => item.slug === slug);
+        if (!cancelled) {
+          if (match) {
+            adLandingCache.set(slug, match);
+            setLanding(match);
+          } else {
+            setLanding(null);
+            setError('Ad landing not found in CMS');
+          }
+        }
+      } catch (err) {
+        // Silently allow optimistic fallback rendering until CMS collection is created/connected
+        console.warn('[CMS] Ad landing query fallback active for slug:', slug);
+        if (!cancelled) {
+          setError(err?.message || 'Error');
+          setLanding(null);
+        }
       } finally {
         if (!cancelled) setLoading(false);
       }

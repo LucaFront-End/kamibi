@@ -21,6 +21,7 @@ import { AccountPage } from './pages/AccountPage';
 import { AboutPage } from './pages/AboutPage';
 import { ContactPage } from './pages/ContactPage';
 import { CityLandingPage } from './pages/CityLandingPage';
+import { ZonaAdLandingPage } from './pages/ZonaAdLandingPage';
 import { DynamicStorePage } from './pages/DynamicStorePage';
 import { ZonasPage } from './pages/ZonasPage';
 import { ThankYouPage } from './pages/ThankYouPage';
@@ -56,6 +57,9 @@ function App() {
                     <Route path="/tienda/:slug" element={<DynamicStorePage />} />
                     {/* Hub page for all dynamic landings & stores */}
                     <Route path="/zonas" element={<ZonasPage />} />
+                    {/* Dynamic CMS Ad landing pages with /zonas and /Zonas prefix */}
+                    <Route path="/zonas/:slug" element={<ZonaAdLandingPage />} />
+                    <Route path="/Zonas/:slug" element={<ZonaAdLandingPage />} />
                     {/* Legal Policies (Dynamic Wix CMS) */}
                     <Route path="/privacy-policy" element={<LegalPage policyKey="privacy" />} />
                     <Route path="/aviso-de-privacidad" element={<LegalPage policyKey="privacy" />} />

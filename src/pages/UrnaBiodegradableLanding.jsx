@@ -55,6 +55,7 @@ export const UrnaBiodegradableLanding = ({
   cmsLanding = null,
   zoneSlug = null,
   fallbackZoneTitle = '',
+  cleanCutoutsOnly = false,
 }) => {
   const { locale } = useTranslation();
   const isEs = locale === 'es';
@@ -387,7 +388,10 @@ export const UrnaBiodegradableLanding = ({
           variantChoice: 'GOLD',
           variantId: '4e430585-a945-4f93-a893-4d89e63e35bf',
           name: 'AQUA BIODEGRADABLE URN',
-          img: 'https://static.wixstatic.com/media/45119e_48478600018f46ffb3f1ac569e733471~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+          primaryImg:
+            'https://static.wixstatic.com/media/45119e_812f09d2732e4e2db45a354383159ac9~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png',
+          cutoutImg:
+            'https://static.wixstatic.com/media/45119e_48478600018f46ffb3f1ac569e733471~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
         },
         {
           label: 'Flore Turtle',
@@ -401,7 +405,10 @@ export const UrnaBiodegradableLanding = ({
           variantChoice: 'TURTLE',
           variantId: '69dda58d-b0fd-46b2-a287-0e8abe362c73',
           name: 'FLORE BIODEGRADABLE URNS',
-          img: 'https://static.wixstatic.com/media/45119e_44f8f91ccd1b439098bf5760374cc702~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+          primaryImg:
+            'https://static.wixstatic.com/media/45119e_92232e8c88c94935befe3b0b088a83a7~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png',
+          cutoutImg:
+            'https://static.wixstatic.com/media/45119e_44f8f91ccd1b439098bf5760374cc702~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
         },
         {
           label: 'Iris Pink',
@@ -415,7 +422,10 @@ export const UrnaBiodegradableLanding = ({
           variantChoice: 'PINK',
           variantId: 'be0fed5b-d2e4-4752-b154-d05c5374b127',
           name: 'IRIS BIODEGRADABLE URN',
-          img: 'https://static.wixstatic.com/media/45119e_4515ed8dce4f4ea28b7bfeb68eac9066~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+          primaryImg:
+            'https://static.wixstatic.com/media/45119e_0c6382ae36934b24a54c96ae403d1bd4~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png',
+          cutoutImg:
+            'https://static.wixstatic.com/media/45119e_4515ed8dce4f4ea28b7bfeb68eac9066~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
         },
         {
           label: 'Aqua Soft Pink',
@@ -429,7 +439,10 @@ export const UrnaBiodegradableLanding = ({
           variantChoice: 'SOFT PINK',
           variantId: 'e869e857-d2dd-40c8-a4f5-49cad8a901bd',
           name: 'AQUA BIODEGRADABLE URN',
-          img: 'https://static.wixstatic.com/media/45119e_45fcd46337e3476c95debccbd733f914~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+          primaryImg:
+            'https://static.wixstatic.com/media/45119e_51128c0dec6c41abafab28e4be4b9582~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png',
+          cutoutImg:
+            'https://static.wixstatic.com/media/45119e_45fcd46337e3476c95debccbd733f914~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
         },
         {
           label: 'Aqua Deep Blue',
@@ -443,7 +456,10 @@ export const UrnaBiodegradableLanding = ({
           variantChoice: 'DEEP BLUE',
           variantId: '173b161b-7848-42a7-abbb-3027a177af5c',
           name: 'AQUA BIODEGRADABLE URN',
-          img: 'https://static.wixstatic.com/media/45119e_5d507d8460784c628298d2c49edaac3e~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+          primaryImg:
+            'https://static.wixstatic.com/media/45119e_f889a60e679c4eab8395a9b15b0de33d~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png',
+          cutoutImg:
+            'https://static.wixstatic.com/media/45119e_5d507d8460784c628298d2c49edaac3e~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
         },
         {
           label: 'Iris Ginkgo',
@@ -457,7 +473,10 @@ export const UrnaBiodegradableLanding = ({
           variantChoice: 'GINKGO',
           variantId: '9029f582-f02a-4b91-9e04-192bf4641ec1',
           name: 'IRIS BIODEGRADABLE URN',
-          img: 'https://static.wixstatic.com/media/45119e_30cc2647cbfa4613b55c9c180bd8be22~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+          primaryImg:
+            'https://static.wixstatic.com/media/45119e_eec1cddce34144e3bc72dd40a76ccd4f~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png',
+          cutoutImg:
+            'https://static.wixstatic.com/media/45119e_30cc2647cbfa4613b55c9c180bd8be22~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
         },
       ],
     },
@@ -477,92 +496,215 @@ export const UrnaBiodegradableLanding = ({
         { val: '220 in³', label: isEs ? 'Capacidad Adulto' : 'Adult Capacity' },
         { val: isEs ? 'Cabina OK' : 'Carry-On', label: isEs ? 'Vuelo TSA' : 'TSA Approved' },
       ],
-      swatches: [
-        {
-          label: 'Terra Botanical',
-          modelTitle: 'Kamibi Terra',
-          editionSub: isEs
-            ? 'Banda Botánica (Purple) · Tierra y Bosque'
-            : 'Botanical Band (Purple) · Earth & Forest',
-          hex: '#8B9E8B',
-          slug: 'terra-urn',
-          id: 'b4fd86df-d446-0993-f324-d5d13eface16',
-          variantChoice: 'PURPLE',
-          variantId: '4be466fd-4b58-496e-aaee-04274dfa7d7f',
-          name: 'TERRA BIODEGRADABLE URN',
-          img: 'https://static.wixstatic.com/media/45119e_277f4849b55642b1a9c570a911f20d37~mv2.png/v1/fit/w_1000,h_1000,q_90/file.png',
-        },
-        {
-          label: 'Angel Gold',
-          modelTitle: 'Kamibi Angel',
-          editionSub: isEs
-            ? 'Banda Gold · Tierra y Agua'
-            : 'Gold Band · Earth & Water',
-          hex: '#D4BC94',
-          slug: 'angel-urn',
-          id: 'a09f394c-67bf-476b-f1a9-e3d576ce6505',
-          variantChoice: 'GOLD',
-          variantId: '743614c3-9a2a-41d0-95b7-7ac74c23cc58',
-          name: 'ANGEL BIODEGRADABLE URN',
-          img: 'https://static.wixstatic.com/media/45119e_6fee7c273f3f487aba1e9f9e8aee9a72~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
-        },
-        {
-          label: 'Angel Ocean',
-          modelTitle: 'Kamibi Angel',
-          editionSub: isEs
-            ? 'Banda Ocean · Tierra y Agua'
-            : 'Ocean Band · Earth & Water',
-          hex: '#7BA7B5',
-          slug: 'angel-urn',
-          id: 'a09f394c-67bf-476b-f1a9-e3d576ce6505',
-          variantChoice: 'OCEAN',
-          variantId: '3603a353-e46e-43c5-a70c-58c582d56ebb',
-          name: 'ANGEL BIODEGRADABLE URN',
-          img: 'https://static.wixstatic.com/media/45119e_055fa3d6159a47a8b60de621c43b90e1~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
-        },
-        {
-          label: 'Angel Soft Pink',
-          modelTitle: 'Kamibi Angel',
-          editionSub: isEs
-            ? 'Banda Rosa Suave (Soft Pink) · Tierra y Agua'
-            : 'Soft Pink Band · Earth & Water',
-          hex: '#E8BBC5',
-          slug: 'angel-urn',
-          id: 'a09f394c-67bf-476b-f1a9-e3d576ce6505',
-          variantChoice: 'SOFT PINK',
-          variantId: '07131476-b57f-47b2-a262-d92835940506',
-          name: 'ANGEL BIODEGRADABLE URN',
-          img: 'https://static.wixstatic.com/media/45119e_8d3df7b505f7458a98c95c0fc4ea293e~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
-        },
-        {
-          label: 'Angel Pink',
-          modelTitle: 'Kamibi Angel',
-          editionSub: isEs
-            ? 'Banda Rosa (Pink) · Tierra y Agua'
-            : 'Pink Band · Earth & Water',
-          hex: '#E06088',
-          slug: 'angel-urn',
-          id: 'a09f394c-67bf-476b-f1a9-e3d576ce6505',
-          variantChoice: 'PINK',
-          variantId: 'a4f1d078-18fc-429b-96d1-9099f08bf484',
-          name: 'ANGEL BIODEGRADABLE URN',
-          img: 'https://static.wixstatic.com/media/45119e_0b3c807faff94f52b37dc194dff7c837~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
-        },
-        {
-          label: 'Angel Deep Blue',
-          modelTitle: 'Kamibi Angel',
-          editionSub: isEs
-            ? 'Banda Deep Blue · Tierra y Agua'
-            : 'Deep Blue Band · Earth & Water',
-          hex: '#1C7C9C',
-          slug: 'angel-urn',
-          id: 'a09f394c-67bf-476b-f1a9-e3d576ce6505',
-          variantChoice: 'DEEP BLUE',
-          variantId: '63db2879-3485-44bd-ad5d-64fbde59d2fc',
-          name: 'ANGEL BIODEGRADABLE URN',
-          img: 'https://static.wixstatic.com/media/45119e_06646d5f8f6c4200aa02c9052fe7b168~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
-        },
-      ],
+      swatches: cleanCutoutsOnly
+        ? [
+            {
+              label: 'Terra Botanical',
+              modelTitle: 'Kamibi Terra',
+              editionSub: isEs
+                ? 'Banda Botánica (Purple) · Tierra y Bosque'
+                : 'Botanical Band (Purple) · Earth & Forest',
+              hex: '#8B9E8B',
+              slug: 'terra-urn',
+              id: 'b4fd86df-d446-0993-f324-d5d13eface16',
+              variantChoice: 'PURPLE',
+              variantId: '4be466fd-4b58-496e-aaee-04274dfa7d7f',
+              name: 'TERRA BIODEGRADABLE URN',
+              primaryImg:
+                'https://static.wixstatic.com/media/45119e_8e4a1c81a2bd409e90cf795fe22bac2b~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png',
+              cutoutImg:
+                'https://static.wixstatic.com/media/45119e_277f4849b55642b1a9c570a911f20d37~mv2.png/v1/fit/w_1000,h_1000,q_90/file.png',
+            },
+            {
+              label: 'Angel Gold',
+              modelTitle: 'Kamibi Angel',
+              editionSub: isEs
+                ? 'Banda Gold · Tierra y Agua'
+                : 'Gold Band · Earth & Water',
+              hex: '#D4BC94',
+              slug: 'angel-urn',
+              id: 'a09f394c-67bf-476b-f1a9-e3d576ce6505',
+              variantChoice: 'GOLD',
+              variantId: '743614c3-9a2a-41d0-95b7-7ac74c23cc58',
+              name: 'ANGEL BIODEGRADABLE URN',
+              primaryImg:
+                'https://static.wixstatic.com/media/45119e_6fee7c273f3f487aba1e9f9e8aee9a72~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+              cutoutImg:
+                'https://static.wixstatic.com/media/45119e_6fee7c273f3f487aba1e9f9e8aee9a72~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+            },
+            {
+              label: 'Angel Ocean',
+              modelTitle: 'Kamibi Angel',
+              editionSub: isEs
+                ? 'Banda Ocean · Tierra y Agua'
+                : 'Ocean Band · Earth & Water',
+              hex: '#7BA7B5',
+              slug: 'angel-urn',
+              id: 'a09f394c-67bf-476b-f1a9-e3d576ce6505',
+              variantChoice: 'OCEAN',
+              variantId: '3603a353-e46e-43c5-a70c-58c582d56ebb',
+              name: 'ANGEL BIODEGRADABLE URN',
+              primaryImg:
+                'https://static.wixstatic.com/media/45119e_055fa3d6159a47a8b60de621c43b90e1~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+              cutoutImg:
+                'https://static.wixstatic.com/media/45119e_055fa3d6159a47a8b60de621c43b90e1~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+            },
+            {
+              label: 'Angel Soft Pink',
+              modelTitle: 'Kamibi Angel',
+              editionSub: isEs
+                ? 'Banda Rosa Suave (Soft Pink) · Tierra y Agua'
+                : 'Soft Pink Band · Earth & Water',
+              hex: '#E8BBC5',
+              slug: 'angel-urn',
+              id: 'a09f394c-67bf-476b-f1a9-e3d576ce6505',
+              variantChoice: 'SOFT PINK',
+              variantId: '07131476-b57f-47b2-a262-d92835940506',
+              name: 'ANGEL BIODEGRADABLE URN',
+              primaryImg:
+                'https://static.wixstatic.com/media/45119e_da682a60bd214c8f9b3a100f545edd65~mv2.png/v1/fit/w_1000,h_1000,q_90/file.png',
+              cutoutImg:
+                'https://static.wixstatic.com/media/45119e_8d3df7b505f7458a98c95c0fc4ea293e~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+            },
+            {
+              label: 'Angel Pink',
+              modelTitle: 'Kamibi Angel',
+              editionSub: isEs
+                ? 'Banda Rosa (Pink) · Tierra y Agua'
+                : 'Pink Band · Earth & Water',
+              hex: '#E06088',
+              slug: 'angel-urn',
+              id: 'a09f394c-67bf-476b-f1a9-e3d576ce6505',
+              variantChoice: 'PINK',
+              variantId: 'a4f1d078-18fc-429b-96d1-9099f08bf484',
+              name: 'ANGEL BIODEGRADABLE URN',
+              primaryImg:
+                'https://static.wixstatic.com/media/45119e_0b3c807faff94f52b37dc194dff7c837~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+              cutoutImg:
+                'https://static.wixstatic.com/media/45119e_0b3c807faff94f52b37dc194dff7c837~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+            },
+            {
+              label: 'Angel Deep Blue',
+              modelTitle: 'Kamibi Angel',
+              editionSub: isEs
+                ? 'Banda Deep Blue · Tierra y Agua'
+                : 'Deep Blue Band · Earth & Water',
+              hex: '#1C7C9C',
+              slug: 'angel-urn',
+              id: 'a09f394c-67bf-476b-f1a9-e3d576ce6505',
+              variantChoice: 'DEEP BLUE',
+              variantId: '63db2879-3485-44bd-ad5d-64fbde59d2fc',
+              name: 'ANGEL BIODEGRADABLE URN',
+              primaryImg:
+                'https://static.wixstatic.com/media/45119e_06646d5f8f6c4200aa02c9052fe7b168~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+              cutoutImg:
+                'https://static.wixstatic.com/media/45119e_06646d5f8f6c4200aa02c9052fe7b168~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+            },
+          ]
+        : [
+            {
+              label: 'Terra Botanical',
+              modelTitle: 'Kamibi Terra',
+              editionSub: isEs
+                ? 'Banda Botánica (Purple) · Tierra y Bosque'
+                : 'Botanical Band (Purple) · Earth & Forest',
+              hex: '#8B9E8B',
+              slug: 'terra-urn',
+              id: 'b4fd86df-d446-0993-f324-d5d13eface16',
+              variantChoice: 'PURPLE',
+              variantId: '4be466fd-4b58-496e-aaee-04274dfa7d7f',
+              name: 'TERRA BIODEGRADABLE URN',
+              primaryImg:
+                'https://static.wixstatic.com/media/45119e_8e4a1c81a2bd409e90cf795fe22bac2b~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png',
+              cutoutImg:
+                'https://static.wixstatic.com/media/45119e_277f4849b55642b1a9c570a911f20d37~mv2.png/v1/fit/w_1000,h_1000,q_90/file.png',
+            },
+            {
+              label: 'Terra Ginkgo Gold',
+              modelTitle: 'Kamibi Terra',
+              editionSub: isEs
+                ? 'Banda Ginkgo Gold · Tierra y Bosque'
+                : 'Ginkgo Gold Band · Earth & Forest',
+              hex: '#D4B475',
+              slug: 'terra-urn',
+              id: 'b4fd86df-d446-0993-f324-d5d13eface16',
+              variantChoice: 'GINKO GOLD',
+              variantId: '98fa3525-c96f-4a10-9cd3-76e8d75d96f5',
+              name: 'TERRA BIODEGRADABLE URN',
+              primaryImg:
+                'https://static.wixstatic.com/media/45119e_d7d0de24d7d44bc2812fdbd7b0f02a68~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png',
+              cutoutImg:
+                'https://static.wixstatic.com/media/45119e_a575488c331f42789877412c56e83fe1~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+            },
+            {
+              label: 'Terra Ocean',
+              modelTitle: 'Kamibi Terra',
+              editionSub: isEs
+                ? 'Banda Ocean · Tierra y Bosque'
+                : 'Ocean Band · Earth & Forest',
+              hex: '#5B9AA9',
+              slug: 'terra-urn',
+              id: 'b4fd86df-d446-0993-f324-d5d13eface16',
+              variantChoice: 'OCEAN',
+              variantId: '8a733f77-eddc-48f5-8cd7-099928562600',
+              name: 'TERRA BIODEGRADABLE URN',
+              primaryImg:
+                'https://static.wixstatic.com/media/45119e_014a43b4c98c4ce7be9ac20f1773f330~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png',
+              cutoutImg:
+                'https://static.wixstatic.com/media/45119e_15574358cd20474ea4d251dae13b5a70~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+            },
+            {
+              label: 'Terra Pink',
+              modelTitle: 'Kamibi Terra',
+              editionSub: isEs
+                ? 'Banda Rosa (Pink) · Tierra y Bosque'
+                : 'Pink Band · Earth & Forest',
+              hex: '#E08FA3',
+              slug: 'terra-urn',
+              id: 'b4fd86df-d446-0993-f324-d5d13eface16',
+              variantChoice: 'PINK',
+              variantId: '09cda8fa-f4ec-4b33-a62a-25674fb7b695',
+              name: 'TERRA BIODEGRADABLE URN',
+              primaryImg:
+                'https://static.wixstatic.com/media/45119e_d0e625964608448abb482746e95034ea~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png',
+              cutoutImg:
+                'https://static.wixstatic.com/media/45119e_7a1c94ae780545e5a741810a8d7df6a2~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+            },
+            {
+              label: 'Terra Ginkgo',
+              modelTitle: 'Kamibi Terra',
+              editionSub: isEs
+                ? 'Banda Ginkgo · Tierra y Bosque'
+                : 'Ginkgo Band · Earth & Forest',
+              hex: '#D8A384',
+              slug: 'terra-urn',
+              id: 'b4fd86df-d446-0993-f324-d5d13eface16',
+              variantChoice: 'GINKO',
+              variantId: 'f1bb8ec0-79d7-4d60-8673-262ca5e2c9b8',
+              name: 'TERRA BIODEGRADABLE URN',
+              primaryImg:
+                'https://static.wixstatic.com/media/45119e_3eed9178f5b2460a85de4bd3299161c1~mv2.png/v1/fit/w_2000,h_2000,q_90/file.png',
+              cutoutImg:
+                'https://static.wixstatic.com/media/45119e_406349985092485bae6ed7728ff859f5~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+            },
+            {
+              label: 'Angel Soft Pink',
+              modelTitle: 'Kamibi Angel',
+              editionSub: isEs
+                ? 'Banda Rosa Suave (Soft Pink) · Tierra y Agua'
+                : 'Soft Pink Band · Earth & Water',
+              hex: '#E8BBC5',
+              slug: 'angel-urn',
+              id: 'a09f394c-67bf-476b-f1a9-e3d576ce6505',
+              variantChoice: 'SOFT PINK',
+              variantId: '07131476-b57f-47b2-a262-d92835940506',
+              name: 'ANGEL BIODEGRADABLE URN',
+              primaryImg:
+                'https://static.wixstatic.com/media/45119e_da682a60bd214c8f9b3a100f545edd65~mv2.png/v1/fit/w_1000,h_1000,q_90/file.png',
+              cutoutImg:
+                'https://static.wixstatic.com/media/45119e_8d3df7b505f7458a98c95c0fc4ea293e~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+            },
+          ],
     },
     {
       key: 'col3',
@@ -594,7 +736,10 @@ export const UrnaBiodegradableLanding = ({
           variantId: '00000000-0000-0000-0000-000000000000',
           name: 'MINI URN SET FLORE BIODEGRADABLES',
           priceOverride: 49.99,
-          img: 'https://static.wixstatic.com/media/45119e_d62bb5591c674265a6deee5eb3fa4985~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+          primaryImg:
+            'https://static.wixstatic.com/media/45119e_d62bb5591c674265a6deee5eb3fa4985~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+          cutoutImg:
+            'https://static.wixstatic.com/media/45119e_d62bb5591c674265a6deee5eb3fa4985~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
         },
         {
           label: 'Mini Set Ocean (×4)',
@@ -609,7 +754,10 @@ export const UrnaBiodegradableLanding = ({
           variantId: '00000000-0000-0000-0000-000000000000',
           name: 'MINI URN SET OCEAN BIODEGRADABLES',
           priceOverride: 49.99,
-          img: 'https://static.wixstatic.com/media/45119e_b29071730d57411e80628960675d4a04~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
+          primaryImg:
+            'https://static.wixstatic.com/media/45119e_23cc9997f2b24ac7a9b277be1e904170~mv2.png/v1/fit/w_1024,h_1024,q_90/file.png',
+          cutoutImg:
+            'https://static.wixstatic.com/media/45119e_b29071730d57411e80628960675d4a04~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
         },
         {
           label: 'Tree of Life Bags (×2)',
@@ -624,7 +772,10 @@ export const UrnaBiodegradableLanding = ({
           variantId: '00000000-0000-0000-0000-000000000000',
           name: 'ASH BURIAL BAGS TREE OF LIFE DESIGN - Pack of 2',
           priceOverride: 12.99,
-          img: 'https://static.wixstatic.com/media/45119e_b515104a49a642a1945b922955493527~mv2.png/v1/fit/w_1000,h_1000,q_90/file.png',
+          primaryImg:
+            'https://static.wixstatic.com/media/45119e_b515104a49a642a1945b922955493527~mv2.png/v1/fit/w_1000,h_1000,q_90/file.png',
+          cutoutImg:
+            'https://static.wixstatic.com/media/45119e_b515104a49a642a1945b922955493527~mv2.png/v1/fit/w_1000,h_1000,q_90/file.png',
         },
       ],
     },
@@ -2152,6 +2303,25 @@ export const UrnaBiodegradableLanding = ({
               const activeSwatch = col.swatches[activeIdx] || col.swatches[0];
               const displayPrice = activeSwatch.priceOverride ?? col.price;
               const swatchFeedbackKey = `${activeSwatch.slug}:${activeSwatch.variantChoice || ''}`;
+              const matchedProd = products.find(
+                (p) => p.slug === activeSwatch.slug || p.id === activeSwatch.id
+              );
+              const matchedVo = activeSwatch.variantChoice
+                ? matchedProd?.variantObjects?.find(
+                    (v) =>
+                      v.label?.trim().toUpperCase() ===
+                      activeSwatch.variantChoice.trim().toUpperCase()
+                  )
+                : null;
+              const resolvedSwatchImg = cleanCutoutsOnly
+                ? activeSwatch.cutoutImg ||
+                  matchedVo?.cutoutImage ||
+                  activeSwatch.primaryImg ||
+                  activeSwatch.img
+                : matchedVo?.image ||
+                  activeSwatch.primaryImg ||
+                  matchedProd?.images?.[0] ||
+                  activeSwatch.img;
 
               return (
                 <div
@@ -2250,14 +2420,16 @@ export const UrnaBiodegradableLanding = ({
                     <div className="kmb-vt-urn-center">
                       <AnimatePresence mode="wait">
                         <motion.img
-                          key={activeSwatch.img}
-                          src={activeSwatch.img}
+                          key={resolvedSwatchImg}
+                          src={resolvedSwatchImg}
                           alt={activeSwatch.name}
                           initial={{ opacity: 0, scale: 0.9, y: 10 }}
                           animate={{ opacity: 1, scale: 1, y: 0 }}
                           exit={{ opacity: 0, scale: 0.94, y: -6 }}
                           transition={{ duration: 0.34, ease: [0.16, 1, 0.3, 1] }}
-                          className="kmb-vt-urn-img"
+                          className={`kmb-vt-urn-img ${
+                            !cleanCutoutsOnly ? 'kmb-vt-urn-img--fullkit' : ''
+                          }`}
                         />
                       </AnimatePresence>
                       <div className="kmb-vt-floor-shadow" />
@@ -2341,6 +2513,8 @@ export const UrnaBiodegradableLanding = ({
                           onClick={() =>
                             handleDirectBuy({
                               ...activeSwatch,
+                              variantId: matchedVo?.variantId || activeSwatch.variantId,
+                              img: resolvedSwatchImg,
                               price: displayPrice,
                               feedbackKey: swatchFeedbackKey,
                             })
@@ -2452,20 +2626,26 @@ export const UrnaBiodegradableLanding = ({
               >
                 <AnimatePresence mode="popLayout">
                   {filteredCarouselProducts.map((prod, idx) => {
+                    const userPickedVar = carouselVariantMap[prod.slug];
                     const activeVarLabel =
-                      carouselVariantMap[prod.slug] ||
-                      CLEAN_URN_DEFAULT_VARIANT[prod.slug] ||
+                      userPickedVar ||
+                      (cleanCutoutsOnly
+                        ? CLEAN_URN_DEFAULT_VARIANT[prod.slug]
+                        : prod.defaultVariant) ||
                       prod.defaultVariant ||
                       prod.variants?.[0] ||
                       null;
                     const activeVo =
                       prod.variantObjects?.find((v) => v.label === activeVarLabel) ||
                       null;
-                    const cardDisplayImg =
-                      activeVo?.cutoutImage ||
-                      CLEAN_URN_CUTOUTS[prod.slug] ||
-                      activeVo?.image ||
-                      prod.images?.[0];
+                    const cardDisplayImg = cleanCutoutsOnly
+                      ? activeVo?.cutoutImage ||
+                        CLEAN_URN_CUTOUTS[prod.slug] ||
+                        activeVo?.image ||
+                        prod.images?.[0]
+                      : userPickedVar
+                      ? activeVo?.image || prod.images?.[0] || activeVo?.cutoutImage
+                      : prod.images?.[0] || activeVo?.image || activeVo?.cutoutImage;
                     const catFeedbackKey = `cat-${prod.slug}-${activeVarLabel || 'default'}`;
 
                     return (
@@ -2491,9 +2671,12 @@ export const UrnaBiodegradableLanding = ({
                           }}
                         >
                           <img
+                            key={cardDisplayImg}
                             src={cardDisplayImg}
                             alt={prod.name}
-                            className="kmb-prod-img"
+                            className={`kmb-prod-img ${
+                              !cleanCutoutsOnly ? 'kmb-prod-img--fullkit' : ''
+                            }`}
                             draggable={false}
                             loading="lazy"
                           />

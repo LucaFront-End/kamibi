@@ -1478,6 +1478,11 @@
   z-index: 2;
 }
 
+.kmb-vt-urn-img--fullkit {
+  max-width: 282px;
+  max-height: 208px;
+}
+
 .kmb-vt-card:hover .kmb-vt-urn-img {
   transform: translateY(-7px) scale(1.05);
 }
@@ -1845,6 +1850,11 @@
   object-fit: contain;
   transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   filter: drop-shadow(0 16px 24px rgba(0, 0, 0, 0.12));
+}
+
+.kmb-prod-img--fullkit {
+  max-width: 244px;
+  max-height: 224px;
 }
 
 .kmb-product-card:hover .kmb-prod-img {

@@ -27,6 +27,7 @@ import { ZonasPage } from './pages/ZonasPage';
 import { ThankYouPage } from './pages/ThankYouPage';
 import { LegalPage } from './pages/LegalPage';
 import { UrnaBiodegradableLanding } from './pages/UrnaBiodegradableLanding';
+import { UrnaBiodegradableLandingBackup } from './pages/UrnaBiodegradableLandingBackup';
 import './App.css';
 
 function App() {
@@ -79,6 +80,10 @@ function App() {
                     <Route path="/urnas-biodegradables/*" element={<UrnaBiodegradableLanding />} />
                     <Route path="/lp/urna-biodegradable" element={<UrnaBiodegradableLanding />} />
                     <Route path="/lp/urna-biodegradable/*" element={<UrnaBiodegradableLanding />} />
+                    {/* Backup & Clean-Cutout Preserved Landing Pages */}
+                    <Route path="/urna-biodegradable-backup" element={<UrnaBiodegradableLanding cleanCutoutsOnly />} />
+                    <Route path="/urna-biodegradable-clean" element={<UrnaBiodegradableLanding cleanCutoutsOnly />} />
+                    <Route path="/urna-biodegradable-v1" element={<UrnaBiodegradableLandingBackup />} />
                     {/* Thank You page after checkout */}
                     <Route path="/thank-you" element={<ThankYouPage />} />
                     {/* Dynamic CMS city landing pages with /ciudades and /Ciudades prefix */}

@@ -2,22 +2,26 @@
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap>
     <loc>https://kamibistore.com/sitemap-pages.xml</loc>
-    <lastmod>2026-10-20</lastmod>
+    <lastmod>2026-11-04</lastmod>
   </sitemap>
   <sitemap>
     <loc>https://kamibistore.com/sitemap-productos.xml</loc>
-    <lastmod>2026-10-20</lastmod>
+    <lastmod>2026-11-04</lastmod>
   </sitemap>
   <sitemap>
     <loc>https://kamibistore.com/sitemap-landings.xml</loc>
-    <lastmod>2026-10-20</lastmod>
+    <lastmod>2026-11-04</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>https://kamibistore.com/sitemap-zonas.xml</loc>
+    <lastmod>2026-11-04</lastmod>
   </sitemap>
   <sitemap>
     <loc>https://kamibistore.com/sitemap-tiendas.xml</loc>
-    <lastmod>2026-10-20</lastmod>
+    <lastmod>2026-11-04</lastmod>
   </sitemap>
   <sitemap>
     <loc>https://kamibistore.com/sitemap-blog.xml</loc>
-    <lastmod>2026-10-20</lastmod>
+    <lastmod>2026-11-04</lastmod>
   </sitemap>
 </sitemapindex>

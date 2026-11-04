@@ -354,6 +354,7 @@ export function normalizeProduct(wixProduct) {
     defaultVariant,                         // Variant label matching images[0]
     defaultVariantId,                       // Variant UUID matching images[0]
     wixVariants: wixVariants || [],         // Raw Wix variant objects with real UUIDs
+    collectionIds: collectionIds || [],     // Raw Wix collection IDs (water, earth, minis, bags)
     numericId: numericId || '',
     stock: wixProduct.stock || { inStock: true, inventoryStatus: 'IN_STOCK' },
     seoData: wixProduct.seoData || null,
@@ -367,13 +368,19 @@ export function normalizeProduct(wixProduct) {
 }
 
 /**
- * Fetch all products from Wix Stores.
+ * Fetch all products from Wix Stores with full pagination.
  * @param {object} wixClient - Client from WixContext
  */
 export async function fetchAllProducts(wixClient) {
   try {
-    const result = await wixClient.products.queryProducts().find();
-    const normalized = (result.items || []).map(normalizeProduct);
+    let rawItems = [];
+    let result = await wixClient.products.queryProducts().limit(100).find();
+    rawItems = rawItems.concat(result.items || []);
+    while (result.hasNext && result.hasNext()) {
+      result = await result.next();
+      rawItems = rawItems.concat(result.items || []);
+    }
+    const normalized = rawItems.map(normalizeProduct);
     return sortProducts(normalized);
   } catch (error) {
     console.error('[Wix] Failed to fetch products:', error);

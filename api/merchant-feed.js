@@ -109,7 +109,10 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.setHeader('Content-Type', 'text/tab-separated-values; charset=utf-8');
   res.setHeader('Content-Disposition', 'inline; filename="merchant-feed.tsv"');
-  res.setHeader('Cache-Control', 's-maxage=1800, stale-while-revalidate=86400');
+  res.setHeader(
+    'Cache-Control',
+    'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0'
+  );
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -122,8 +125,13 @@ export default async function handler(req, res) {
     });
     await wixClient.auth.generateVisitorTokens();
 
-    const result = await wixClient.products.queryProducts().find();
-    const items = result.items || [];
+    let items = [];
+    let result = await wixClient.products.queryProducts().limit(100).find();
+    items = items.concat(result.items || []);
+    while (result.hasNext && result.hasNext()) {
+      result = await result.next();
+      items = items.concat(result.items || []);
+    }
 
     const headers = [
       'id',

@@ -37,13 +37,26 @@ export const ZonasPage = () => {
     if (!searchQuery.trim()) return landings;
     const q = searchQuery.toLowerCase().trim();
     return landings.filter((l) => {
-      const title = (l.title || '').toLowerCase();
+      const title = (l.title || l.pageTitle || '').toLowerCase();
       const city = (l.city || '').toLowerCase();
       const country = (l.country || '').toLowerCase();
       const excerpt = (l.excerpt || '').toLowerCase();
       return title.includes(q) || city.includes(q) || country.includes(q) || excerpt.includes(q);
     });
   }, [landings, searchQuery]);
+
+  // Filter Zonas (CMS collection: Zonas) based on search query
+  const filteredAdLandings = useMemo(() => {
+    if (!searchQuery.trim()) return adLandings;
+    const q = searchQuery.toLowerCase().trim();
+    return adLandings.filter((l) => {
+      const title = (l.title || l.pageTitle || '').toLowerCase();
+      const city = (l.city || '').toLowerCase();
+      const country = (l.country || '').toLowerCase();
+      const excerpt = (l.excerpt || '').toLowerCase();
+      return title.includes(q) || city.includes(q) || country.includes(q) || excerpt.includes(q);
+    });
+  }, [adLandings, searchQuery]);
 
   // Reset page when search query changes
   const handleSearchChange = (e) => {
@@ -255,7 +268,7 @@ export const ZonasPage = () => {
         )}
 
         {/* Empty Search Results */}
-        {!loading && filteredLandings.length === 0 && searchQuery && (
+        {!loading && filteredLandings.length === 0 && filteredAdLandings.length === 0 && searchQuery && (
           <section className="zonas-empty">
             <div className="container">
               <span style={{ fontSize: '3rem' }}>🔍</span>
@@ -274,8 +287,8 @@ export const ZonasPage = () => {
           </section>
         )}
 
-        {/* Dynamic Ad Landings Section (/zonas/:slug) */}
-        {!loading && adLandings.length > 0 && (
+        {/* Dynamic Ad Landings Section (/zonas/:slug — CMS: Zonas) */}
+        {!loading && filteredAdLandings.length > 0 && (
           <section className="zonas-section zonas-ads-section">
             <div className="container">
               <div className="zonas-section-header">
@@ -287,7 +300,7 @@ export const ZonasPage = () => {
                 </h2>
               </div>
               <div className="zonas-grid">
-                {adLandings.map((ad, i) => (
+                {filteredAdLandings.map((ad, i) => (
                   <div key={ad._id || ad.slug || i} className="zona-card">
                     <div className="zona-card-icon">🌿</div>
                     <div className="zona-card-content">

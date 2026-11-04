@@ -799,6 +799,144 @@ export const UrnaBiodegradableLanding = ({
     },
   ];
 
+  // Dynamically synchronize the 3 comparison columns with live Wix Stores products & variants
+  const dynamicComparisonCols = useMemo(() => {
+    if (!products || products.length === 0) return appleComparisonCols;
+
+    return appleComparisonCols.map((col) => {
+      // 1. Filter out swatches whose product or variant was deleted in Wix Stores, and sync live fields
+      const syncedSwatches = col.swatches
+        .map((sw) => {
+          const liveProd = products.find(
+            (p) => p.slug === sw.slug || p.id === sw.id
+          );
+          if (!liveProd) return null; // Product removed in Wix Stores
+
+          let liveVo = null;
+          if (sw.variantChoice && Array.isArray(liveProd.variantObjects) && liveProd.variantObjects.length > 0) {
+            liveVo = liveProd.variantObjects.find(
+              (v) =>
+                v.label?.trim().toUpperCase() ===
+                sw.variantChoice.trim().toUpperCase()
+            );
+            if (!liveVo) return null; // Variant removed in Wix Stores
+          }
+
+          return {
+            ...sw,
+            id: liveProd.id,
+            slug: liveProd.slug,
+            name: liveProd.name,
+            priceOverride: liveProd.price,
+            variantId: liveVo?.variantId || liveProd.defaultVariantId || sw.variantId,
+            primaryImg: liveVo?.image || liveProd.images?.[0] || sw.primaryImg,
+            cutoutImg:
+              sw.cutoutImg ||
+              liveVo?.cutoutImage ||
+              CLEAN_URN_CUTOUTS[liveProd.slug] ||
+              liveProd.images?.[0],
+          };
+        })
+        .filter(Boolean);
+
+      // 2. Append any newly added Wix variants or products for this column
+      const existingKeys = new Set(
+        syncedSwatches.map(
+          (s) => `${s.slug}:${(s.variantChoice || '').trim().toUpperCase()}`
+        )
+      );
+
+      if (col.theme === 'minis') {
+        const miniAndBagProds = products.filter((p) => {
+          const cats = p.categories?.length ? p.categories : [p.category];
+          return cats.includes('minis') || cats.includes('bags');
+        });
+        for (const p of miniAndBagProds) {
+          const key = `${p.slug}:`;
+          if (!existingKeys.has(key)) {
+            existingKeys.add(key);
+            syncedSwatches.push({
+              label: p.name,
+              modelTitle: p.name,
+              editionSub: p.tagline || p.shortDescription || '',
+              hex: p.category === 'minis' ? '#7BA7B5' : '#C49A6C',
+              slug: p.slug,
+              id: p.id,
+              variantChoice: null,
+              variantId: p.defaultVariantId || null,
+              name: p.name,
+              priceOverride: p.price,
+              primaryImg: p.images?.[0],
+              cutoutImg: CLEAN_URN_CUTOUTS[p.slug] || p.images?.[0],
+            });
+          }
+        }
+      } else {
+        // For water/earth urn columns, check if any primary urn in this column has newly added variants in Wix
+        const colSlugs = Array.from(new Set(col.swatches.map((s) => s.slug)));
+        for (const slug of colSlugs) {
+          const liveProd = products.find((p) => p.slug === slug);
+          if (!liveProd || !Array.isArray(liveProd.variantObjects)) continue;
+          // For terra-urn or aqua-urn or flore-urns, append any newly added variant in Wix
+          if (['terra-urn', 'aqua-urn', 'flore-urns'].includes(slug)) {
+            for (const vo of liveProd.variantObjects) {
+              const key = `${slug}:${(vo.label || '').trim().toUpperCase()}`;
+              if (!existingKeys.has(key)) {
+                existingKeys.add(key);
+                const shortModel =
+                  slug === 'aqua-urn'
+                    ? 'Kamibi Aqua'
+                    : slug === 'flore-urns'
+                    ? 'Kamibi Flore'
+                    : 'Kamibi Terra';
+                syncedSwatches.push({
+                  label: `${shortModel.replace('Kamibi ', '')} ${vo.label}`,
+                  modelTitle: shortModel,
+                  editionSub: `${vo.label} · ${liveProd.name}`,
+                  hex: VARIANT_HEX_MAP[vo.label?.trim().toUpperCase()] || '#8FA68E',
+                  slug: liveProd.slug,
+                  id: liveProd.id,
+                  variantChoice: vo.label,
+                  variantId: vo.variantId,
+                  name: liveProd.name,
+                  priceOverride: liveProd.price,
+                  primaryImg: vo.image || liveProd.images?.[0],
+                  cutoutImg:
+                    vo.cutoutImage ||
+                    CLEAN_URN_CUTOUTS[liveProd.slug] ||
+                    vo.image ||
+                    liveProd.images?.[0],
+                });
+              }
+            }
+          }
+        }
+      }
+
+      return {
+        ...col,
+        swatches: syncedSwatches.length > 0 ? syncedSwatches : col.swatches,
+      };
+    });
+  }, [products, appleComparisonCols]);
+
+  const formatCategoryPriceTag = useCallback(
+    (cat, fallbackText) => {
+      if (!products || products.length === 0) return fallbackText;
+      const matching = products.filter((p) => {
+        const cats = p.categories?.length ? p.categories : [p.category];
+        return cats.includes(cat) && p.price > 0;
+      });
+      if (matching.length === 0) return fallbackText;
+      const prices = matching.map((p) => Number(p.price));
+      const minP = Math.min(...prices);
+      const maxP = Math.max(...prices);
+      const fmt = (n) => (Number.isInteger(n) ? `$${n}` : `$${n.toFixed(2)}`);
+      return minP === maxP ? `(${fmt(minP)})` : `(${fmt(minP)} – ${fmt(maxP)})`;
+    },
+    [products]
+  );
+
   // =========================================================================
   // SMOOTH SPRING-PHYSICS PRODUCT CAROUSEL LOGIC
   // =========================================================================
@@ -2407,7 +2545,7 @@ export const UrnaBiodegradableLanding = ({
           </div>
 
           <div className="kmb-visual-trio-grid">
-            {appleComparisonCols.map((col) => {
+            {dynamicComparisonCols.map((col) => {
               const activeIdx = compSwatchIdx[col.key] || 0;
               const activeSwatch = col.swatches[activeIdx] || col.swatches[0];
               const swatchFeedbackKey = `${activeSwatch.slug}:${activeSwatch.variantChoice || ''}`;
@@ -2682,9 +2820,18 @@ export const UrnaBiodegradableLanding = ({
               <div className="kmb-carousel-filters">
                 {[
                   { id: 'all', label: isEs ? 'Todos' : 'All' },
-                  { id: 'urns', label: isEs ? 'Urnas ($76.50 – $90)' : 'Urns ($76.50 – $90)' },
-                  { id: 'minis', label: 'Mini Sets ($49.99)' },
-                  { id: 'bags', label: 'Bags ($12.99)' },
+                  {
+                    id: 'urns',
+                    label: `${isEs ? 'Urnas' : 'Urns'} ${formatCategoryPriceTag('urns', '($76.50 – $90)')}`,
+                  },
+                  {
+                    id: 'minis',
+                    label: `Mini Sets ${formatCategoryPriceTag('minis', '($49.99)')}`,
+                  },
+                  {
+                    id: 'bags',
+                    label: `Bags ${formatCategoryPriceTag('bags', '($12.99)')}`,
+                  },
                 ].map((f) => (
                   <button
                     key={f.id}

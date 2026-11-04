@@ -1,16 +1,18 @@
 /**
- * Dynamic Sitemap XML Endpoint for Kamibi
- * 
- * Serves real-time XML sitemaps directly from Wix CMS, Wix Stores & Wix Blog.
- * Includes Edge CDN caching (1 hour) with background revalidation.
- * 
+ * Dynamic Real-Time Sitemap XML Endpoint for Kamibi
+ *
+ * Serves 100% real-time XML sitemaps directly from Wix CMS, Wix Stores & Wix Blog.
+ * Zero edge cache lock (no-store, max-age=0, s-maxage=0) so additions, edits,
+ * and deletions in Wix reflect immediately.
+ *
  * Types supported:
  *  - /api/sitemap?type=index     → Sitemap index
  *  - /api/sitemap?type=pages     → Static pages
  *  - /api/sitemap?type=productos → Products from Wix Stores
- *  - /api/sitemap?type=landings  → Dynamic CMS LandingsdeCiudad (2000+ items)
- *  - /api/sitemap?type=tiendas   → Dynamic CMS TiendasDinamicas
- *  - /api/sitemap?type=blog      → Wix Blog posts
+ *  - /api/sitemap?type=landings  → Dynamic CMS LandingsdeCiudad (/ciudades/:slug)
+ *  - /api/sitemap?type=zonas     → Dynamic CMS Zonas (/zonas/:slug)
+ *  - /api/sitemap?type=tiendas   → Dynamic CMS TiendasDinamicas (/tienda/:slug)
+ *  - /api/sitemap?type=blog      → Wix Blog posts (/blog/:slug)
  */
 
 import { createClient, OAuthStrategy } from '@wix/sdk';
@@ -20,6 +22,9 @@ import { posts } from '@wix/blog';
 
 const SITE_URL = 'https://kamibistore.com';
 const WIX_CLIENT_ID = '296237fc-b597-4736-b888-367dd4fd1740';
+const LANDINGS_COLLECTION = 'LandingsdeCiudad';
+const ZONAS_COLLECTION = process.env.VITE_WIX_ADS_CMS_COLLECTION || 'Zonas';
+const STORES_COLLECTION = 'TiendasDinamicas';
 
 function today() {
   return new Date().toISOString().split('T')[0];
@@ -45,9 +50,10 @@ function buildUrlEntry(loc, lastmod, changefreq = 'weekly', priority = '0.5') {
 
 function generateSlug(text) {
   if (!text) return '';
-  return text
+  return String(text)
     .toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
     .replace(/[^a-z0-9\s-]/g, '')
     .replace(/\s+/g, '-')
     .replace(/-+/g, '-')
@@ -65,22 +71,23 @@ async function getWixClient() {
 
 function generatePagesSitemap() {
   const pages = [
-    { path: '/',        changefreq: 'daily',   priority: '1.0' },
-    { path: '/store',   changefreq: 'daily',   priority: '0.9' },
-    { path: '/blog',    changefreq: 'daily',   priority: '0.8' },
-    { path: '/about',   changefreq: 'monthly', priority: '0.6' },
-    { path: '/contact', changefreq: 'monthly', priority: '0.6' },
-    { path: '/zonas',   changefreq: 'weekly',  priority: '0.7' },
-    { path: '/privacy-policy',        changefreq: 'monthly', priority: '0.5' },
-    { path: '/aviso-de-privacidad',    changefreq: 'monthly', priority: '0.5' },
-    { path: '/terms-of-service',      changefreq: 'monthly', priority: '0.5' },
-    { path: '/terminos-y-condiciones', changefreq: 'monthly', priority: '0.5' },
-    { path: '/shipping-policy',       changefreq: 'monthly', priority: '0.5' },
-    { path: '/politica-de-envios',     changefreq: 'monthly', priority: '0.5' },
-    { path: '/refund-policy',         changefreq: 'monthly', priority: '0.5' },
-    { path: '/politica-de-reembolsos', changefreq: 'monthly', priority: '0.5' },
-    { path: '/cookie-policy',         changefreq: 'monthly', priority: '0.5' },
-    { path: '/politica-de-cookies',    changefreq: 'monthly', priority: '0.5' },
+    { path: '/',                        changefreq: 'daily',   priority: '1.0' },
+    { path: '/urna-biodegradable',      changefreq: 'daily',   priority: '0.9' },
+    { path: '/store',                   changefreq: 'daily',   priority: '0.9' },
+    { path: '/blog',                    changefreq: 'daily',   priority: '0.8' },
+    { path: '/about',                   changefreq: 'monthly', priority: '0.6' },
+    { path: '/contact',                 changefreq: 'monthly', priority: '0.6' },
+    { path: '/zonas',                   changefreq: 'daily',   priority: '0.8' },
+    { path: '/privacy-policy',          changefreq: 'monthly', priority: '0.5' },
+    { path: '/aviso-de-privacidad',     changefreq: 'monthly', priority: '0.5' },
+    { path: '/terms-of-service',        changefreq: 'monthly', priority: '0.5' },
+    { path: '/terminos-y-condiciones',  changefreq: 'monthly', priority: '0.5' },
+    { path: '/shipping-policy',         changefreq: 'monthly', priority: '0.5' },
+    { path: '/politica-de-envios',      changefreq: 'monthly', priority: '0.5' },
+    { path: '/refund-policy',           changefreq: 'monthly', priority: '0.5' },
+    { path: '/politica-de-reembolsos',  changefreq: 'monthly', priority: '0.5' },
+    { path: '/cookie-policy',           changefreq: 'monthly', priority: '0.5' },
+    { path: '/politica-de-cookies',     changefreq: 'monthly', priority: '0.5' },
   ];
 
   const entries = pages
@@ -109,7 +116,7 @@ async function generateProductsSitemap(wixClient) {
       return buildUrlEntry(
         `${SITE_URL}/product/${slug}`,
         p.lastUpdated ? new Date(p.lastUpdated).toISOString().split('T')[0] : today(),
-        'weekly',
+        'daily',
         '0.8'
       );
     })
@@ -125,21 +132,26 @@ ${entries}
 async function generateLandingsSitemap(wixClient) {
   let landingItems = [];
   let result = await wixClient.items
-    .query('LandingsdeCiudad')
+    .query(LANDINGS_COLLECTION)
     .limit(1000)
     .find();
-  
+
   landingItems = landingItems.concat(result.items || []);
   while (result.hasNext && result.hasNext()) {
     result = await result.next();
     landingItems = landingItems.concat(result.items || []);
   }
 
+  const seenSlugs = new Set();
   const entries = landingItems
     .map(item => {
       const data = item.data || item;
-      const slug = data.slug || '';
-      if (!slug) return null;
+      if (data.status && String(data.status).toUpperCase() === 'DRAFT') return null;
+      const slug = data.slug
+        ? generateSlug(data.slug)
+        : generateSlug(data.title || data.tituloPgina || '');
+      if (!slug || seenSlugs.has(slug)) return null;
+      seenSlugs.add(slug);
       const lastmod = data._updatedDate
         ? new Date(data._updatedDate).toISOString().split('T')[0]
         : today();
@@ -154,25 +166,66 @@ ${entries}
 </urlset>`;
 }
 
+async function generateZonasSitemap(wixClient) {
+  let zonaItems = [];
+  let result = await wixClient.items
+    .query(ZONAS_COLLECTION)
+    .limit(1000)
+    .find();
+
+  zonaItems = zonaItems.concat(result.items || []);
+  while (result.hasNext && result.hasNext()) {
+    result = await result.next();
+    zonaItems = zonaItems.concat(result.items || []);
+  }
+
+  const seenSlugs = new Set();
+  const entries = zonaItems
+    .map(item => {
+      const data = item.data || item;
+      if (data.status && String(data.status).toUpperCase() === 'DRAFT') return null;
+      const slug = data.slug
+        ? generateSlug(data.slug)
+        : generateSlug(data.title || data.tituloPgina || '');
+      if (!slug || seenSlugs.has(slug)) return null;
+      seenSlugs.add(slug);
+      const lastmod = data._updatedDate
+        ? new Date(data._updatedDate).toISOString().split('T')[0]
+        : today();
+      return buildUrlEntry(`${SITE_URL}/zonas/${slug}`, lastmod, 'daily', '0.8');
+    })
+    .filter(Boolean)
+    .join('\n');
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${entries}
+</urlset>`;
+}
+
 async function generateTiendasSitemap(wixClient) {
   let storeItems = [];
   let result = await wixClient.items
-    .query('TiendasDinamicas')
+    .query(STORES_COLLECTION)
     .limit(1000)
     .find();
-  
+
   storeItems = storeItems.concat(result.items || []);
   while (result.hasNext && result.hasNext()) {
     result = await result.next();
     storeItems = storeItems.concat(result.items || []);
   }
 
+  const seenSlugs = new Set();
   const entries = storeItems
     .map(item => {
       const data = item.data || item;
-      const title = data.title || '';
-      const slug = generateSlug(title);
-      if (!slug) return null;
+      if (data.status && String(data.status).toUpperCase() === 'DRAFT') return null;
+      const slug = data.slug
+        ? generateSlug(data.slug)
+        : generateSlug(data.title || '');
+      if (!slug || seenSlugs.has(slug)) return null;
+      seenSlugs.add(slug);
       const lastmod = data._updatedDate
         ? new Date(data._updatedDate).toISOString().split('T')[0]
         : today();
@@ -219,6 +272,7 @@ function generateSitemapIndex() {
     'sitemap-pages.xml',
     'sitemap-productos.xml',
     'sitemap-landings.xml',
+    'sitemap-zonas.xml',
     'sitemap-tiendas.xml',
     'sitemap-blog.xml',
   ];
@@ -237,11 +291,13 @@ ${entries}
 }
 
 export default async function handler(req, res) {
-  // CORS & headers
+  // CORS & headers — 100% live real-time, zero edge cache lock
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Content-Type', 'application/xml; charset=utf-8');
-  // Cache for 1 hour at edge, serve stale while revalidating
-  res.setHeader('Cache-Control', 'public, s-maxage=3600, stale-while-revalidate=86400');
+  res.setHeader(
+    'Cache-Control',
+    'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0, s-maxage=0'
+  );
 
   const type = req.query?.type || 'index';
 
@@ -250,6 +306,8 @@ export default async function handler(req, res) {
 
     if (type === 'pages') {
       xml = generatePagesSitemap();
+    } else if (type === 'index') {
+      xml = generateSitemapIndex();
     } else {
       const wixClient = await getWixClient();
 
@@ -260,13 +318,15 @@ export default async function handler(req, res) {
         case 'landings':
           xml = await generateLandingsSitemap(wixClient);
           break;
+        case 'zonas':
+          xml = await generateZonasSitemap(wixClient);
+          break;
         case 'tiendas':
           xml = await generateTiendasSitemap(wixClient);
           break;
         case 'blog':
           xml = await generateBlogSitemap(wixClient);
           break;
-        case 'index':
         default:
           xml = generateSitemapIndex();
           break;
@@ -276,6 +336,12 @@ export default async function handler(req, res) {
     return res.status(200).send(xml);
   } catch (error) {
     console.error('Sitemap API Error:', error);
-    return res.status(500).send(`<?xml version="1.0" encoding="UTF-8"?><error>${xmlEscape(error.message || 'Failed to generate sitemap')}</error>`);
+    return res
+      .status(500)
+      .send(
+        `<?xml version="1.0" encoding="UTF-8"?><error>${xmlEscape(
+          error.message || 'Failed to generate sitemap'
+        )}</error>`
+      );
   }
 }

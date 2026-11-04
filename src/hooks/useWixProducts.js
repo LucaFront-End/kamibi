@@ -2,15 +2,17 @@ import { useState, useEffect } from 'react';
 import { useWixClient } from '../context/WixContext';
 import { fetchAllProducts, fetchProductBySlug } from '../lib/wixProducts';
 
+let cachedProducts = null;
+
 /**
- * Hook to fetch all products from Wix Stores.
- * Waits for the Wix SDK to be ready (visitor tokens generated) before fetching.
+ * Hook to fetch all products from Wix Stores in real time.
+ * Revalidates automatically on mount and window focus so any Wix Stores edit/add/delete reflects immediately.
  * Returns { products, loading, error }
  */
 export function useWixProducts() {
   const { wixClient, isReady } = useWixClient();
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState(cachedProducts || []);
+  const [loading, setLoading] = useState(cachedProducts ? false : true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -20,9 +22,10 @@ export function useWixProducts() {
 
     async function load() {
       try {
-        setLoading(true);
+        if (!cachedProducts) setLoading(true);
         setError(null);
         const data = await fetchAllProducts(wixClient);
+        cachedProducts = data;
         if (!cancelled) setProducts(data);
       } catch (err) {
         if (!cancelled) {
@@ -35,15 +38,20 @@ export function useWixProducts() {
     }
 
     load();
-    return () => { cancelled = true; };
+
+    const handleFocus = () => load();
+    window.addEventListener('focus', handleFocus);
+    return () => {
+      cancelled = true;
+      window.removeEventListener('focus', handleFocus);
+    };
   }, [wixClient, isReady]);
 
   return { products, loading, error };
 }
 
 /**
- * Hook to fetch a single product by slug from Wix Stores.
- * Waits for the Wix SDK to be ready before fetching.
+ * Hook to fetch a single product by slug from Wix Stores in real time.
  * Returns { product, loading, error }
  */
 export function useWixProduct(slug) {
@@ -60,9 +68,9 @@ export function useWixProduct(slug) {
 
     let cancelled = false;
 
-    async function load() {
+    async function load(isInitial = false) {
       try {
-        setLoading(true);
+        if (isInitial) setLoading(true);
         setError(null);
         const data = await fetchProductBySlug(wixClient, slug);
         if (!cancelled) setProduct(data);
@@ -76,8 +84,14 @@ export function useWixProduct(slug) {
       }
     }
 
-    load();
-    return () => { cancelled = true; };
+    load(true);
+
+    const handleFocus = () => load(false);
+    window.addEventListener('focus', handleFocus);
+    return () => {
+      cancelled = true;
+      window.removeEventListener('focus', handleFocus);
+    };
   }, [wixClient, isReady, slug]);
 
   return { product, loading, error };

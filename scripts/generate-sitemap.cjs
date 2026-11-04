@@ -1,11 +1,12 @@
 /**
  * Sitemap Generator for Kamibi
- * 
+ *
  * Generates:
  *  - sitemap.xml            → Sitemap index referencing all sub-sitemaps
  *  - sitemap-pages.xml      → Static pages (home, store, etc.)
  *  - sitemap-productos.xml  → All product pages fetched from Wix Stores
  *  - sitemap-landings.xml   → Dynamic CMS landing pages (LandingsdeCiudad - fully paginated 2000+ items)
+ *  - sitemap-zonas.xml      → Dynamic CMS ads/zones landing pages (Zonas - fully paginated)
  *  - sitemap-tiendas.xml    → Dynamic CMS store pages (TiendasDinamicas)
  *  - sitemap-blog.xml       → Wix Blog articles
  *
@@ -22,6 +23,7 @@ const path = require('path');
 // ─── Config ────────────────────────────────────────────────────────────────────
 const SITE_URL = 'https://kamibistore.com';
 const WIX_CLIENT_ID = '296237fc-b597-4736-b888-367dd4fd1740';
+const ZONAS_COLLECTION = process.env.VITE_WIX_ADS_CMS_COLLECTION || 'Zonas';
 const OUTPUT_DIR = path.resolve(__dirname, '..', 'public');
 const DIST_DIR = path.resolve(__dirname, '..', 'dist');
 
@@ -50,7 +52,7 @@ function buildUrlEntry(loc, lastmod, changefreq = 'weekly', priority = '0.5') {
 
 function generateSlug(text) {
   if (!text) return '';
-  return text
+  return String(text)
     .toLowerCase()
     .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
     .replace(/[^a-z0-9\s-]/g, '')
@@ -72,22 +74,23 @@ async function createWixClient() {
 // ─── Static Pages ──────────────────────────────────────────────────────────────
 function generatePagesSitemap() {
   const pages = [
-    { path: '/',        changefreq: 'daily',   priority: '1.0' },
-    { path: '/store',   changefreq: 'daily',   priority: '0.9' },
-    { path: '/blog',    changefreq: 'daily',   priority: '0.8' },
-    { path: '/about',   changefreq: 'monthly', priority: '0.6' },
-    { path: '/contact', changefreq: 'monthly', priority: '0.6' },
-    { path: '/zonas',   changefreq: 'weekly',  priority: '0.7' },
-    { path: '/privacy-policy',        changefreq: 'monthly', priority: '0.5' },
-    { path: '/aviso-de-privacidad',    changefreq: 'monthly', priority: '0.5' },
-    { path: '/terms-of-service',      changefreq: 'monthly', priority: '0.5' },
-    { path: '/terminos-y-condiciones', changefreq: 'monthly', priority: '0.5' },
-    { path: '/shipping-policy',       changefreq: 'monthly', priority: '0.5' },
-    { path: '/politica-de-envios',     changefreq: 'monthly', priority: '0.5' },
-    { path: '/refund-policy',         changefreq: 'monthly', priority: '0.5' },
-    { path: '/politica-de-reembolsos', changefreq: 'monthly', priority: '0.5' },
-    { path: '/cookie-policy',         changefreq: 'monthly', priority: '0.5' },
-    { path: '/politica-de-cookies',    changefreq: 'monthly', priority: '0.5' },
+    { path: '/',                        changefreq: 'daily',   priority: '1.0' },
+    { path: '/urna-biodegradable',      changefreq: 'daily',   priority: '0.9' },
+    { path: '/store',                   changefreq: 'daily',   priority: '0.9' },
+    { path: '/blog',                    changefreq: 'daily',   priority: '0.8' },
+    { path: '/about',                   changefreq: 'monthly', priority: '0.6' },
+    { path: '/contact',                 changefreq: 'monthly', priority: '0.6' },
+    { path: '/zonas',                   changefreq: 'daily',   priority: '0.8' },
+    { path: '/privacy-policy',          changefreq: 'monthly', priority: '0.5' },
+    { path: '/aviso-de-privacidad',     changefreq: 'monthly', priority: '0.5' },
+    { path: '/terms-of-service',        changefreq: 'monthly', priority: '0.5' },
+    { path: '/terminos-y-condiciones',  changefreq: 'monthly', priority: '0.5' },
+    { path: '/shipping-policy',         changefreq: 'monthly', priority: '0.5' },
+    { path: '/politica-de-envios',      changefreq: 'monthly', priority: '0.5' },
+    { path: '/refund-policy',           changefreq: 'monthly', priority: '0.5' },
+    { path: '/politica-de-reembolsos',  changefreq: 'monthly', priority: '0.5' },
+    { path: '/cookie-policy',           changefreq: 'monthly', priority: '0.5' },
+    { path: '/politica-de-cookies',     changefreq: 'monthly', priority: '0.5' },
   ];
 
   const entries = pages
@@ -119,7 +122,7 @@ async function generateProductsSitemap(wixClient) {
       return buildUrlEntry(
         `${SITE_URL}/product/${slug}`,
         p.lastUpdated ? new Date(p.lastUpdated).toISOString().split('T')[0] : today(),
-        'weekly',
+        'daily',
         '0.8'
       );
     })
@@ -140,7 +143,7 @@ async function generateLandingsSitemap(wixClient) {
     .query('LandingsdeCiudad')
     .limit(1000)
     .find();
-  
+
   landingItems = landingItems.concat(result.items || []);
   while (result.hasNext && result.hasNext()) {
     result = await result.next();
@@ -148,15 +151,60 @@ async function generateLandingsSitemap(wixClient) {
   }
   console.log(`   Found ${landingItems.length} landings`);
 
+  const seenSlugs = new Set();
   const entries = landingItems
     .map(item => {
       const data = item.data || item;
-      const slug = data.slug || '';
-      if (!slug) return null;
+      if (data.status && String(data.status).toUpperCase() === 'DRAFT') return null;
+      const slug = data.slug
+        ? generateSlug(data.slug)
+        : generateSlug(data.title || data.tituloPgina || '');
+      if (!slug || seenSlugs.has(slug)) return null;
+      seenSlugs.add(slug);
       const lastmod = data._updatedDate
         ? new Date(data._updatedDate).toISOString().split('T')[0]
         : today();
       return buildUrlEntry(`${SITE_URL}/ciudades/${slug}`, lastmod, 'weekly', '0.7');
+    })
+    .filter(Boolean)
+    .join('\n');
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${entries}
+</urlset>`;
+}
+
+// ─── Ads / Zones Landing Pages (Zonas) ─────────────────────────────────────────
+async function generateZonasSitemap(wixClient) {
+  console.log(`🗺️  Fetching zonas from CMS (${ZONAS_COLLECTION}, paginated)...`);
+  let zonaItems = [];
+  let result = await wixClient.items
+    .query(ZONAS_COLLECTION)
+    .limit(1000)
+    .find();
+
+  zonaItems = zonaItems.concat(result.items || []);
+  while (result.hasNext && result.hasNext()) {
+    result = await result.next();
+    zonaItems = zonaItems.concat(result.items || []);
+  }
+  console.log(`   Found ${zonaItems.length} zonas`);
+
+  const seenSlugs = new Set();
+  const entries = zonaItems
+    .map(item => {
+      const data = item.data || item;
+      if (data.status && String(data.status).toUpperCase() === 'DRAFT') return null;
+      const slug = data.slug
+        ? generateSlug(data.slug)
+        : generateSlug(data.title || data.tituloPgina || '');
+      if (!slug || seenSlugs.has(slug)) return null;
+      seenSlugs.add(slug);
+      const lastmod = data._updatedDate
+        ? new Date(data._updatedDate).toISOString().split('T')[0]
+        : today();
+      return buildUrlEntry(`${SITE_URL}/zonas/${slug}`, lastmod, 'daily', '0.8');
     })
     .filter(Boolean)
     .join('\n');
@@ -175,7 +223,7 @@ async function generateTiendasSitemap(wixClient) {
     .query('TiendasDinamicas')
     .limit(1000)
     .find();
-  
+
   storeItems = storeItems.concat(result.items || []);
   while (result.hasNext && result.hasNext()) {
     result = await result.next();
@@ -183,12 +231,16 @@ async function generateTiendasSitemap(wixClient) {
   }
   console.log(`   Found ${storeItems.length} tiendas`);
 
+  const seenSlugs = new Set();
   const entries = storeItems
     .map(item => {
       const data = item.data || item;
-      const title = data.title || '';
-      const slug = generateSlug(title);
-      if (!slug) return null;
+      if (data.status && String(data.status).toUpperCase() === 'DRAFT') return null;
+      const slug = data.slug
+        ? generateSlug(data.slug)
+        : generateSlug(data.title || '');
+      if (!slug || seenSlugs.has(slug)) return null;
+      seenSlugs.add(slug);
       const lastmod = data._updatedDate
         ? new Date(data._updatedDate).toISOString().split('T')[0]
         : today();
@@ -239,6 +291,7 @@ function generateSitemapIndex() {
     'sitemap-pages.xml',
     'sitemap-productos.xml',
     'sitemap-landings.xml',
+    'sitemap-zonas.xml',
     'sitemap-tiendas.xml',
     'sitemap-blog.xml',
   ];
@@ -284,25 +337,30 @@ async function main() {
   saveFile('sitemap-landings.xml', landingsSitemap);
   console.log('✅ sitemap-landings.xml');
 
-  // 4. Tiendas (dynamic from CMS)
+  // 4. Zonas / Ads Landings (dynamic from CMS Zonas)
+  const zonasSitemap = await generateZonasSitemap(wixClient);
+  saveFile('sitemap-zonas.xml', zonasSitemap);
+  console.log('✅ sitemap-zonas.xml');
+
+  // 5. Tiendas (dynamic from CMS)
   const tiendasSitemap = await generateTiendasSitemap(wixClient);
   saveFile('sitemap-tiendas.xml', tiendasSitemap);
   console.log('✅ sitemap-tiendas.xml');
 
-  // 5. Blog articles
+  // 6. Blog articles
   const blogSitemap = await generateBlogSitemap(wixClient);
   saveFile('sitemap-blog.xml', blogSitemap);
   console.log('✅ sitemap-blog.xml');
 
-  // 6. Sitemap index
+  // 7. Sitemap index
   const sitemapIndex = generateSitemapIndex();
   saveFile('sitemap.xml', sitemapIndex);
   console.log('✅ sitemap.xml (index)\n');
 
-  console.log('🎉 All sitemaps successfully generated in /public/ and /dist/!');
+  console.log('🎉 All sitemaps generated successfully!');
 }
 
 main().catch(err => {
-  console.error('❌ Sitemap generation failed:', err);
+  console.error('❌ Error generating sitemaps:', err);
   process.exit(1);
 });

@@ -27,6 +27,7 @@
     { "source": "/sitemap-pages.xml", "destination": "/api/sitemap?type=pages" },
     { "source": "/sitemap-productos.xml", "destination": "/api/sitemap?type=productos" },
     { "source": "/sitemap-landings.xml", "destination": "/api/sitemap?type=landings" },
+    { "source": "/sitemap-zonas.xml", "destination": "/api/sitemap?type=zonas" },
     { "source": "/sitemap-tiendas.xml", "destination": "/api/sitemap?type=tiendas" },
     { "source": "/sitemap-blog.xml", "destination": "/api/sitemap?type=blog" },
     { "source": "/api/:path*", "destination": "/api/:path*" },

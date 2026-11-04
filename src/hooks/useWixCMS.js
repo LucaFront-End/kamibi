@@ -1,62 +1,33 @@
 import { useState, useEffect } from 'react';
 import { useWixClient } from '../context/WixContext';
 
-const LANDINGS_COLLECTION = 'LandingsdeCiudad';
-const STORES_COLLECTION = 'TiendasDinamicas';
-// New CMS collection for Ads Landings under /zonas/:slug (auto-discovers common Wix collection IDs)
-export const ADS_LANDINGS_COLLECTION =
-  import.meta.env.VITE_WIX_ADS_CMS_COLLECTION || 'LandingsAnuncios';
+export const LANDINGS_COLLECTION = 'LandingsdeCiudad';
+export const ZONAS_COLLECTION = import.meta.env.VITE_WIX_ADS_CMS_COLLECTION || 'Zonas';
+export const ADS_LANDINGS_COLLECTION = ZONAS_COLLECTION;
+export const STORES_COLLECTION = 'TiendasDinamicas';
 
-const ADS_COLLECTION_CANDIDATES = [
-  import.meta.env.VITE_WIX_ADS_CMS_COLLECTION,
-  'LandingsAnuncios',
-  'LandingsdeAnuncios',
-  'LandingsDeAnuncios',
-  'Zonas',
-  'ZonasdeAnuncios',
-  'ZonasDeAnuncios',
-  'LandingsZonas',
-  'LandingsdeZonas',
-  'LandingsDeZonas',
-  'Anuncios',
-].filter(Boolean);
-
-let resolvedAdsCollectionName = null;
-
-async function resolveAdsCollection(wixClient) {
-  if (resolvedAdsCollectionName) return resolvedAdsCollectionName;
-  for (const colName of ADS_COLLECTION_CANDIDATES) {
-    try {
-      await wixClient.items.query(colName).limit(1).find();
-      resolvedAdsCollectionName = colName;
-      return colName;
-    } catch {
-      // Try next candidate
-    }
-  }
-  return ADS_LANDINGS_COLLECTION;
-}
-
-// ── Generate slug from title ─────────────────────────────────────────────
-function generateSlug(text) {
+// ── Generate URL-safe slug from text ─────────────────────────────────────
+export function generateSlug(text) {
   if (!text) return '';
-  return text
+  return String(text)
     .toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // remove accents
-    .replace(/[^a-z0-9\s-]/g, '')   // remove special chars
-    .replace(/\s+/g, '-')           // spaces to hyphens
-    .replace(/-+/g, '-')            // collapse multiple hyphens
-    .replace(/^-|-$/g, '');         // trim leading/trailing hyphens
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // remove accents
+    .replace(/[^a-z0-9\s-]/g, '')    // remove special chars
+    .replace(/\s+/g, '-')            // spaces to hyphens
+    .replace(/-+/g, '-')             // collapse multiple hyphens
+    .replace(/^-|-$/g, '');          // trim leading/trailing hyphens
 }
 
-// ── Shared normalizer (supports both Wix accent-stripped keys and clean keys) ──
-function normalizeCMSItem(item, useGeneratedSlug = false) {
-  const data = item.data || item;
-  const title = data.title || '';
+// ── Shared normalizer (supports all Wix CMS field key variations) ────────
+export function normalizeCMSItem(item, useGeneratedSlug = false) {
+  const data = item?.data || item || {};
+  const title = data.title || data.tituloPgina || data.tituloPagina || data.ciudadOEstado || '';
+  const rawSlug = data.slug ? generateSlug(data.slug) : '';
   return {
     _id: data._id,
     title,
-    slug: useGeneratedSlug ? generateSlug(title) : (data.slug || generateSlug(title)),
+    slug: useGeneratedSlug ? generateSlug(title) : (rawSlug || generateSlug(title)),
     city: data.ciudadOEstado || data.ciudad || data.city || '',
     country: data.pas || data.pais || data.country || '',
     pageTitle: data.tituloPgina || data.tituloPagina || data.pageTitle || title || '',
@@ -70,10 +41,96 @@ function normalizeCMSItem(item, useGeneratedSlug = false) {
   };
 }
 
+// Helper to fetch all items from a Wix Data collection with full pagination
+async function fetchAllCollectionItems(wixClient, collectionName, useGeneratedSlug = false, onFirstBatch = null) {
+  let res = await wixClient.items.query(collectionName).limit(100).find();
+  let firstItems = (res.items || [])
+    .map((i) => normalizeCMSItem(i, useGeneratedSlug))
+    .filter((i) => i.slug && i.status !== 'DRAFT');
+
+  if (onFirstBatch) {
+    onFirstBatch(firstItems);
+  }
+
+  if (res.hasNext && res.hasNext()) {
+    let fullList = [...firstItems];
+    let nextRes = await wixClient.items.query(collectionName).skip(100).limit(1000).find();
+    fullList = fullList.concat(
+      (nextRes.items || [])
+        .map((i) => normalizeCMSItem(i, useGeneratedSlug))
+        .filter((i) => i.slug && i.status !== 'DRAFT')
+    );
+    while (nextRes.hasNext && nextRes.hasNext()) {
+      nextRes = await nextRes.next();
+      fullList = fullList.concat(
+        (nextRes.items || [])
+          .map((i) => normalizeCMSItem(i, useGeneratedSlug))
+          .filter((i) => i.slug && i.status !== 'DRAFT')
+      );
+    }
+    return fullList;
+  }
+
+  return firstItems;
+}
+
+// Helper to fetch a single item by slug from a Wix Data collection (supports both native slug & title-generated slug)
+async function fetchCollectionItemBySlug(wixClient, collectionName, targetSlug, useGeneratedSlug = false) {
+  const normalizedTarget = generateSlug(targetSlug);
+
+  if (!useGeneratedSlug) {
+    try {
+      const directRes = await wixClient.items
+        .query(collectionName)
+        .eq('slug', targetSlug)
+        .limit(1)
+        .find();
+      if (directRes.items?.length > 0) {
+        const item = normalizeCMSItem(directRes.items[0], false);
+        if (item.status !== 'DRAFT') return item;
+      }
+      if (normalizedTarget && normalizedTarget !== targetSlug) {
+        const normRes = await wixClient.items
+          .query(collectionName)
+          .eq('slug', normalizedTarget)
+          .limit(1)
+          .find();
+        if (normRes.items?.length > 0) {
+          const item = normalizeCMSItem(normRes.items[0], false);
+          if (item.status !== 'DRAFT') return item;
+        }
+      }
+    } catch {
+      // Collection may not have a native 'slug' column indexed; fall through to full scan
+    }
+  }
+
+  // Full paginated scan for items whose native or title-generated slug matches
+  let res = await wixClient.items.query(collectionName).limit(1000).find();
+  let allItems = res.items || [];
+  while (res.hasNext && res.hasNext()) {
+    res = await res.next();
+    allItems = allItems.concat(res.items || []);
+  }
+
+  for (const raw of allItems) {
+    const normalized = normalizeCMSItem(raw, useGeneratedSlug);
+    if (
+      normalized.status !== 'DRAFT' &&
+      (normalized.slug === targetSlug || normalized.slug === normalizedTarget)
+    ) {
+      return normalized;
+    }
+  }
+
+  return null;
+}
+
 // ═══════════════════════════════════════════════════════════════════════════
-// Landings de Ciudad (SEO: /ciudades/:slug) — untouched
+// 1. Landings de Ciudad (SEO: /ciudades/:slug — Collection: LandingsdeCiudad)
 // ═══════════════════════════════════════════════════════════════════════════
 let allLandingsCache = null;
+const landingCache = new Map();
 
 export function useWixLandings() {
   const { wixClient, isReady } = useWixClient();
@@ -82,59 +139,48 @@ export function useWixLandings() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (allLandingsCache && allLandingsCache.length > 0) {
-      setLandings(allLandingsCache);
-      setLoading(false);
-      return;
-    }
-
     if (!isReady) return;
     let cancelled = false;
 
-    async function fetch() {
-      setLoading(true);
+    async function load() {
+      if (!allLandingsCache) setLoading(true);
       setError(null);
       try {
-        // Step 1: Fetch first 100 items immediately so UI renders in <300ms
-        let res = await wixClient.items.query(LANDINGS_COLLECTION).limit(100).find();
-        let items = (res.items || []).map(i => normalizeCMSItem(i));
+        const fullList = await fetchAllCollectionItems(
+          wixClient,
+          LANDINGS_COLLECTION,
+          false,
+          (firstBatch) => {
+            if (!cancelled && !allLandingsCache) {
+              setLandings(firstBatch);
+              setLoading(false);
+            }
+          }
+        );
+        allLandingsCache = fullList;
         if (!cancelled) {
-          setLandings(items);
-          setLoading(false);
-        }
-
-        // Step 2: Fetch remaining items in background without freezing UI
-        if (res.hasNext && res.hasNext()) {
-          let fullList = [...items];
-          let nextRes = await wixClient.items.query(LANDINGS_COLLECTION).skip(100).limit(1000).find();
-          fullList = fullList.concat((nextRes.items || []).map(i => normalizeCMSItem(i)));
-          while (nextRes.hasNext && nextRes.hasNext()) {
-            nextRes = await nextRes.next();
-            fullList = fullList.concat((nextRes.items || []).map(i => normalizeCMSItem(i)));
-          }
-          allLandingsCache = fullList;
-          if (!cancelled) {
-            setLandings(fullList);
-          }
-        } else {
-          allLandingsCache = items;
+          setLandings(fullList);
         }
       } catch (err) {
-        console.error('[CMS] Error fetching landings:', err);
+        console.error('[CMS] Error fetching LandingsdeCiudad:', err);
         if (!cancelled) setError(err?.message || 'Could not load landings.');
       } finally {
         if (!cancelled) setLoading(false);
       }
     }
 
-    fetch();
-    return () => { cancelled = true; };
+    load();
+
+    const handleFocus = () => load();
+    window.addEventListener('focus', handleFocus);
+    return () => {
+      cancelled = true;
+      window.removeEventListener('focus', handleFocus);
+    };
   }, [wixClient, isReady]);
 
   return { landings, loading, error };
 }
-
-const landingCache = new Map();
 
 export function useWixLandingBySlug(slug) {
   const { wixClient, isReady } = useWixClient();
@@ -144,111 +190,111 @@ export function useWixLandingBySlug(slug) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!slug) return;
-
-    if (landingCache.has(slug)) {
-      setLanding(landingCache.get(slug));
+    if (!slug) {
+      setLanding(null);
       setLoading(false);
       return;
     }
-
     if (!isReady) return;
     let cancelled = false;
 
-    async function fetch() {
-      setLoading(true);
+    async function load() {
+      if (!landingCache.has(slug)) setLoading(true);
       setError(null);
       try {
-        const res = await wixClient.items
-          .query(LANDINGS_COLLECTION)
-          .eq('slug', slug)
-          .limit(1)
-          .find();
-
+        const found = await fetchCollectionItemBySlug(
+          wixClient,
+          LANDINGS_COLLECTION,
+          slug,
+          false
+        );
         if (!cancelled) {
-          if (res.items?.length > 0) {
-            const normalized = normalizeCMSItem(res.items[0]);
-            landingCache.set(slug, normalized);
-            setLanding(normalized);
+          if (found) {
+            landingCache.set(slug, found);
+            setLanding(found);
+            setError(null);
           } else {
+            landingCache.delete(slug);
             setLanding(null);
             setError('Landing not found');
           }
         }
       } catch (err) {
-        console.error('[CMS] Error fetching landing:', err);
-        if (!cancelled) { setError(err?.message || 'Error'); setLanding(null); }
+        console.error('[CMS] Error fetching landing by slug:', err);
+        if (!cancelled) {
+          landingCache.delete(slug);
+          setLanding(null);
+          setError(err?.message || 'Error');
+        }
       } finally {
         if (!cancelled) setLoading(false);
       }
     }
 
-    fetch();
-    return () => { cancelled = true; };
+    load();
+
+    const handleFocus = () => load();
+    window.addEventListener('focus', handleFocus);
+    return () => {
+      cancelled = true;
+      window.removeEventListener('focus', handleFocus);
+    };
   }, [wixClient, isReady, slug]);
 
   return { landing, loading, error };
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// Landings de Anuncios (/zonas/:slug) — Duplicate structure for Ads CMS
+// 2. Zonas / Landings de Anuncios (/zonas/:slug — Collection: Zonas)
 // ═══════════════════════════════════════════════════════════════════════════
-let allAdLandingsCache = null;
-const adLandingCache = new Map();
+let allZonasCache = null;
+const zonaCache = new Map();
 
 export function useWixAdLandings() {
   const { wixClient, isReady } = useWixClient();
-  const [adLandings, setAdLandings] = useState(allAdLandingsCache || []);
-  const [loading, setLoading] = useState(allAdLandingsCache ? false : true);
+  const [adLandings, setAdLandings] = useState(allZonasCache || []);
+  const [loading, setLoading] = useState(allZonasCache ? false : true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (allAdLandingsCache && allAdLandingsCache.length > 0) {
-      setAdLandings(allAdLandingsCache);
-      setLoading(false);
-      return;
-    }
-
     if (!isReady) return;
     let cancelled = false;
 
-    async function fetch() {
-      setLoading(true);
+    async function load() {
+      if (!allZonasCache) setLoading(true);
       setError(null);
       try {
-        const colName = await resolveAdsCollection(wixClient);
-        let res = await wixClient.items.query(colName).limit(100).find();
-        let items = (res.items || []).map(i => normalizeCMSItem(i));
+        const fullList = await fetchAllCollectionItems(
+          wixClient,
+          ZONAS_COLLECTION,
+          false,
+          (firstBatch) => {
+            if (!cancelled && !allZonasCache) {
+              setAdLandings(firstBatch);
+              setLoading(false);
+            }
+          }
+        );
+        allZonasCache = fullList;
         if (!cancelled) {
-          setAdLandings(items);
-          setLoading(false);
-        }
-
-        if (res.hasNext && res.hasNext()) {
-          let fullList = [...items];
-          let nextRes = await wixClient.items.query(colName).skip(100).limit(1000).find();
-          fullList = fullList.concat((nextRes.items || []).map(i => normalizeCMSItem(i)));
-          while (nextRes.hasNext && nextRes.hasNext()) {
-            nextRes = await nextRes.next();
-            fullList = fullList.concat((nextRes.items || []).map(i => normalizeCMSItem(i)));
-          }
-          allAdLandingsCache = fullList;
-          if (!cancelled) {
-            setAdLandings(fullList);
-          }
-        } else {
-          allAdLandingsCache = items;
+          setAdLandings(fullList);
         }
       } catch (err) {
-        console.warn('[CMS] Ads collection not yet connected or empty:', err?.message);
-        if (!cancelled) setError(err?.message || 'Could not load ad landings.');
+        console.warn('[CMS] Error fetching Zonas collection:', err?.message);
+        if (!cancelled) setError(err?.message || 'Could not load zonas.');
       } finally {
         if (!cancelled) setLoading(false);
       }
     }
 
-    fetch();
-    return () => { cancelled = true; };
+    load();
+
+    const handleFocus = () => load();
+    window.addEventListener('focus', handleFocus);
+    return () => {
+      cancelled = true;
+      window.removeEventListener('focus', handleFocus);
+    };
   }, [wixClient, isReady]);
 
   return { adLandings, loading, error };
@@ -256,178 +302,173 @@ export function useWixAdLandings() {
 
 export function useWixAdLandingBySlug(slug) {
   const { wixClient, isReady } = useWixClient();
-  const cached = slug ? adLandingCache.get(slug) : null;
+  const cached = slug ? zonaCache.get(slug) : null;
   const [landing, setLanding] = useState(cached || null);
   const [loading, setLoading] = useState(cached ? false : true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!slug) return;
-
-    if (adLandingCache.has(slug)) {
-      setLanding(adLandingCache.get(slug));
+    if (!slug) {
+      setLanding(null);
       setLoading(false);
       return;
     }
-
     if (!isReady) return;
     let cancelled = false;
 
-    async function fetch() {
-      setLoading(true);
+    async function load() {
+      if (!zonaCache.has(slug)) setLoading(true);
       setError(null);
       try {
-        const colName = await resolveAdsCollection(wixClient);
-        // 1. Try querying by native slug field in the Ads collection
-        try {
-          const res = await wixClient.items
-            .query(colName)
-            .eq('slug', slug)
-            .limit(1)
-            .find();
-
-          if (!cancelled && res.items?.length > 0) {
-            const normalized = normalizeCMSItem(res.items[0]);
-            adLandingCache.set(slug, normalized);
-            setLanding(normalized);
-            return;
-          }
-
-          // 2. Fallback: if Ads collection uses generated slug from title
-          const allRes = await wixClient.items.query(colName).limit(1000).find();
-          const allNormalized = (allRes.items || []).map(i => normalizeCMSItem(i));
-          const match = allNormalized.find(item => item.slug === slug);
-          if (!cancelled && match) {
-            adLandingCache.set(slug, match);
-            setLanding(match);
-            return;
-          }
-        } catch {
-          // Ads collection not yet created; proceed to LandingsdeCiudad fallback
-        }
-
-        // 3. Fallback to LandingsdeCiudad so shared slugs work immediately on /zonas/:slug
-        const cityRes = await wixClient.items
-          .query(LANDINGS_COLLECTION)
-          .eq('slug', slug)
-          .limit(1)
-          .find();
-
+        const found = await fetchCollectionItemBySlug(
+          wixClient,
+          ZONAS_COLLECTION,
+          slug,
+          false
+        );
         if (!cancelled) {
-          if (cityRes.items?.length > 0) {
-            const normalized = normalizeCMSItem(cityRes.items[0]);
-            adLandingCache.set(slug, normalized);
-            setLanding(normalized);
+          if (found) {
+            zonaCache.set(slug, found);
+            setLanding(found);
+            setError(null);
           } else {
+            zonaCache.delete(slug);
             setLanding(null);
-            setError('Ad landing not found in CMS');
+            setError('Zona not found in CMS');
           }
         }
       } catch (err) {
-        // Silently allow optimistic fallback rendering until CMS collection is created/connected
-        console.warn('[CMS] Ad landing query fallback active for slug:', slug);
+        console.warn('[CMS] Error fetching zona by slug:', err?.message);
         if (!cancelled) {
-          setError(err?.message || 'Error');
+          zonaCache.delete(slug);
           setLanding(null);
+          setError(err?.message || 'Error');
         }
       } finally {
         if (!cancelled) setLoading(false);
       }
     }
 
-    fetch();
-    return () => { cancelled = true; };
+    load();
+
+    const handleFocus = () => load();
+    window.addEventListener('focus', handleFocus);
+    return () => {
+      cancelled = true;
+      window.removeEventListener('focus', handleFocus);
+    };
   }, [wixClient, isReady, slug]);
 
   return { landing, loading, error };
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// Tiendas Dinámicas — NO native slug field, slug generated from title
+// 3. Tiendas Dinámicas (/tienda/:slug — Collection: TiendasDinamicas)
 // ═══════════════════════════════════════════════════════════════════════════
+let allStoresCache = null;
+const storeCache = new Map();
+
 export function useWixStores() {
   const { wixClient, isReady } = useWixClient();
-  const [stores, setStores] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [stores, setStores] = useState(allStoresCache || []);
+  const [loading, setLoading] = useState(allStoresCache ? false : true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     if (!isReady) return;
     let cancelled = false;
 
-    async function fetch() {
-      setLoading(true);
+    async function load() {
+      if (!allStoresCache) setLoading(true);
       setError(null);
       try {
-        let allItems = [];
-        let res = await wixClient.items.query(STORES_COLLECTION).limit(1000).find();
-        allItems = allItems.concat(res.items || []);
-        while (res.hasNext && res.hasNext()) {
-          res = await res.next();
-          allItems = allItems.concat(res.items || []);
+        const fullList = await fetchAllCollectionItems(
+          wixClient,
+          STORES_COLLECTION,
+          true
+        );
+        allStoresCache = fullList;
+        if (!cancelled) {
+          setStores(fullList);
         }
-        if (!cancelled) setStores(allItems.map(i => normalizeCMSItem(i, true)));
       } catch (err) {
-        console.error('[CMS] Error fetching stores:', err);
+        console.error('[CMS] Error fetching TiendasDinamicas:', err);
         if (!cancelled) setError(err?.message || 'Could not load stores.');
       } finally {
         if (!cancelled) setLoading(false);
       }
     }
 
-    fetch();
-    return () => { cancelled = true; };
+    load();
+
+    const handleFocus = () => load();
+    window.addEventListener('focus', handleFocus);
+    return () => {
+      cancelled = true;
+      window.removeEventListener('focus', handleFocus);
+    };
   }, [wixClient, isReady]);
 
   return { stores, loading, error };
 }
 
-/**
- * Fetch a store by slug — fetches ALL stores and matches by generated slug.
- * (Because TiendasDinamicas doesn't have a native slug field)
- */
 export function useWixStoreBySlug(slug) {
   const { wixClient, isReady } = useWixClient();
-  const [store, setStore] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const cached = slug ? storeCache.get(slug) : null;
+  const [store, setStore] = useState(cached || null);
+  const [loading, setLoading] = useState(cached ? false : true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!isReady || !slug) return;
+    if (!slug) {
+      setStore(null);
+      setLoading(false);
+      return;
+    }
+    if (!isReady) return;
     let cancelled = false;
 
-    async function fetch() {
-      setLoading(true);
+    async function load() {
+      if (!storeCache.has(slug)) setLoading(true);
       setError(null);
       try {
-        let allItems = [];
-        let res = await wixClient.items.query(STORES_COLLECTION).limit(1000).find();
-        allItems = allItems.concat(res.items || []);
-        while (res.hasNext && res.hasNext()) {
-          res = await res.next();
-          allItems = allItems.concat(res.items || []);
-        }
-        const allStores = allItems.map(i => normalizeCMSItem(i, true));
-        const match = allStores.find(s => s.slug === slug);
-
+        const found = await fetchCollectionItemBySlug(
+          wixClient,
+          STORES_COLLECTION,
+          slug,
+          true
+        );
         if (!cancelled) {
-          if (match) {
-            setStore(match);
+          if (found) {
+            storeCache.set(slug, found);
+            setStore(found);
+            setError(null);
           } else {
+            storeCache.delete(slug);
             setStore(null);
             setError('Store not found');
           }
         }
       } catch (err) {
         console.error('[CMS] Error fetching store by slug:', err);
-        if (!cancelled) { setError(err?.message || 'Error'); setStore(null); }
+        if (!cancelled) {
+          storeCache.delete(slug);
+          setStore(null);
+          setError(err?.message || 'Error');
+        }
       } finally {
         if (!cancelled) setLoading(false);
       }
     }
 
-    fetch();
-    return () => { cancelled = true; };
+    load();
+
+    const handleFocus = () => load();
+    window.addEventListener('focus', handleFocus);
+    return () => {
+      cancelled = true;
+      window.removeEventListener('focus', handleFocus);
+    };
   }, [wixClient, isReady, slug]);
 
   return { store, loading, error };

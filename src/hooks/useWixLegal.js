@@ -64,11 +64,11 @@ export const LEGAL_POLICIES_CONFIG = {
   },
 };
 
-// In-memory cache across navigation sessions
+// Stale-while-revalidate cache across navigation sessions
 const legalCache = new Map();
 
 /**
- * Hook to dynamically fetch a legal policy from Wix CMS.
+ * Hook to dynamically fetch a legal policy from Wix CMS in real time.
  * @param {string} policyKey - One of 'privacy' | 'terms' | 'shipping' | 'refund' | 'cookies'
  */
 export function useWixLegal(policyKey = 'privacy') {
@@ -81,17 +81,11 @@ export function useWixLegal(policyKey = 'privacy') {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (legalCache.has(config.key)) {
-      setData(legalCache.get(config.key));
-      setLoading(false);
-      return;
-    }
-
     if (!isReady) return;
     let cancelled = false;
 
     async function fetchPolicy() {
-      setLoading(true);
+      if (!legalCache.has(config.key)) setLoading(true);
       setError(null);
       try {
         const res = await wixClient.items.query(config.collection).limit(1).find();
@@ -101,7 +95,7 @@ export function useWixLegal(policyKey = 'privacy') {
           const raw = res.items[0];
           const rawData = raw.data || raw;
           const htmlContent = rawData.descripcin || rawData.richtext || rawData.description || '';
-          
+
           const normalized = {
             id: rawData._id,
             title: rawData.title || config.labelEn,
@@ -112,6 +106,8 @@ export function useWixLegal(policyKey = 'privacy') {
           legalCache.set(config.key, normalized);
           setData(normalized);
         } else {
+          legalCache.delete(config.key);
+          setData(null);
           setError(`No content found for collection ${config.collection}`);
         }
       } catch (err) {
@@ -123,7 +119,13 @@ export function useWixLegal(policyKey = 'privacy') {
     }
 
     fetchPolicy();
-    return () => { cancelled = true; };
+
+    const handleFocus = () => fetchPolicy();
+    window.addEventListener('focus', handleFocus);
+    return () => {
+      cancelled = true;
+      window.removeEventListener('focus', handleFocus);
+    };
   }, [wixClient, isReady, config.key, config.collection]);
 
   return {

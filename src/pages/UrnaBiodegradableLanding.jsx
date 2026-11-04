@@ -728,19 +728,25 @@ export const UrnaBiodegradableLanding = ({
   };
 
   // =========================================================================
-  // HORIZONTAL SCROLL USAGE PROCESS LOGIC (WATER & EARTH STEPS)
+  // STICKY HORIZONTAL SCROLL USAGE PROCESS LOGIC (WATER & EARTH STEPS)
   // =========================================================================
+  const procRunwayRef = useRef(null);
   const procViewportRef = useRef(null);
   const procTrackRef = useRef(null);
   const [procMaxScroll, setProcMaxScroll] = useState(0);
   const [procProgress, setProcProgress] = useState(0);
   const [isDraggingProc, setIsDraggingProc] = useState(false);
 
+  const { scrollYProgress: procScrollY } = useScroll({
+    target: procRunwayRef,
+    offset: ['start start', 'end end'],
+  });
+
   const procTargetX = useMotionValue(0);
   const procSmoothX = useSpring(procTargetX, {
-    stiffness: 90,
-    damping: 22,
-    mass: 0.75,
+    stiffness: 95,
+    damping: 24,
+    mass: 0.72,
     restDelta: 0.5,
   });
 
@@ -750,19 +756,33 @@ export const UrnaBiodegradableLanding = ({
     const tw = procTrackRef.current.scrollWidth;
     const max = Math.max(0, tw - vw);
     setProcMaxScroll(max);
-    const current = Math.max(-max, Math.min(0, procTargetX.get()));
-    procTargetX.set(current);
-  }, [procTargetX]);
+    const currentScrollProgress = procScrollY.get();
+    if (max > 0 && currentScrollProgress > 0 && currentScrollProgress < 1) {
+      procTargetX.set(-currentScrollProgress * max);
+    } else {
+      const current = Math.max(-max, Math.min(0, procTargetX.get()));
+      procTargetX.set(current);
+    }
+  }, [procTargetX, procScrollY]);
 
   useEffect(() => {
     updateProcBounds();
+    const timer = setTimeout(updateProcBounds, 250);
     window.addEventListener('resize', updateProcBounds);
-    return () => window.removeEventListener('resize', updateProcBounds);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('resize', updateProcBounds);
+    };
   }, [updateProcBounds, processEnvMode]);
 
   useEffect(() => {
-    procTargetX.set(0);
-  }, [processEnvMode, procTargetX]);
+    const unsubscribeScroll = procScrollY.on('change', (val) => {
+      if (procDragInfo.current.active || procMaxScroll <= 0) return;
+      const clamped = Math.max(0, Math.min(1, val));
+      procTargetX.set(-clamped * procMaxScroll);
+    });
+    return () => unsubscribeScroll();
+  }, [procScrollY, procMaxScroll, procTargetX]);
 
   useEffect(() => {
     const unsubscribe = procSmoothX.on('change', (val) => {
@@ -775,13 +795,34 @@ export const UrnaBiodegradableLanding = ({
     return () => unsubscribe();
   }, [procSmoothX, procMaxScroll]);
 
+  const jumpToProcessRatio = (ratio) => {
+    const clamped = Math.max(0, Math.min(1, ratio));
+    if (procMaxScroll > 0) {
+      procTargetX.set(-clamped * procMaxScroll);
+    }
+    if (procRunwayRef.current && window.innerWidth > 900) {
+      const rect = procRunwayRef.current.getBoundingClientRect();
+      const runwayTop = window.scrollY + rect.top;
+      const scrollable = Math.max(0, procRunwayRef.current.offsetHeight - window.innerHeight);
+      if (scrollable > 50) {
+        window.scrollTo({
+          top: runwayTop + clamped * scrollable,
+          behavior: 'smooth',
+        });
+      }
+    }
+  };
+
   const slideProcessBy = (dir) => {
-    const stepPx = 370;
-    const next = Math.max(
+    const stepPx = 485;
+    const nextX = Math.max(
       -procMaxScroll,
       Math.min(0, procTargetX.get() - dir * stepPx)
     );
-    procTargetX.set(next);
+    procTargetX.set(nextX);
+    if (procMaxScroll > 0) {
+      jumpToProcessRatio(-nextX / procMaxScroll);
+    }
   };
 
   const procDragInfo = useRef({
@@ -822,8 +863,10 @@ export const UrnaBiodegradableLanding = ({
     procTargetX.set(Math.max(-procMaxScroll, Math.min(0, procTargetX.get())));
   };
 
+  const activeProcStepIdx = Math.min(7, Math.max(0, Math.round(procProgress * 7)));
+
   // =========================================================================
-  // STICKY CARD 3 DATA: "KAMIBI TODO INCLUIDO" (REAL + HAND-DRAWN SKETCH)
+  // STICKY CARD 3 DATA: "KAMIBI TODO INCLUIDO" (REAL PRODUCT + INK ILLUSTRATION)
   // =========================================================================
   const kitIncludedItems = [
     {
@@ -836,9 +879,7 @@ export const UrnaBiodegradableLanding = ({
       detail: isEs
         ? 'Moldeada artesanalmente con fibras vegetales 100% libres de químicos ni metales.'
         : 'Handcrafted from 100% plant fibers with zero chemicals or metals.',
-      realImg:
-        'https://static.wixstatic.com/media/45119e_48478600018f46ffb3f1ac569e733471~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
-      imgClass: 'kmb-kit-img--urn',
+      realImg: '/images/ritual/kit-01-urn.png',
     },
     {
       id: 'sleeve',
@@ -850,9 +891,7 @@ export const UrnaBiodegradableLanding = ({
       detail: isEs
         ? 'Bandas botánicas acuareladas a mano con pigmentos vegetales de soya.'
         : 'Hand-watercolored botanical bands printed with natural soy pigments.',
-      realImg:
-        'https://static.wixstatic.com/media/45119e_44f8f91ccd1b439098bf5760374cc702~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
-      imgClass: 'kmb-kit-img--sleeve',
+      realImg: '/images/ritual/kit-02-sleeve.png',
     },
     {
       id: 'bag',
@@ -864,9 +903,7 @@ export const UrnaBiodegradableLanding = ({
       detail: isEs
         ? 'Protege las cenizas en el traslado y se disuelve suavemente al contacto con el agua o suelo.'
         : 'Secures the ashes during transport and gently dissolves upon contact with water or soil.',
-      realImg:
-        'https://static.wixstatic.com/media/45119e_b515104a49a642a1945b922955493527~mv2.png/v1/fit/w_1000,h_1000,q_90/file.png',
-      imgClass: 'kmb-kit-img--bag',
+      realImg: '/images/ritual/kit-03-bag.png',
     },
     {
       id: 'cards',
@@ -878,9 +915,7 @@ export const UrnaBiodegradableLanding = ({
       detail: isEs
         ? 'Tarjetas de papel de algodón orgánico atadas con cordel de yute natural.'
         : 'Organic cotton paper note cards tied with natural jute twine.',
-      realImg:
-        'https://static.wixstatic.com/media/45119e_7a1c94ae780545e5a741810a8d7df6a2~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
-      imgClass: 'kmb-kit-img--cards',
+      realImg: '/images/ritual/kit-04-cards.png',
     },
     {
       id: 'pen',
@@ -892,99 +927,84 @@ export const UrnaBiodegradableLanding = ({
       detail: isEs
         ? 'Cuerpo de papel kraft biodegradable y tinta ecológica de soya para tus cartas.'
         : 'Biodegradable kraft barrel and eco-friendly soy ink for heartfelt letters.',
-      realImg:
-        'https://static.wixstatic.com/media/45119e_dfef8b5f5c2f4fffa54a24ab1bc0916d~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
-      imgClass: 'kmb-kit-img--pen',
+      realImg: '/images/ritual/kit-05-pen.png',
     },
   ];
 
   // =========================================================================
-  // HORIZONTAL PROCESS STEPS DATA (IMG2: REAL PRODUCT + HAND-DRAWN HANDS)
+  // HORIZONTAL PROCESS STEPS DATA (IMG2: REAL PRODUCT + HAND-DRAWN INK HANDS)
   // =========================================================================
-  const activeModeUrnImg =
-    processEnvMode === 'water'
-      ? 'https://static.wixstatic.com/media/45119e_44f8f91ccd1b439098bf5760374cc702~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png'
-      : 'https://static.wixstatic.com/media/45119e_277f4849b55642b1a9c570a911f20d37~mv2.png/v1/fit/w_1000,h_1000,q_90/file.png';
-
-  const activeModeKitImg =
-    processEnvMode === 'water'
-      ? 'https://static.wixstatic.com/media/45119e_dfef8b5f5c2f4fffa54a24ab1bc0916d~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png'
-      : 'https://static.wixstatic.com/media/45119e_7a1c94ae780545e5a741810a8d7df6a2~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png';
-
   const usageProcessSteps = [
     {
       step: '01',
-      sketchKey: 'step1-sleeve',
       phase: isEs ? 'Preparación' : 'Preparation',
       title: isEs ? 'Retira la celosía con cuidado' : 'Carefully remove the sleeve',
       desc: isEs
         ? 'Desliza suavemente la celosía decorativa de tu urna Kamibi™ y apártala sobre una superficie plana.'
         : 'Gently slide the decorative lattice sleeve off your Kamibi™ Urn and set it aside on a flat surface.',
-      realImg: activeModeUrnImg,
-      imgMode: 'urn-tilt',
+      realImg: '/images/ritual/step-01-sleeve.png',
     },
     {
       step: '02',
-      sketchKey: 'step2-open',
       phase: isEs ? 'El Kit Ritual' : 'The Ritual Kit',
       title: isEs ? 'Abre la urna y saca las hojas y pluma' : 'Open the urn & remove cards and pen',
       desc: isEs
         ? 'Abre la urna Kamibi™ y retira las hojas biodegradables, la pluma de tinta de soya y la bolsa soluble.'
         : 'Open the Kamibi™ Urn and remove the biodegradable note cards, soy pen, and water-soluble bag.',
-      realImg: activeModeKitImg,
-      imgMode: 'kit-full',
+      realImg:
+        processEnvMode === 'water'
+          ? '/images/ritual/step-02-open-water.png'
+          : '/images/ritual/step-02-open-earth.png',
     },
     {
       step: '03',
-      sketchKey: 'step3-ashes',
       phase: isEs ? 'Interior' : 'Interior',
       title: isEs ? 'Deposita las cenizas con suavidad' : 'Carefully place the ashes inside',
       desc: isEs
         ? 'Coloca las cenizas dentro de la bolsa biodegradable hidrosoluble (o directamente) en el interior de la urna.'
         : 'Carefully pour the ashes into the water-soluble biodegradable bag (or directly) inside the Urn.',
       realImg:
-        'https://static.wixstatic.com/media/45119e_b515104a49a642a1945b922955493527~mv2.png/v1/fit/w_1000,h_1000,q_90/file.png',
-      secondaryImg: activeModeUrnImg,
-      imgMode: 'bag-into-urn',
+        processEnvMode === 'water'
+          ? '/images/ritual/step-03-ashes-water.png'
+          : '/images/ritual/step-03-ashes-earth.png',
     },
     {
       step: '04',
-      sketchKey: 'step4-notes',
       phase: isEs ? 'Homenaje' : 'Tribute',
       title: isEs ? 'Escribe tus mensajes de despedida' : 'Write heartfelt farewell messages',
       desc: isEs
         ? 'Usa las hojas biodegradables y la pluma de soya para dedicar tus palabras de amor y colócalas dentro de la urna.'
         : 'Use the note cards and soy pen to write heartfelt words of love and farewell, and place them inside the Urn.',
-      realImg: activeModeKitImg,
-      imgMode: 'notes-zoom',
+      realImg: '/images/ritual/step-04-notes.png',
     },
     {
       step: '05',
-      sketchKey: 'step5-close',
       phase: isEs ? 'Sellado' : 'Sealing',
       title: isEs ? 'Cierra la urna y desliza la celosía' : 'Close securely & slide the sleeve back',
       desc: isEs
         ? 'Cierra la urna con firmeza y desliza nuevamente la celosía impresa con tinta de soya para un acabado perfecto.'
         : 'Close the urn securely and slide the soy-ink lattice sleeve back around the urn for a smooth finish.',
-      realImg: activeModeUrnImg,
-      imgMode: 'urn-center',
+      realImg:
+        processEnvMode === 'water'
+          ? '/images/ritual/step-05-close-water.png'
+          : '/images/ritual/step-05-close-earth.png',
     },
     {
       step: '06',
-      sketchKey: 'step6-carry',
       phase: isEs ? 'Traslado' : 'Transport',
       title: isEs ? 'Llévala con cuidado sin voltearla' : 'Carry carefully without turning over',
       desc: isEs
         ? 'Sostén la urna con ambas manos por la base manteniendo siempre su posición horizontal hacia el lugar de ceremonia.'
         : 'Support the Urn gently with both hands from underneath, keeping it level without turning it over.',
-      realImg: activeModeUrnImg,
-      imgMode: 'urn-cradled',
+      realImg:
+        processEnvMode === 'water'
+          ? '/images/ritual/step-06-carry-water.png'
+          : '/images/ritual/step-06-carry-earth.png',
     },
     ...(processEnvMode === 'water'
       ? [
           {
             step: '07',
-            sketchKey: 'step7-water-prick',
             phase: isEs ? 'Ceremonia en Agua' : 'Water Ceremony',
             title: isEs
               ? 'Presiona los cuadros de cada esquina'
@@ -992,13 +1012,10 @@ export const UrnaBiodegradableLanding = ({
             desc: isEs
               ? 'Antes de colocarla en el agua, presiona suavemente con tu dedo los pequeños cuadros en cada esquina para que el aire salga y se sumerja en paz.'
               : 'Before placing the urn into the water, gently prick the small squares at each corner with your finger so air escapes and it submerges peacefully.',
-            realImg:
-              'https://static.wixstatic.com/media/45119e_48478600018f46ffb3f1ac569e733471~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
-            imgMode: 'urn-corners',
+            realImg: '/images/ritual/step-07-water.png',
           },
           {
             step: '08',
-            sketchKey: 'step8-water-float',
             phase: isEs ? 'Despedida en el Mar o Lago' : 'Ocean or Lake Farewell',
             title: isEs
               ? 'Deposítala suavemente sobre el agua'
@@ -1006,15 +1023,12 @@ export const UrnaBiodegradableLanding = ({
             desc: isEs
               ? 'En el mar, lago o río, posa la urna sobre la superficie del agua. Tómate un momento para dar tu último adiós mientras desciende serenamente.'
               : "Once in the ocean, lake, or river, gently place the urn onto the water's surface. Take a moment to say your final goodbye as it descends.",
-            realImg:
-              'https://static.wixstatic.com/media/45119e_44f8f91ccd1b439098bf5760374cc702~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
-            imgMode: 'urn-water-float',
+            realImg: '/images/ritual/step-08-water.png',
           },
         ]
       : [
           {
             step: '07',
-            sketchKey: 'step7-earth-bed',
             phase: isEs ? 'Ceremonia en Tierra' : 'Earth Ceremony',
             title: isEs
               ? 'Prepara el espacio en tierra fértil'
@@ -1022,13 +1036,10 @@ export const UrnaBiodegradableLanding = ({
             desc: isEs
               ? 'Cava un espacio en tierra o jardín de unos 30 cm de profundidad. Puedes acompañar la base con pétalos, hojas o semillas nativas.'
               : 'Prepare a resting space in soil or a garden about 12 inches deep. You may line the base with petals, leaves, or native seeds.',
-            realImg:
-              'https://static.wixstatic.com/media/45119e_277f4849b55642b1a9c570a911f20d37~mv2.png/v1/fit/w_1000,h_1000,q_90/file.png',
-            imgMode: 'urn-earth-bed',
+            realImg: '/images/ritual/step-07-earth.png',
           },
           {
             step: '08',
-            sketchKey: 'step8-earth-bloom',
             phase: isEs ? 'Retorno al Bosque' : 'Return to the Forest',
             title: isEs
               ? 'Cubre con tierra y honra nueva vida'
@@ -1036,9 +1047,7 @@ export const UrnaBiodegradableLanding = ({
             desc: isEs
               ? 'Deposita la urna con ambas manos, cúbrela con tierra húmeda y riega suavemente. En 2 a 4 semanas se biodegrada nutriendo el suelo.'
               : 'Place the urn gently with both hands, cover with moist soil, and water softly. Within 2–4 weeks it biodegradates to nourish new life.',
-            realImg:
-              'https://static.wixstatic.com/media/45119e_6fee7c273f3f487aba1e9f9e8aee9a72~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
-            imgMode: 'urn-earth-bloom',
+            realImg: '/images/ritual/step-08-earth.png',
           },
         ]),
   ];
@@ -1915,133 +1924,14 @@ export const UrnaBiodegradableLanding = ({
                         transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
                         className="kmb-kit-hybrid-canvas"
                       >
-                        {/* Real Studio Cutout Product Layer */}
-                        <div
-                          className={`kmb-kit-real-wrap ${kitIncludedItems[activeIncludedIdx].imgClass}`}
-                        >
+                        <div className="kmb-kit-real-wrap">
                           <img
                             src={kitIncludedItems[activeIncludedIdx].realImg}
                             alt={kitIncludedItems[activeIncludedIdx].shortTag}
                             className="kmb-kit-real-img"
+                            draggable={false}
                           />
                         </div>
-
-                        {/* Hand-Drawn Ink Illustration Overlay Layer (Hands + Botanical Sketch) */}
-                        <svg
-                          viewBox="0 0 420 270"
-                          fill="none"
-                          className="kmb-kit-sketch-svg"
-                          aria-hidden="true"
-                        >
-                          {activeIncludedIdx === 0 && (
-                            <g stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
-                              {/* Drawn hands gently cradling the real urn from left and right */}
-                              <path
-                                d="M 32 214 C 54 196, 78 192, 108 198 C 122 201, 134 205, 140 212 C 132 220, 108 222, 82 220 C 62 218, 46 226, 26 238"
-                                strokeWidth="1.6"
-                              />
-                              <path d="M 96 196 C 112 188, 128 190, 138 198" strokeWidth="1.3" />
-                              <path
-                                d="M 388 214 C 366 196, 342 192, 312 198 C 298 201, 286 205, 280 212 C 288 220, 312 222, 338 220 C 358 218, 374 226, 394 238"
-                                strokeWidth="1.6"
-                              />
-                              <path d="M 324 196 C 308 188, 292 190, 282 198" strokeWidth="1.3" />
-                              {/* Delicate botanical sprigs & dimension callout */}
-                              <path d="M 68 82 Q 86 58, 114 48" strokeWidth="1.1" strokeDasharray="3 4" opacity="0.65" />
-                              <circle cx="118" cy="46" r="3" fill="currentColor" />
-                              <path d="M 56 122 Q 44 96, 62 72" strokeWidth="1.2" opacity="0.55" />
-                              <ellipse cx="48" cy="98" rx="9" ry="4.5" transform="rotate(-30 48 98)" strokeWidth="1.1" opacity="0.55" />
-                              <ellipse cx="64" cy="84" rx="8" ry="4" transform="rotate(24 64 84)" strokeWidth="1.1" opacity="0.55" />
-                              <path d="M 356 118 Q 372 90, 352 66" strokeWidth="1.2" opacity="0.55" />
-                              <ellipse cx="366" cy="92" rx="9" ry="4.5" transform="rotate(28 366 92)" strokeWidth="1.1" opacity="0.55" />
-                            </g>
-                          )}
-
-                          {activeIncludedIdx === 1 && (
-                            <g stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
-                              {/* Drawn hands sliding the soy-ink lattice sleeve around the urn */}
-                              <path
-                                d="M 48 112 C 72 98, 98 96, 122 106 C 128 110, 126 118, 114 122 C 94 126, 72 126, 44 136"
-                                strokeWidth="1.6"
-                              />
-                              <path
-                                d="M 372 152 C 348 138, 322 136, 298 146 C 292 150, 294 158, 306 162 C 326 166, 348 166, 376 176"
-                                strokeWidth="1.6"
-                              />
-                              {/* Dashed lattice sleeve outline + sliding motion arrow */}
-                              <path
-                                d="M 145 48 L 265 28 L 292 44 L 172 64 Z"
-                                strokeWidth="1.1"
-                                strokeDasharray="4 4"
-                                opacity="0.65"
-                              />
-                              <path d="M 308 62 C 334 52, 352 54, 368 64" strokeWidth="1.4" />
-                              <path d="M 362 56 L 370 65 L 358 68" strokeWidth="1.4" />
-                              {/* Soy leaf & ink drop sketch */}
-                              <path d="M 74 208 C 74 192, 86 182, 86 172 C 86 182, 98 192, 98 208 C 98 216, 92 222, 86 222 C 80 222, 74 216, 74 208 Z" strokeWidth="1.3" />
-                            </g>
-                          )}
-
-                          {activeIncludedIdx === 2 && (
-                            <g stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
-                              {/* Drawn hands gently tying/holding the top of the water-soluble bag */}
-                              <path
-                                d="M 96 64 C 126 56, 152 58, 176 68 C 182 72, 180 80, 168 82 C 146 84, 124 82, 92 88"
-                                strokeWidth="1.6"
-                              />
-                              <path
-                                d="M 324 64 C 294 56, 268 58, 244 68 C 238 72, 240 80, 252 82 C 274 84, 296 82, 328 88"
-                                strokeWidth="1.6"
-                              />
-                              {/* Water-soluble concentric ripples & dissolving bubbles at base */}
-                              <ellipse cx="210" cy="226" rx="96" ry="18" strokeWidth="1.3" strokeDasharray="6 5" opacity="0.7" />
-                              <ellipse cx="210" cy="226" rx="132" ry="26" strokeWidth="1" opacity="0.42" />
-                              <circle cx="112" cy="182" r="4" strokeWidth="1.2" opacity="0.65" />
-                              <circle cx="126" cy="164" r="2.5" strokeWidth="1.1" opacity="0.55" />
-                              <circle cx="308" cy="176" r="4.5" strokeWidth="1.2" opacity="0.65" />
-                              <circle cx="294" cy="156" r="2.5" strokeWidth="1.1" opacity="0.55" />
-                            </g>
-                          )}
-
-                          {activeIncludedIdx === 3 && (
-                            <g stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
-                              {/* Drawn hand holding farewell note card + drawn envelope & heart */}
-                              <path
-                                d="M 42 198 C 68 182, 94 176, 124 182 C 134 184, 136 194, 124 198 C 102 204, 78 206, 52 222"
-                                strokeWidth="1.6"
-                              />
-                              {/* Illustrated floating farewell card with heart & lines */}
-                              <rect x="272" y="42" width="88" height="64" rx="6" transform="rotate(8 272 42)" strokeWidth="1.4" />
-                              <path
-                                d="M 316 64 C 313 59, 306 59, 306 65 C 306 70, 316 76, 316 76 C 316 76, 326 70, 326 65 C 326 59, 319 59, 316 64 Z"
-                                strokeWidth="1.3"
-                              />
-                              <line x1="286" y1="86" x2="338" y2="93" strokeWidth="1.1" opacity="0.65" />
-                              <line x1="288" y1="95" x2="324" y2="100" strokeWidth="1.1" opacity="0.5" />
-                            </g>
-                          )}
-
-                          {activeIncludedIdx === 4 && (
-                            <g stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
-                              {/* Drawn hand holding the soy ink pen writing a flowing tribute line */}
-                              <path
-                                d="M 296 56 C 272 72, 250 92, 232 114 C 224 122, 232 132, 244 126 C 264 114, 286 98, 318 84"
-                                strokeWidth="1.6"
-                              />
-                              <path d="M 228 118 L 210 134 L 226 126" strokeWidth="1.5" />
-                              {/* Flowing soy-ink calligraphy curve */}
-                              <path
-                                d="M 76 206 C 112 184, 146 218, 184 194 C 212 176, 238 198, 272 182"
-                                strokeWidth="1.5"
-                                strokeDasharray="2 0"
-                              />
-                              {/* Botanical soy pod sketch */}
-                              <path d="M 82 78 Q 104 62, 126 78 Q 104 94, 82 78 Z" strokeWidth="1.3" opacity="0.65" />
-                              <circle cx="96" cy="78" r="3" strokeWidth="1.1" opacity="0.65" />
-                              <circle cx="110" cy="78" r="3" strokeWidth="1.1" opacity="0.65" />
-                            </g>
-                          )}
-                        </svg>
                       </motion.div>
                     </AnimatePresence>
 
@@ -2074,378 +1964,170 @@ export const UrnaBiodegradableLanding = ({
       </section>
 
       {/* =====================================================================
-          2.5 PROCESO DE USO PASO A PASO — HORIZONTAL SCROLL (AGUA & TIERRA)
-              REAL PRODUCT CUTOUTS + HAND-DRAWN INK HANDS (IMG2)
+          2.5 PROCESO DE USO PASO A PASO — STICKY HORIZONTAL SCROLL (AGUA & TIERRA)
+              REAL PRODUCT CUTOUTS + ANATOMICAL INK HANDS (IMG2)
          ===================================================================== */}
       <section className="kmb-process-scroll-section" id="proceso-uso">
-        <div className="kmb-container">
-          <div className="kmb-proc-header">
-            <div className="kmb-proc-title-group">
-              <span className="kmb-vt-eyebrow">
-                {isEs
-                  ? 'Instrucciones de uso · Paso a paso'
-                  : 'Instructions for use · Step by step'}
-              </span>
-              <h2 className="kmb-proc-main-title">
-                {isEs ? (
-                  <>
-                    Cómo preparar tu ceremonia en{' '}
-                    <em>{processEnvMode === 'water' ? 'agua' : 'tierra'}</em>.
-                  </>
-                ) : (
-                  <>
-                    How to prepare your{' '}
-                    <em>{processEnvMode === 'water' ? 'water' : 'earth'}</em>{' '}
-                    ceremony.
-                  </>
-                )}
-              </h2>
-            </div>
+        <div ref={procRunwayRef} className="kmb-proc-sticky-runway">
+          <div className="kmb-proc-sticky-frame">
+            <div className="kmb-container kmb-proc-inner-container">
+              <div className="kmb-proc-header">
+                <div className="kmb-proc-title-group">
+                  <span className="kmb-vt-eyebrow">
+                    {isEs
+                      ? 'Instrucciones de uso · Paso a paso'
+                      : 'Instructions for use · Step by step'}
+                  </span>
+                  <h2 className="kmb-proc-main-title">
+                    {isEs ? (
+                      <>
+                        Cómo preparar tu ceremonia en{' '}
+                        <em>{processEnvMode === 'water' ? 'agua' : 'tierra'}</em>.
+                      </>
+                    ) : (
+                      <>
+                        How to prepare your{' '}
+                        <em>{processEnvMode === 'water' ? 'water' : 'earth'}</em>{' '}
+                        ceremony.
+                      </>
+                    )}
+                  </h2>
+                </div>
 
-            <div className="kmb-proc-controls-row">
-              {/* Environment Divider: Agua vs Tierra */}
-              <div className="kmb-proc-env-switch" role="tablist">
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={processEnvMode === 'water'}
-                  onClick={() => setProcessEnvMode('water')}
-                  className={`kmb-proc-env-btn ${
-                    processEnvMode === 'water' ? 'active' : ''
-                  }`}
-                >
-                  <span>💧</span>
-                  {isEs ? 'Ceremonia en Agua' : 'Water Ceremony'}
-                </button>
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={processEnvMode === 'earth'}
-                  onClick={() => setProcessEnvMode('earth')}
-                  className={`kmb-proc-env-btn ${
-                    processEnvMode === 'earth' ? 'active' : ''
-                  }`}
-                >
-                  <span>🌿</span>
-                  {isEs ? 'Ceremonia en Tierra' : 'Earth Ceremony'}
-                </button>
-              </div>
-
-              {/* Horizontal Scroll Arrows */}
-              <div className="kmb-carousel-arrows">
-                <button
-                  type="button"
-                  onClick={() => slideProcessBy(-1)}
-                  className="kmb-arrow-circle"
-                  aria-label={isEs ? 'Paso anterior' : 'Previous step'}
-                >
-                  ‹
-                </button>
-                <button
-                  type="button"
-                  onClick={() => slideProcessBy(1)}
-                  className="kmb-arrow-circle"
-                  aria-label={isEs ? 'Siguiente paso' : 'Next step'}
-                >
-                  ›
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* Horizontal Scroll Viewport */}
-          <div
-            ref={procViewportRef}
-            className={`kmb-proc-viewport ${isDraggingProc ? 'is-dragging' : ''}`}
-            onPointerDown={handleProcPointerDown}
-            onPointerMove={handleProcPointerMove}
-            onPointerUp={handleProcPointerUp}
-            onPointerLeave={handleProcPointerUp}
-          >
-            <motion.div
-              ref={procTrackRef}
-              style={{ x: procSmoothX }}
-              className="kmb-proc-track"
-            >
-              {usageProcessSteps.map((st) => (
-                <article
-                  key={`${processEnvMode}-${st.step}`}
-                  className={`kmb-proc-card kmb-proc-card--${processEnvMode}`}
-                >
-                  {/* TOP HYBRID STAGE: REAL PRODUCT PHOTO + HAND-DRAWN INK HANDS */}
-                  <div className="kmb-proc-visual-stage">
-                    <div className="kmb-proc-step-badge">
-                      <span className="kmb-proc-step-num">
-                        {isEs ? `PASO ${st.step}` : `STEP ${st.step}`}
-                      </span>
-                      <span className="kmb-proc-step-phase">{st.phase}</span>
-                    </div>
-
-                    {/* Real Product Photo Layer */}
-                    <div className={`kmb-proc-real-layer kmb-proc-real--${st.imgMode}`}>
-                      {st.secondaryImg && (
-                        <img
-                          src={st.secondaryImg}
-                          alt=""
-                          className="kmb-proc-real-secondary"
-                          draggable={false}
-                        />
-                      )}
-                      <img
-                        src={st.realImg}
-                        alt={st.title}
-                        className="kmb-proc-real-primary"
-                        draggable={false}
-                      />
-                    </div>
-
-                    {/* Hand-Drawn Ink Hands + Gesture Line-Art SVG Layer (Inspired by Img2 Manual) */}
-                    <svg
-                      viewBox="0 0 340 230"
-                      fill="none"
-                      className="kmb-proc-sketch-svg"
-                      aria-hidden="true"
+                <div className="kmb-proc-controls-row">
+                  {/* Environment Divider: Agua vs Tierra */}
+                  <div className="kmb-proc-env-switch" role="tablist">
+                    <button
+                      type="button"
+                      role="tab"
+                      aria-selected={processEnvMode === 'water'}
+                      onClick={() => setProcessEnvMode('water')}
+                      className={`kmb-proc-env-btn ${
+                        processEnvMode === 'water' ? 'active' : ''
+                      }`}
                     >
-                      {st.sketchKey === 'step1-sleeve' && (
-                        <g stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
-                          {/* Dashed sleeve sliding off to the right + two ink hands pulling gently */}
-                          <path
-                            d="M 190 48 L 282 32 L 306 50 L 214 66 Z"
-                            strokeWidth="1.2"
-                            strokeDasharray="4 4"
-                            opacity="0.7"
-                          />
-                          {/* Left hand holding box steady */}
-                          <path
-                            d="M 22 146 C 44 132, 68 128, 92 134 C 98 136, 98 144, 88 148 C 68 152, 48 156, 26 168"
-                            strokeWidth="1.7"
-                          />
-                          {/* Right hand sliding sleeve off */}
-                          <path
-                            d="M 318 96 C 294 84, 268 82, 246 92 C 240 96, 242 104, 254 106 C 274 110, 294 112, 316 120"
-                            strokeWidth="1.7"
-                          />
-                          {/* Curved arrow showing sleeve removal */}
-                          <path d="M 244 56 C 272 44, 296 46, 316 58" strokeWidth="1.5" />
-                          <path d="M 310 50 L 318 59 L 306 62" strokeWidth="1.5" />
-                        </g>
-                      )}
-
-                      {st.sketchKey === 'step2-open' && (
-                        <g stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
-                          {/* Hand lifting open lid + arrow pointing to note cards & soy pen on flat surface */}
-                          <path
-                            d="M 38 88 C 64 74, 92 72, 116 82 C 122 86, 120 94, 108 96 C 88 100, 64 100, 36 110"
-                            strokeWidth="1.7"
-                          />
-                          <path d="M 134 72 C 148 46, 178 38, 206 46" strokeWidth="1.4" strokeDasharray="3 3" />
-                          <path d="M 200 39 L 208 47 L 198 52" strokeWidth="1.4" />
-                          {/* Sketched note card + pen icon in top-right */}
-                          <rect x="242" y="38" width="54" height="38" rx="4" transform="rotate(-6 242 38)" strokeWidth="1.3" />
-                          <line x1="252" y1="52" x2="284" y2="49" strokeWidth="1.1" />
-                          <line x1="254" y1="61" x2="276" y2="59" strokeWidth="1.1" />
-                          <path d="M 248 92 L 298 76 L 304 78 L 252 96 Z" strokeWidth="1.2" />
-                        </g>
-                      )}
-
-                      {st.sketchKey === 'step3-ashes' && (
-                        <g stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
-                          {/* Two ink hands gently lowering/pouring the ash bag into the open urn chamber */}
-                          <path
-                            d="M 68 58 C 94 48, 120 50, 142 62 C 148 66, 146 74, 134 76 C 114 78, 92 76, 64 82"
-                            strokeWidth="1.7"
-                          />
-                          <path
-                            d="M 272 58 C 246 48, 220 50, 198 62 C 192 66, 194 74, 206 76 C 226 78, 248 76, 276 82"
-                            strokeWidth="1.7"
-                          />
-                          {/* Downward placement arrow + gentle ash/granule dots */}
-                          <path d="M 170 92 L 170 138" strokeWidth="1.5" strokeDasharray="3 3" />
-                          <path d="M 163 131 L 170 140 L 177 131" strokeWidth="1.5" />
-                          <circle cx="156" cy="116" r="1.8" fill="currentColor" />
-                          <circle cx="184" cy="122" r="1.8" fill="currentColor" />
-                          <circle cx="162" cy="130" r="1.5" fill="currentColor" />
-                        </g>
-                      )}
-
-                      {st.sketchKey === 'step4-notes' && (
-                        <g stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
-                          {/* Hand holding soy pen writing heartfelt note with heart + curved arrow into urn */}
-                          <rect x="44" y="34" width="76" height="58" rx="5" transform="rotate(-5 44 34)" strokeWidth="1.4" />
-                          <path
-                            d="M 78 52 C 75 47, 68 47, 68 53 C 68 58, 78 64, 78 64 C 78 64, 88 58, 88 53 C 88 47, 81 47, 78 52 Z"
-                            strokeWidth="1.3"
-                          />
-                          <line x1="56" y1="73" x2="104" y2="69" strokeWidth="1.1" />
-                          <line x1="58" y1="81" x2="92" y2="78" strokeWidth="1.1" />
-                          {/* Writing hand with pen */}
-                          <path
-                            d="M 164 42 C 144 54, 126 68, 112 84 C 106 90, 112 96, 122 92 C 138 84, 154 72, 178 62"
-                            strokeWidth="1.6"
-                          />
-                          <path d="M 110 86 L 96 96" strokeWidth="1.5" />
-                          {/* Arrow placing note into the urn */}
-                          <path d="M 88 104 C 98 132, 122 146, 150 144" strokeWidth="1.4" />
-                          <path d="M 143 138 L 152 144 L 144 151" strokeWidth="1.4" />
-                        </g>
-                      )}
-
-                      {st.sketchKey === 'step5-close' && (
-                        <g stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
-                          {/* Both hands smoothing the closed box and sliding the sleeve into center */}
-                          <path
-                            d="M 28 118 C 54 104, 80 102, 106 112 C 112 116, 110 124, 98 128 C 76 132, 54 134, 24 144"
-                            strokeWidth="1.7"
-                          />
-                          <path
-                            d="M 312 118 C 286 104, 260 102, 234 112 C 228 116, 230 124, 242 128 C 264 132, 286 134, 316 144"
-                            strokeWidth="1.7"
-                          />
-                          {/* Centering arrows */}
-                          <path d="M 74 72 L 118 84" strokeWidth="1.4" />
-                          <path d="M 111 76 L 120 85 L 108 88" strokeWidth="1.4" />
-                          <path d="M 266 72 L 222 84" strokeWidth="1.4" />
-                          <path d="M 229 76 L 220 85 L 232 88" strokeWidth="1.4" />
-                        </g>
-                      )}
-
-                      {st.sketchKey === 'step6-carry' && (
-                        <g stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
-                          {/* Two cradling palms supporting the urn from underneath without turning it over (Img2 Step 6) */}
-                          <path
-                            d="M 24 186 C 52 168, 84 164, 124 172 C 142 175, 156 180, 162 186 C 152 194, 124 196, 92 192 C 68 190, 46 198, 20 210"
-                            strokeWidth="1.8"
-                          />
-                          <path d="M 106 168 C 124 160, 142 162, 154 170" strokeWidth="1.4" />
-                          <path
-                            d="M 316 186 C 288 168, 256 164, 216 172 C 198 175, 184 180, 178 186 C 188 194, 216 196, 248 192 C 272 190, 294 198, 320 210"
-                            strokeWidth="1.8"
-                          />
-                          <path d="M 234 168 C 216 160, 198 162, 186 170" strokeWidth="1.4" />
-                          {/* Horizontal level indicator */}
-                          <line x1="96" y1="44" x2="244" y2="44" strokeWidth="1.1" strokeDasharray="4 4" opacity="0.65" />
-                        </g>
-                      )}
-
-                      {st.sketchKey === 'step7-water-prick' && (
-                        <g stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
-                          {/* Hand with index finger gently pricking the corner squares (Img2 Step 7) */}
-                          <path
-                            d="M 278 32 C 254 48, 232 68, 214 92 C 208 100, 216 108, 226 102 C 246 88, 268 72, 296 58"
-                            strokeWidth="1.8"
-                          />
-                          {/* Corner perforation squares + concentric press rings */}
-                          <rect x="198" y="94" width="12" height="10" rx="2" strokeWidth="1.5" />
-                          <circle cx="204" cy="99" r="14" strokeWidth="1.1" strokeDasharray="3 3" />
-                          <rect x="114" y="114" width="11" height="9" rx="2" strokeWidth="1.3" opacity="0.75" />
-                          <circle cx="119" cy="118" r="11" strokeWidth="1" strokeDasharray="2 3" opacity="0.6" />
-                          <rect x="164" y="148" width="11" height="9" rx="2" strokeWidth="1.3" opacity="0.75" />
-                          <circle cx="169" cy="152" r="11" strokeWidth="1" strokeDasharray="2 3" opacity="0.6" />
-                        </g>
-                      )}
-
-                      {st.sketchKey === 'step8-water-float' && (
-                        <g stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
-                          {/* Gentle hands releasing the urn onto drawn ocean/lake waves (Img2 Step 8) */}
-                          <path
-                            d="M 26 98 C 48 86, 72 86, 94 94 C 100 98, 98 106, 88 108 C 68 110, 48 112, 22 120"
-                            strokeWidth="1.6"
-                          />
-                          <path
-                            d="M 314 98 C 292 86, 268 86, 246 94 C 240 98, 242 106, 252 108 C 272 110, 292 112, 318 120"
-                            strokeWidth="1.6"
-                          />
-                          {/* Drawn water waves & peaceful descent ripples */}
-                          <path
-                            d="M 18 176 Q 58 162, 98 176 T 178 176 T 258 176 T 324 176"
-                            strokeWidth="1.6"
-                          />
-                          <path
-                            d="M 34 194 Q 74 182, 114 194 T 194 194 T 274 194 T 312 194"
-                            strokeWidth="1.3"
-                            opacity="0.7"
-                          />
-                          <path
-                            d="M 64 210 Q 114 200, 164 210 T 264 210"
-                            strokeWidth="1.1"
-                            strokeDasharray="4 5"
-                            opacity="0.55"
-                          />
-                        </g>
-                      )}
-
-                      {st.sketchKey === 'step7-earth-bed' && (
-                        <g stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
-                          {/* Drawn hands preparing fertile soil cradle + petals & seeds */}
-                          <path
-                            d="M 26 112 C 52 98, 78 98, 102 108 C 108 112, 106 120, 94 122 C 74 124, 52 126, 24 136"
-                            strokeWidth="1.6"
-                          />
-                          <path
-                            d="M 314 112 C 288 98, 262 98, 238 108 C 232 112, 234 120, 246 122 C 266 124, 288 126, 316 136"
-                            strokeWidth="1.6"
-                          />
-                          {/* Soil contour bed & botanical leaves */}
-                          <path
-                            d="M 24 172 C 74 174, 96 204, 170 204 C 244 204, 266 174, 316 172"
-                            strokeWidth="1.6"
-                          />
-                          <path
-                            d="M 44 188 C 88 192, 112 214, 170 214 C 228 214, 252 192, 296 188"
-                            strokeWidth="1.2"
-                            strokeDasharray="4 4"
-                            opacity="0.65"
-                          />
-                        </g>
-                      )}
-
-                      {st.sketchKey === 'step8-earth-bloom' && (
-                        <g stroke="currentColor" strokeLinecap="round" strokeLinejoin="round">
-                          {/* Drawn hands covering with soil + sprouting sapling emerging above */}
-                          <path
-                            d="M 34 142 C 60 128, 86 128, 110 138 C 116 142, 114 150, 102 152 C 82 154, 60 156, 32 164"
-                            strokeWidth="1.6"
-                          />
-                          <path
-                            d="M 306 142 C 280 128, 254 128, 230 138 C 224 142, 226 150, 238 152 C 258 154, 280 156, 308 164"
-                            strokeWidth="1.6"
-                          />
-                          {/* Sprouting botanical tree sapling rising from the urn */}
-                          <path d="M 170 106 Q 172 64, 170 26" strokeWidth="1.7" />
-                          <path d="M 170 68 Q 144 54, 134 36 Q 158 38, 170 58" strokeWidth="1.4" />
-                          <path d="M 170 54 Q 196 40, 206 22 Q 182 24, 170 44" strokeWidth="1.4" />
-                          {/* Gentle soil horizon & roots */}
-                          <path d="M 28 184 Q 102 172, 170 182 T 312 180" strokeWidth="1.5" />
-                        </g>
-                      )}
-                    </svg>
+                      <span>💧</span>
+                      {isEs ? 'Ceremonia en Agua' : 'Water Ceremony'}
+                    </button>
+                    <button
+                      type="button"
+                      role="tab"
+                      aria-selected={processEnvMode === 'earth'}
+                      onClick={() => setProcessEnvMode('earth')}
+                      className={`kmb-proc-env-btn ${
+                        processEnvMode === 'earth' ? 'active' : ''
+                      }`}
+                    >
+                      <span>🌿</span>
+                      {isEs ? 'Ceremonia en Tierra' : 'Earth Ceremony'}
+                    </button>
                   </div>
 
-                  {/* BOTTOM STEP DESCRIPTION */}
-                  <div className="kmb-proc-body">
-                    <h3 className="kmb-proc-card-title">{st.title}</h3>
-                    <p className="kmb-proc-card-desc">{st.desc}</p>
+                  {/* Horizontal Scroll Arrows */}
+                  <div className="kmb-carousel-arrows">
+                    <button
+                      type="button"
+                      onClick={() => slideProcessBy(-1)}
+                      className="kmb-arrow-circle"
+                      aria-label={isEs ? 'Paso anterior' : 'Previous step'}
+                    >
+                      ‹
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => slideProcessBy(1)}
+                      className="kmb-arrow-circle"
+                      aria-label={isEs ? 'Siguiente paso' : 'Next step'}
+                    >
+                      ›
+                    </button>
                   </div>
-                </article>
-              ))}
-            </motion.div>
-          </div>
+                </div>
+              </div>
 
-          {/* Progress Bar + Caption */}
-          <div className="kmb-proc-footer-bar">
-            <div className="kmb-carousel-progress-track">
+              {/* Sticky Horizontal Scroll Viewport */}
               <div
-                className="kmb-carousel-progress-fill"
-                style={{
-                  transform: `scaleX(${Math.max(0.15, procProgress)})`,
-                }}
-              />
+                ref={procViewportRef}
+                className={`kmb-proc-viewport ${isDraggingProc ? 'is-dragging' : ''}`}
+                onPointerDown={handleProcPointerDown}
+                onPointerMove={handleProcPointerMove}
+                onPointerUp={handleProcPointerUp}
+                onPointerLeave={handleProcPointerUp}
+              >
+                <motion.div
+                  ref={procTrackRef}
+                  style={{ x: procSmoothX }}
+                  className="kmb-proc-track"
+                >
+                  {usageProcessSteps.map((st, idx) => (
+                    <article
+                      key={`${processEnvMode}-${st.step}`}
+                      className={`kmb-proc-card kmb-proc-card--${processEnvMode} ${
+                        activeProcStepIdx === idx ? 'is-active' : ''
+                      }`}
+                    >
+                      {/* TOP HYBRID STAGE: REAL PRODUCT + HAND-DRAWN INK HANDS */}
+                      <div className="kmb-proc-visual-stage">
+                        <div className="kmb-proc-step-badge">
+                          <span className="kmb-proc-step-num">
+                            {isEs ? `PASO ${st.step}` : `STEP ${st.step}`}
+                          </span>
+                          <span className="kmb-proc-step-phase">{st.phase}</span>
+                        </div>
+
+                        <div className="kmb-proc-real-layer">
+                          <img
+                            src={st.realImg}
+                            alt={st.title}
+                            className="kmb-proc-real-primary"
+                            draggable={false}
+                          />
+                        </div>
+                      </div>
+
+                      {/* BOTTOM STEP DESCRIPTION */}
+                      <div className="kmb-proc-body">
+                        <h3 className="kmb-proc-card-title">{st.title}</h3>
+                        <p className="kmb-proc-card-desc">{st.desc}</p>
+                      </div>
+                    </article>
+                  ))}
+                </motion.div>
+              </div>
+
+              {/* Sticky Footer Bar: Interactive Step Dots (01..08) + Progress Bar */}
+              <div className="kmb-proc-footer-bar">
+                <div className="kmb-proc-step-dots" role="navigation" aria-label="Pasos">
+                  {usageProcessSteps.map((st, idx) => (
+                    <button
+                      key={st.step}
+                      type="button"
+                      onClick={() => jumpToProcessRatio(idx / 7)}
+                      className={`kmb-proc-step-dot ${
+                        activeProcStepIdx === idx ? 'active' : ''
+                      }`}
+                    >
+                      {st.step}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="kmb-carousel-progress-track">
+                  <div
+                    className="kmb-carousel-progress-fill"
+                    style={{
+                      transform: `scaleX(${Math.max(0.125, procProgress)})`,
+                    }}
+                  />
+                </div>
+
+                <span className="kmb-proc-drag-hint">
+                  {isEs
+                    ? 'Haz scroll o desliza para recorrer los 8 pasos · Instructivo impreso incluido'
+                    : 'Scroll or drag to explore all 8 steps · Printed guide included inside'}
+                </span>
+              </div>
             </div>
-            <span className="kmb-proc-drag-hint">
-              {isEs
-                ? 'Desliza horizontalmente para ver los 8 pasos · Incluye instructivo impreso en cada urna'
-                : 'Drag horizontally to explore all 8 steps · Printed guide included inside every urn'}
-            </span>
           </div>
         </div>
       </section>

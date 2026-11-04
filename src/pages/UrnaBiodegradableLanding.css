@@ -890,7 +890,7 @@
 
 .kmb-kit-hybrid-canvas {
   position: relative;
-  height: 195px;
+  height: 224px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -907,31 +907,12 @@
 }
 
 .kmb-kit-real-img {
-  max-width: 225px;
-  max-height: 170px;
-  object-fit: contain;
-  filter: drop-shadow(0 16px 24px rgba(25, 22, 18, 0.16));
-  transition: transform 0.35s ease;
-}
-
-.kmb-kit-img--bag .kmb-kit-real-img {
-  max-height: 162px;
-}
-
-.kmb-kit-img--cards .kmb-kit-real-img,
-.kmb-kit-img--pen .kmb-kit-real-img {
-  max-width: 245px;
-  max-height: 178px;
-}
-
-.kmb-kit-sketch-svg {
-  position: absolute;
-  inset: 0;
   width: 100%;
-  height: 100%;
-  z-index: 3;
-  color: #384939;
-  pointer-events: none;
+  max-width: 390px;
+  max-height: 216px;
+  object-fit: contain;
+  filter: drop-shadow(0 12px 22px rgba(25, 22, 18, 0.11));
+  transition: transform 0.35s ease;
 }
 
 .kmb-kit-stage-caption {
@@ -991,35 +972,55 @@
 }
 
 /* ==========================================================================
-   2.5 PROCESO DE USO PASO A PASO — HORIZONTAL SCROLL (AGUA & TIERRA)
-       REAL PRODUCT CUTOUT + HAND-DRAWN INK HANDS (IMG2)
+   2.5 PROCESO DE USO PASO A PASO — STICKY HORIZONTAL SCROLL (AGUA & TIERRA)
+       PROTAGONIST CARDS + REAL PRODUCT CUTOUTS & ANATOMICAL INK HANDS
    ========================================================================== */
 .kmb-process-scroll-section {
-  padding: 5rem 0 4.5rem;
-  background: linear-gradient(180deg, #FAF7F2 0%, #F4EFE6 52%, #FAF7F2 100%);
+  position: relative;
+  background: linear-gradient(180deg, #FAF7F2 0%, #F3EEE4 52%, #FAF7F2 100%);
   border-top: 1px solid rgba(218, 206, 188, 0.55);
   border-bottom: 1px solid rgba(218, 206, 188, 0.55);
+}
+
+.kmb-proc-sticky-runway {
+  position: relative;
+  height: 360vh;
+}
+
+.kmb-proc-sticky-frame {
+  position: sticky;
+  top: 64px;
+  height: calc(100vh - 64px);
+  min-height: 650px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   overflow: hidden;
+  padding: 1.5rem 0;
+}
+
+.kmb-proc-inner-container {
+  width: 100%;
 }
 
 .kmb-proc-header {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: 2rem;
-  margin-bottom: 2.4rem;
+  gap: 1.75rem;
+  margin-bottom: 1.65rem;
   flex-wrap: wrap;
 }
 
 .kmb-proc-title-group {
-  max-width: 560px;
+  max-width: 580px;
 }
 
 .kmb-proc-main-title {
   font-family: var(--font-display, 'Cormorant Garamond', Georgia, serif);
-  font-size: clamp(2.2rem, 3.8vw, 3.25rem);
+  font-size: clamp(2.15rem, 3.6vw, 3.1rem);
   font-weight: 400;
-  line-height: 1.08;
+  line-height: 1.06;
   color: var(--color-charcoal, #2D2D2D);
   margin: 0;
 }
@@ -1041,8 +1042,8 @@
   align-items: center;
   padding: 0.3rem;
   border-radius: 999px;
-  background: rgba(255, 253, 249, 0.9);
-  border: 1px solid rgba(196, 182, 162, 0.7);
+  background: rgba(255, 253, 249, 0.92);
+  border: 1px solid rgba(196, 182, 162, 0.75);
   box-shadow: 0 8px 20px rgba(32, 28, 22, 0.05);
 }
 
@@ -1071,7 +1072,7 @@
   overflow: visible;
   cursor: grab;
   user-select: none;
-  padding: 0.5rem 0 1.25rem;
+  padding: 0.35rem 0 0.95rem;
 }
 
 .kmb-proc-viewport.is-dragging {
@@ -1080,34 +1081,40 @@
 
 .kmb-proc-track {
   display: flex;
-  gap: 1.35rem;
+  gap: 1.65rem;
   width: max-content;
+  padding-right: 4rem;
 }
 
 .kmb-proc-card {
-  width: 332px;
+  width: 455px;
   flex-shrink: 0;
   background: #FFFDF9;
-  border: 1px solid rgba(212, 198, 179, 0.8);
-  border-radius: 26px;
+  border: 1px solid rgba(212, 198, 179, 0.85);
+  border-radius: 30px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 16px 36px rgba(28, 25, 21, 0.05);
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 0.35s ease,
+  box-shadow: 0 18px 42px rgba(28, 25, 21, 0.06);
+  transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.38s ease,
     border-color 0.3s ease;
 }
 
+.kmb-proc-card.is-active {
+  border-color: rgba(74, 102, 74, 0.68);
+  box-shadow: 0 24px 52px rgba(28, 25, 21, 0.11);
+}
+
 .kmb-proc-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 24px 48px rgba(28, 25, 21, 0.09);
-  border-color: rgba(139, 158, 139, 0.75);
+  transform: translateY(-6px);
+  box-shadow: 0 26px 54px rgba(28, 25, 21, 0.11);
+  border-color: rgba(74, 102, 74, 0.75);
 }
 
 .kmb-proc-visual-stage {
   position: relative;
-  height: 232px;
+  height: 282px;
   overflow: hidden;
   border-bottom: 1px dashed rgba(196, 182, 162, 0.65);
   display: flex;
@@ -1119,7 +1126,7 @@
   background: radial-gradient(
     circle at 50% 48%,
     #FFFDF9 0%,
-    #EEF5F6 68%,
+    #EEF5F6 70%,
     #E3EEF0 100%
   );
   color: #2B5B6C;
@@ -1129,7 +1136,7 @@
   background: radial-gradient(
     circle at 50% 48%,
     #FFFDF9 0%,
-    #EFF3EC 68%,
+    #EFF3EC 70%,
     #E4ECE0 100%
   );
   color: #3B543B;
@@ -1137,9 +1144,9 @@
 
 .kmb-proc-step-badge {
   position: absolute;
-  top: 0.85rem;
-  left: 0.95rem;
-  right: 0.95rem;
+  top: 0.95rem;
+  left: 1.15rem;
+  right: 1.15rem;
   z-index: 4;
   display: flex;
   align-items: center;
@@ -1148,26 +1155,29 @@
 }
 
 .kmb-proc-step-num {
-  padding: 0.26rem 0.68rem;
+  padding: 0.3rem 0.78rem;
   border-radius: 999px;
-  background: rgba(255, 253, 249, 0.92);
-  border: 1px solid rgba(196, 182, 162, 0.65);
-  font-size: 0.68rem;
+  background: rgba(255, 253, 249, 0.94);
+  border: 1px solid rgba(196, 182, 162, 0.75);
+  font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   color: var(--color-charcoal, #2D2D2D);
 }
 
 .kmb-proc-step-phase {
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: currentColor;
-  opacity: 0.85;
+  opacity: 0.88;
+  background: rgba(255, 253, 249, 0.78);
+  padding: 0.22rem 0.6rem;
+  border-radius: 999px;
 }
 
-/* Real Product Layer inside Step Card */
+/* Unified Real Product + Hand-Drawn Ink Illustration Layer */
 .kmb-proc-real-layer {
   position: relative;
   z-index: 2;
@@ -1176,95 +1186,87 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-top: 1.2rem;
+  padding: 2.1rem 0.9rem 0.5rem;
 }
 
 .kmb-proc-real-primary {
-  max-width: 182px;
-  max-height: 136px;
+  width: 100%;
+  max-width: 415px;
+  max-height: 245px;
   object-fit: contain;
-  filter: drop-shadow(0 14px 20px rgba(24, 22, 18, 0.16));
+  filter: drop-shadow(0 12px 22px rgba(24, 22, 18, 0.12));
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .kmb-proc-card:hover .kmb-proc-real-primary {
-  transform: scale(1.04);
-}
-
-.kmb-proc-real--bag-into-urn .kmb-proc-real-primary {
-  max-width: 96px;
-  max-height: 104px;
-  transform: translateY(-28px);
-  z-index: 3;
-}
-
-.kmb-proc-real-secondary {
-  position: absolute;
-  bottom: 16px;
-  width: 155px;
-  height: 98px;
-  object-fit: contain;
-  opacity: 0.82;
-  filter: drop-shadow(0 10px 16px rgba(24, 22, 18, 0.12));
-  z-index: 1;
-}
-
-.kmb-proc-real--notes-zoom .kmb-proc-real-primary {
-  max-width: 196px;
-  max-height: 142px;
-  transform: translate(22px, 12px);
-}
-
-.kmb-proc-real--urn-cradled .kmb-proc-real-primary {
-  transform: translateY(-10px);
-}
-
-.kmb-proc-real--urn-water-float .kmb-proc-real-primary {
-  transform: translateY(-8px);
-}
-
-/* Hand-Drawn Ink Hands Overlay SVG */
-.kmb-proc-sketch-svg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 3;
-  pointer-events: none;
-  color: currentColor;
+  transform: scale(1.035);
 }
 
 .kmb-proc-body {
-  padding: 1.25rem 1.35rem 1.4rem;
+  padding: 1.35rem 1.55rem 1.5rem;
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
+  gap: 0.5rem;
   flex: 1;
 }
 
 .kmb-proc-card-title {
   font-family: var(--font-display, 'Cormorant Garamond', Georgia, serif);
-  font-size: 1.42rem;
+  font-size: 1.58rem;
   font-weight: 600;
-  line-height: 1.15;
+  line-height: 1.14;
   color: var(--color-charcoal, #2D2D2D);
   margin: 0;
 }
 
 .kmb-proc-card-desc {
-  font-size: 0.85rem;
-  line-height: 1.52;
+  font-size: 0.9rem;
+  line-height: 1.54;
   color: var(--color-stone, #6B6560);
   margin: 0;
 }
 
 .kmb-proc-footer-bar {
-  margin-top: 1.25rem;
+  margin-top: 0.95rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1.5rem;
+  gap: 1.25rem;
   flex-wrap: wrap;
+}
+
+.kmb-proc-step-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.kmb-proc-step-dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: 1px solid rgba(196, 182, 162, 0.75);
+  background: rgba(255, 253, 249, 0.85);
+  color: var(--color-stone, #6B6560);
+  font-size: 0.7rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kmb-proc-step-dot:hover {
+  border-color: var(--color-deep-sage, #4A664A);
+  color: var(--color-charcoal, #2D2D2D);
+}
+
+.kmb-proc-step-dot.active {
+  background: var(--color-deep-sage, #4A664A);
+  border-color: var(--color-deep-sage, #4A664A);
+  color: #FFFDF9;
+  transform: scale(1.08);
 }
 
 .kmb-proc-drag-hint {
@@ -2132,10 +2134,27 @@
    ========================================================================== */
 @media (max-width: 960px) {
   .kmb-apple-feature-card,
-  .kmb-apple-pack-card {
+  .kmb-apple-pack-card,
+  .kmb-kit-included-card {
     grid-template-columns: 1fr;
     text-align: center;
     gap: 2rem;
+  }
+
+  .kmb-proc-sticky-runway {
+    height: auto;
+  }
+
+  .kmb-proc-sticky-frame {
+    position: relative;
+    top: 0;
+    height: auto;
+    min-height: 0;
+    padding: 4rem 0;
+  }
+
+  .kmb-proc-card {
+    width: 380px;
   }
 
   .kmb-af-copy,

@@ -57,9 +57,14 @@ export const Navbar = () => {
     '/cookie-policy', '/politica-de-cookies',
     '/legal', '/urna-biodegradable', '/urnas-biodegradables', '/lp'
   ];
-  const isLightPage = lightPrefixes.some(prefix =>
-    location.pathname === prefix || location.pathname.startsWith(prefix + '/')
-  );
+  const lowerPath = location.pathname.toLowerCase();
+  const isLightPage =
+    lowerPath.startsWith('/zonas/') ||
+    lowerPath.startsWith('/urna-biodegradable') ||
+    lowerPath.startsWith('/urnas-biodegradables') ||
+    lightPrefixes.some(prefix =>
+      lowerPath === prefix || lowerPath.startsWith(prefix + '/')
+    );
   const isTransparentDark = !isLightPage && !isScrolled;
 
   return (

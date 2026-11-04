@@ -877,8 +877,8 @@ export const UrnaBiodegradableLanding = ({
         for (const slug of colSlugs) {
           const liveProd = products.find((p) => p.slug === slug);
           if (!liveProd || !Array.isArray(liveProd.variantObjects)) continue;
-          // For terra-urn or aqua-urn or flore-urns, append any newly added variant in Wix
-          if (['terra-urn', 'aqua-urn', 'flore-urns'].includes(slug)) {
+          // Append any newly added variant in Wix for the products in this column
+          if (['terra-urn', 'angel-urn', 'aqua-urn', 'flore-urns', 'iris-urn'].includes(slug)) {
             for (const vo of liveProd.variantObjects) {
               const key = `${slug}:${(vo.label || '').trim().toUpperCase()}`;
               if (!existingKeys.has(key)) {
@@ -888,6 +888,10 @@ export const UrnaBiodegradableLanding = ({
                     ? 'Kamibi Aqua'
                     : slug === 'flore-urns'
                     ? 'Kamibi Flore'
+                    : slug === 'iris-urn'
+                    ? 'Kamibi Iris'
+                    : slug === 'angel-urn'
+                    ? 'Kamibi Angel'
                     : 'Kamibi Terra';
                 syncedSwatches.push({
                   label: `${shortModel.replace('Kamibi ', '')} ${vo.label}`,

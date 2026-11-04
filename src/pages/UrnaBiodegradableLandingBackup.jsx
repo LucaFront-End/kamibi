@@ -753,6 +753,37 @@ export const UrnaBiodegradableLandingBackup = () => {
     setTimeout(() => setAddedProductId(null), 2200);
   };
 
+  const lowestUrnPrice = useMemo(() => {
+    const urnPrices = products
+      .filter((p) => (p.categories || [p.category]).includes('urns') && p.price > 0)
+      .map((p) => p.price);
+    return urnPrices.length > 0 ? Math.min(...urnPrices) : 76.5;
+  }, [products]);
+
+  const lowestMiniPrice = useMemo(() => {
+    const miniPrices = products
+      .filter((p) => (p.categories || [p.category]).includes('minis') && p.price > 0)
+      .map((p) => p.price);
+    return miniPrices.length > 0 ? Math.min(...miniPrices) : 49.99;
+  }, [products]);
+
+  const formatCategoryPriceTag = useCallback(
+    (cat, fallbackText) => {
+      if (!products || products.length === 0) return fallbackText;
+      const matching = products.filter((p) => {
+        const cats = p.categories?.length ? p.categories : [p.category];
+        return cats.includes(cat) && p.price > 0;
+      });
+      if (matching.length === 0) return fallbackText;
+      const prices = matching.map((p) => Number(p.price));
+      const minP = Math.min(...prices);
+      const maxP = Math.max(...prices);
+      const fmt = (n) => (Number.isInteger(n) ? `$${n}` : `$${n.toFixed(2)}`);
+      return minP === maxP ? `(${fmt(minP)})` : `(${fmt(minP)} – ${fmt(maxP)})`;
+    },
+    [products]
+  );
+
   // Concise Polaroid Reviews (Bilingual ES / EN)
   const polaroidReviews = [
     {
@@ -837,13 +868,13 @@ export const UrnaBiodegradableLandingBackup = () => {
             <p className="kmb-apple-price-line">
               {isEs ? (
                 <>
-                  Desde <strong>$76.50 USD</strong> en Urnas Adulto o{' '}
-                  <strong>$49.99 USD</strong> en Mini Sets. Envío gratis.
+                  Desde <strong>${lowestUrnPrice.toFixed(2)} USD</strong> en Urnas Adulto o{' '}
+                  <strong>${lowestMiniPrice.toFixed(2)} USD</strong> en Mini Sets. Envío gratis.
                 </>
               ) : (
                 <>
-                  From <strong>$76.50 USD</strong> on Adult Urns or{' '}
-                  <strong>$49.99 USD</strong> on Mini Sets. Free shipping.
+                  From <strong>${lowestUrnPrice.toFixed(2)} USD</strong> on Adult Urns or{' '}
+                  <strong>${lowestMiniPrice.toFixed(2)} USD</strong> on Mini Sets. Free shipping.
                 </>
               )}
             </p>
@@ -1466,7 +1497,18 @@ export const UrnaBiodegradableLandingBackup = () => {
 
                   <div className="kmb-band-active-caption">
                     <strong>{bandShowcase[activeBandIdx].name}</strong>
-                    <span>• {bandShowcase[activeBandIdx].model}</span>
+                    <span>
+                      •{' '}
+                      {(() => {
+                        const activeBand = bandShowcase[activeBandIdx];
+                        const liveProd = products.find(
+                          (p) => p.slug === activeBand.slug
+                        );
+                        if (!liveProd) return activeBand.model;
+                        const modelPrefix = activeBand.model.split('•')[0].trim();
+                        return `${modelPrefix} • $${Number(liveProd.price).toFixed(2)} USD`;
+                      })()}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -1492,13 +1534,13 @@ export const UrnaBiodegradableLandingBackup = () => {
                   <p className="kmb-ap-sub">
                     {isEs ? (
                       <>
-                        Urnas Adulto desde <strong>$76.50 USD</strong> o Sets de 4 Mini
-                        Urnas para compartir en familia por <strong>$49.99 USD</strong>.
+                        Urnas Adulto desde <strong>${lowestUrnPrice.toFixed(2)} USD</strong> o Sets de 4 Mini
+                        Urnas para compartir en familia por <strong>${lowestMiniPrice.toFixed(2)} USD</strong>.
                       </>
                     ) : (
                       <>
-                        Adult Urns from <strong>$76.50 USD</strong> or Sets of 4 Mini
-                        Urns for family sharing at <strong>$49.99 USD</strong>.
+                        Adult Urns from <strong>${lowestUrnPrice.toFixed(2)} USD</strong> or Sets of 4 Mini
+                        Urns for family sharing at <strong>${lowestMiniPrice.toFixed(2)} USD</strong>.
                       </>
                     )}
                   </p>
@@ -1550,19 +1592,25 @@ export const UrnaBiodegradableLandingBackup = () => {
                       variantChoice: null,
                       img: 'https://static.wixstatic.com/media/45119e_d62bb5591c674265a6deee5eb3fa4985~mv2.png/v1/fit/w_1192,h_1036,q_90/file.png',
                     },
-                  ].map((item, i) => (
-                    <div
-                      key={i}
-                      className="kmb-ap-studio-tile"
-                      onClick={() => navigateToProduct(item.slug, item.variantChoice)}
-                    >
-                      <img src={item.img} alt={item.name} />
-                      <div className="kmb-ap-tile-meta">
-                        <strong>{item.name}</strong>
-                        <span>{item.price}</span>
+                  ].map((item, i) => {
+                    const liveItemProd = products.find((p) => p.slug === item.slug);
+                    const livePriceLabel = liveItemProd
+                      ? `$${Number(liveItemProd.price).toFixed(2)}`
+                      : item.price;
+                    return (
+                      <div
+                        key={i}
+                        className="kmb-ap-studio-tile"
+                        onClick={() => navigateToProduct(item.slug, item.variantChoice)}
+                      >
+                        <img src={item.img} alt={item.name} />
+                        <div className="kmb-ap-tile-meta">
+                          <strong>{item.name}</strong>
+                          <span>{livePriceLabel}</span>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             </StickyCardWrapper>
@@ -1588,7 +1636,18 @@ export const UrnaBiodegradableLandingBackup = () => {
             {appleComparisonCols.map((col) => {
               const activeIdx = compSwatchIdx[col.key] || 0;
               const activeSwatch = col.swatches[activeIdx] || col.swatches[0];
-              const displayPrice = activeSwatch.priceOverride ?? col.price;
+              const liveSwProd = products.find(
+                (p) => p.slug === activeSwatch.slug || p.id === activeSwatch.id
+              );
+              const displayPrice =
+                liveSwProd?.price ?? activeSwatch.priceOverride ?? col.price;
+              const displayOrigPrice = liveSwProd
+                ? liveSwProd.originalPrice && liveSwProd.originalPrice > liveSwProd.price
+                  ? liveSwProd.originalPrice
+                  : null
+                : !activeSwatch.priceOverride
+                ? col.originalPrice
+                : null;
               const swatchFeedbackKey = `${activeSwatch.slug}:${activeSwatch.variantChoice || ''}`;
 
               return (
@@ -1767,8 +1826,8 @@ export const UrnaBiodegradableLandingBackup = () => {
                         <div className="kmb-vt-price-values">
                           <strong>${Number(displayPrice).toFixed(2)}</strong>
                           <small>USD</small>
-                          {col.originalPrice && !activeSwatch.priceOverride && (
-                            <s>${Number(col.originalPrice).toFixed(2)}</s>
+                          {displayOrigPrice && (
+                            <s>${Number(displayOrigPrice).toFixed(2)}</s>
                           )}
                         </div>
                       </div>
@@ -1831,9 +1890,18 @@ export const UrnaBiodegradableLandingBackup = () => {
               <div className="kmb-carousel-filters">
                 {[
                   { id: 'all', label: isEs ? 'Todos' : 'All' },
-                  { id: 'urns', label: isEs ? 'Urnas ($76.50 – $90)' : 'Urns ($76.50 – $90)' },
-                  { id: 'minis', label: 'Mini Sets ($49.99)' },
-                  { id: 'bags', label: 'Bags ($12.99)' },
+                  {
+                    id: 'urns',
+                    label: `${isEs ? 'Urnas' : 'Urns'} ${formatCategoryPriceTag('urns', '($76.50 – $90)')}`,
+                  },
+                  {
+                    id: 'minis',
+                    label: `Mini Sets ${formatCategoryPriceTag('minis', '($49.99)')}`,
+                  },
+                  {
+                    id: 'bags',
+                    label: `Bags ${formatCategoryPriceTag('bags', '($12.99)')}`,
+                  },
                 ].map((f) => (
                   <button
                     key={f.id}
@@ -1936,7 +2004,9 @@ export const UrnaBiodegradableLandingBackup = () => {
                             loading="lazy"
                           />
                           {prod.originalPrice && prod.originalPrice > prod.price && (
-                            <span className="kmb-prod-sale-pill">15% OFF</span>
+                            <span className="kmb-prod-sale-pill">
+                              {Math.round((1 - prod.price / prod.originalPrice) * 100)}% OFF
+                            </span>
                           )}
                         </div>
 

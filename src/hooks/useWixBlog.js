@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 import { useWixClient } from '../context/WixContext';
 
 /**
- * Fetches the list of blog posts from Wix Blog.
+ * Fetches the list of blog posts from Wix Blog with live revalidation on window focus.
  * @param {number} limit - Maximum number of posts to fetch
  */
-export function useWixPosts(limit = 10) {
+export function useWixPosts(limit = 50) {
   const { wixClient, isReady } = useWixClient();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,8 +15,8 @@ export function useWixPosts(limit = 10) {
     if (!isReady) return;
     let cancelled = false;
 
-    async function fetchPosts() {
-      setLoading(true);
+    async function fetchPosts(showLoader = true) {
+      if (showLoader) setLoading(true);
       setError(null);
       try {
         const response = await wixClient.posts
@@ -35,15 +35,21 @@ export function useWixPosts(limit = 10) {
       }
     }
 
-    fetchPosts();
-    return () => { cancelled = true; };
+    fetchPosts(true);
+    const onFocus = () => fetchPosts(false);
+    window.addEventListener('focus', onFocus);
+
+    return () => {
+      cancelled = true;
+      window.removeEventListener('focus', onFocus);
+    };
   }, [wixClient, isReady, limit]);
 
   return { posts, loading, error };
 }
 
 /**
- * Fetches a single blog post by slug.
+ * Fetches a single blog post by slug with live revalidation on window focus.
  * Tries getPostBySlug first (with RICH_CONTENT fieldset for full content),
  * then falls back to queryPosts().eq('slug', slug) if not found.
  */
@@ -60,31 +66,24 @@ export function useWixPost(slug) {
     }
     let cancelled = false;
 
-    async function fetchPost() {
-      setLoading(true);
+    async function fetchPost(showLoader = true) {
+      if (showLoader) setLoading(true);
       setError(null);
-      console.log('[Blog] Fetching post for slug:', slug);
 
       try {
-        // Strategy 1: getPostBySlug with RICH_CONTENT fieldset
         let postData = null;
         try {
           const response = await wixClient.posts.getPostBySlug(slug, {
             fieldsets: ['RICH_CONTENT'],
           });
-          console.log('[Blog] getPostBySlug raw response:', response);
           const candidate = response?.post || response;
           if (candidate && (candidate._id || candidate.id || candidate.title)) {
             postData = candidate;
-            console.log('[Blog] Post found via getPostBySlug:', postData.title || postData._id);
-          } else {
-            console.warn('[Blog] getPostBySlug returned empty/null, trying queryPosts fallback...');
           }
         } catch (err) {
-          console.warn('[Blog] getPostBySlug threw error:', err?.message, '— trying queryPosts fallback...');
+          // Fallback to queryPosts below
         }
 
-        // Strategy 2: queryPosts fallback (only if strategy 1 didn't find it)
         if (!postData) {
           const queryRes = await wixClient.posts
             .queryPosts({ fieldsets: ['RICH_CONTENT'] })
@@ -92,32 +91,39 @@ export function useWixPost(slug) {
             .limit(1)
             .find();
 
-          console.log('[Blog] queryPosts fallback result count:', queryRes.items?.length);
           if (queryRes.items && queryRes.items.length > 0) {
             postData = queryRes.items[0];
-            console.log('[Blog] Post found via queryPosts:', postData.title);
           }
         }
 
         if (postData) {
-          if (!cancelled) setPost(postData);
+          if (!cancelled) {
+            setPost(postData);
+            setError(null);
+          }
         } else {
-          console.error('[Blog] Post not found for slug via either method:', slug);
-          if (!cancelled) setError('Post not found');
+          if (!cancelled) {
+            setPost(null);
+            setError('Post not found');
+          }
         }
       } catch (err) {
         console.error('[Blog] Fatal error fetching post:', err?.message);
         if (!cancelled) setError(err?.message || 'Could not load article.');
       } finally {
-        // Always called — even when strategy 1 succeeds immediately
         if (!cancelled) setLoading(false);
       }
     }
 
-    fetchPost();
-    return () => { cancelled = true; };
+    fetchPost(true);
+    const onFocus = () => fetchPost(false);
+    window.addEventListener('focus', onFocus);
+
+    return () => {
+      cancelled = true;
+      window.removeEventListener('focus', onFocus);
+    };
   }, [wixClient, isReady, slug]);
 
   return { post, loading, error };
 }
-

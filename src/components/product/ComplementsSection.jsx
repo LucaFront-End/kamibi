@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useTranslation } from '../../context/LanguageContext';
 import { useWixProduct } from '../../hooks/useWixProducts';
-import { products as staticProducts } from '../../lib/productsData';
 import { useCart } from '../../context/CartContext';
 import { ScrollReveal } from '../ui/ScrollReveal';
 import './ComplementsSection.css';
@@ -12,16 +11,12 @@ export const ComplementsSection = ({ complementProduct }) => {
   const [isAdding, setIsAdding] = useState(false);
   const [addedSuccess, setAddedSuccess] = useState(false);
 
-  // If complementProduct wasn't provided by parent, fetch the default mini urn set from Wix
+  // If complementProduct wasn't provided by parent, fetch the default mini urn set live from Wix Stores
   const { product: fallbackWixProduct } = useWixProduct(
     !complementProduct ? 'mini-biodegradables-urn-set' : null
   );
 
-  const staticFallback = staticProducts.find(
-    (p) => p.slug === 'mini-biodegradables-urn-set' || p.id === 'mini-urns'
-  );
-
-  const miniUrns = complementProduct || fallbackWixProduct || staticFallback;
+  const miniUrns = complementProduct || fallbackWixProduct;
 
   if (!miniUrns) return null;
 

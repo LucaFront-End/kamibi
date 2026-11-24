@@ -5,6 +5,7 @@ import { LanguageProvider } from './context/LanguageContext';
 import { CartProvider } from './context/CartContext';
 import { MembersProvider } from './context/MembersContext';
 import { Navbar } from './components/layout/Navbar';
+import { ArborRibbon } from './components/layout/ArborRibbon';
 import { Footer } from './components/layout/Footer';
 import { CartDrawer } from './components/layout/CartDrawer';
 import { WixChatWidget } from './components/chat/WixChatWidget';
@@ -38,6 +39,7 @@ function App() {
           <MembersProvider>
             <Router>
               <div className="app-layout">
+                <ArborRibbon />
                 <Navbar />
 
                 {/* Main viewports */}

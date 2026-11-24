@@ -1,0 +1,166 @@
+/* ==========================================================================
+   SITE-WIDE TOP ANNOUNCEMENT RIBBON — ARBOR DAY FOUNDATION
+   ========================================================================== */
+
+.arbor-ribbon {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--ribbon-height, 36px);
+  z-index: 102;
+  background: linear-gradient(90deg, #2B3F2F 0%, #37503C 50%, #2B3F2F 100%);
+  border-bottom: 1px solid rgba(196, 169, 125, 0.28);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.arbor-ribbon-btn {
+  width: 100%;
+  height: 100%;
+  padding: 0 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  color: #FAF7F2;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: background-color var(--duration-fast) ease;
+}
+
+.arbor-ribbon-btn:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.arbor-ribbon-icon {
+  display: inline-flex;
+  align-items: center;
+  color: #E2C89D;
+  flex-shrink: 0;
+}
+
+.arbor-ribbon-copy {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.arbor-ribbon-copy strong {
+  color: #E2C89D;
+  font-weight: 600;
+}
+
+.arbor-ribbon-copy--mobile,
+.arbor-ribbon-cta--mobile {
+  display: none;
+}
+
+.arbor-ribbon-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: #E2C89D;
+  padding: 0.14rem 0.55rem;
+  border-radius: var(--radius-full, 9999px);
+  border: 1px solid rgba(226, 200, 157, 0.35);
+  background: rgba(226, 200, 157, 0.08);
+  flex-shrink: 0;
+  transition: background-color var(--duration-fast) ease, border-color var(--duration-fast) ease;
+}
+
+.arbor-ribbon-btn:hover .arbor-ribbon-cta {
+  background: rgba(226, 200, 157, 0.18);
+  border-color: rgba(226, 200, 157, 0.65);
+}
+
+/* ---------- Modal Overlay (triggered when clicking ribbon outside ProductPage) ---------- */
+.arbor-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 130;
+  background: rgba(20, 24, 21, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  overflow-y: auto;
+}
+
+.arbor-modal-dialog {
+  position: relative;
+  width: 100%;
+  max-width: 980px;
+  max-height: calc(100vh - 3rem);
+  overflow-y: auto;
+  background: linear-gradient(145deg, #FFFDF9 0%, #F4EFE6 100%);
+  border: 1px solid var(--color-sand, #E8DED1);
+  border-radius: var(--radius-xl, 20px);
+  padding: clamp(1.5rem, 3.2vw, 2.75rem);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.25);
+}
+
+.arbor-modal-close {
+  position: sticky;
+  top: 0;
+  float: right;
+  z-index: 5;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(45, 45, 45, 0.08);
+  color: var(--color-charcoal, #2D2D2D);
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color var(--duration-fast) ease, transform var(--duration-fast) ease;
+}
+
+.arbor-modal-close:hover {
+  background: rgba(45, 45, 45, 0.15);
+  transform: scale(1.06);
+}
+
+@media (max-width: 768px) {
+  .arbor-ribbon-btn {
+    padding: 0 0.75rem;
+    font-size: 11px;
+    gap: 0.4rem;
+  }
+
+  .arbor-ribbon-copy--desktop,
+  .arbor-ribbon-cta--desktop {
+    display: none;
+  }
+
+  .arbor-ribbon-cta--mobile {
+    display: inline-flex;
+  }
+
+  .arbor-ribbon-copy--mobile {
+    display: block;
+  }
+
+  .arbor-modal-backdrop {
+    padding: 0.75rem;
+    align-items: flex-start;
+  }
+
+  .arbor-modal-dialog {
+    margin: auto 0;
+    max-height: calc(100vh - 1.5rem);
+    padding: 1.25rem;
+  }
+}

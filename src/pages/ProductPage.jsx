@@ -11,6 +11,7 @@ import { WhyChooseUs } from '../components/product/WhyChooseUs';
 import { ReviewsSection } from '../components/product/ReviewsSection';
 import { ComplementsSection } from '../components/product/ComplementsSection';
 import { SimilarProducts } from '../components/product/SimilarProducts';
+import { ArborDayTribute, ArborTreeSeal } from '../components/product/ArborDayTribute';
 import { PageTransition } from '../components/layout/PageTransition';
 import { ScrollReveal } from '../components/ui/ScrollReveal';
 import { MagneticButton } from '../components/ui/MagneticButton';
@@ -417,6 +418,35 @@ export const ProductPage = () => {
                 </MagneticButton>
               </div>
 
+              {/* Arbor Day Foundation — 1 Tree Planted + Official Greeting Card Perk */}
+              <div className="arbor-inline-perk">
+                <div className="arbor-inline-seal">
+                  <ArborTreeSeal size={22} />
+                </div>
+                <div className="arbor-inline-text">
+                  <strong className="arbor-inline-title">
+                    {locale === 'es'
+                      ? 'Plantamos 1 árbol en su honor · Arbor Day Foundation'
+                      : '1 tree planted in their honor · Arbor Day Foundation'}
+                  </strong>
+                  <span className="arbor-inline-desc">
+                    {locale === 'es'
+                      ? 'Con cada urna biodegradable recibes una Greeting Card oficial en honor a tu familiar.'
+                      : 'With every biodegradable urn, you receive an official Give-A-Tree® Greeting Card in their honor.'}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const el = document.getElementById('arbor-day-tribute');
+                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }}
+                  className="arbor-inline-btn"
+                >
+                  {locale === 'es' ? 'Ver tarjeta' : 'View card'} ↓
+                </button>
+              </div>
+
               {/* Bullet Features */}
               {product.features && product.features.length > 0 && (
                 <ul className="product-quick-bullets">
@@ -442,6 +472,11 @@ export const ProductPage = () => {
               />
             </div>
           </div>
+        </section>
+
+        {/* Arbor Day Foundation — 1 Urn = 1 Tree & Official Greeting Card */}
+        <section className="product-arbor-section container" id="arbor-day-tribute">
+          <ArborDayTribute variant="section" />
         </section>
 
         {/* Tabbed Info details block */}

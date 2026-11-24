@@ -37,7 +37,7 @@ const StickyCardWrapper = ({ index, total, children }) => {
       ref={cardRef}
       className="kmb-sticky-card-slot"
       style={{
-        top: `calc(84px + ${index * 24}px)`,
+        top: `calc(var(--nav-height, 116px) + 4px + ${index * 20}px)`,
         zIndex: index + 1,
       }}
     >

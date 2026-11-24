@@ -998,8 +998,8 @@
 
 .kmb-proc-sticky-frame {
   position: sticky;
-  top: 64px;
-  height: calc(100vh - 64px);
+  top: var(--nav-height, 116px);
+  height: calc(100vh - var(--nav-height, 116px));
   min-height: 650px;
   display: flex;
   flex-direction: column;
@@ -2233,7 +2233,7 @@
   }
 
   .kmb-sticky-card-slot {
-    top: 72px !important;
+    top: calc(var(--nav-height, 103px) + 8px) !important;
   }
 
   .kmb-sticky-card {

@@ -1,9 +1,9 @@
 .navbar {
   position: fixed;
-  top: 0;
+  top: var(--ribbon-height);
   left: 0;
   width: 100%;
-  height: var(--nav-height);
+  height: var(--nav-bar-height);
   background-color: transparent;
   z-index: 100;
   transition: background-color var(--duration-normal) var(--ease-out-expo),
